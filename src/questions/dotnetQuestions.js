@@ -96,42 +96,42 @@ public class Solution
     {
         if (!object.Equals(actual, expected))
         {
-            Console.WriteLine(\"TEST FAILED: {0}\\nExpected: {1} ({2})\\nActual:   {3} ({4})\",
+            Console.WriteLine("TEST FAILED: {0}\\nExpected: {1} ({2})\\nActual:   {3} ({4})",
                 name, expected, expected?.GetType(), actual, actual?.GetType());
-            throw new Exception(\"Test failed: \" + name);
+            throw new Exception("Test failed: " + name);
         }
         else
         {
-            Console.WriteLine(\"OK: {0}\", name);
+            Console.WriteLine("OK: {0}", name);
         }
     }
 
     public static void TestLogEntry()
     {
         // in-memory test lines (no external file) so this runs on Judge0
-        string logLine = \"44776.619 KTB918 310E MAINROAD\";
+        string logLine = "44776.619 KTB918 310E MAINROAD";
         LogEntry logEntry = new LogEntry(logLine);
         // THESE ASSERTIONS MATCH THE ORIGINAL PROBLEM — the first check will fail here because Timestamp is string
-        AssertEqual(logEntry.Timestamp, 44776.619, \"Timestamp\");
-        AssertEqual(logEntry.LicensePlate, \"KTB918\", \"LicensePlate\");
-        AssertEqual(logEntry.Location, 310, \"Location\");
-        AssertEqual(logEntry.Direction, \"EAST\", \"Direction\");
-        AssertEqual(logEntry.BoothType, \"MAINROAD\", \"BoothType\");
+        AssertEqual(logEntry.Timestamp, 44776.619, "Timestamp");
+        AssertEqual(logEntry.LicensePlate, "KTB918", "LicensePlate");
+        AssertEqual(logEntry.Location, 310, "Location");
+        AssertEqual(logEntry.Direction, "EAST", "Direction");
+        AssertEqual(logEntry.BoothType, "MAINROAD", "BoothType");
 
-        logLine = \"52160.132 ABC123 400W ENTRY\";
+        logLine = "52160.132 ABC123 400W ENTRY";
         logEntry = new LogEntry(logLine);
-        AssertEqual(logEntry.Timestamp, 52160.132, \"Timestamp2\");
-        AssertEqual(logEntry.LicensePlate, \"ABC123\", \"LicensePlate2\");
-        AssertEqual(logEntry.Location, 400, \"Location2\");
-        AssertEqual(logEntry.Direction, \"WEST\", \"Direction2\");
-        AssertEqual(logEntry.BoothType, \"ENTRY\", \"BoothType2\");
+        AssertEqual(logEntry.Timestamp, 52160.132, "Timestamp2");
+        AssertEqual(logEntry.LicensePlate, "ABC123", "LicensePlate2");
+        AssertEqual(logEntry.Location, 400, "Location2");
+        AssertEqual(logEntry.Direction, "WEST", "Direction2");
+        AssertEqual(logEntry.BoothType, "ENTRY", "BoothType2");
     }
 
     public static void Main()
     {
         // Running the tests; starter is expected to fail on the timestamp assert
         TestLogEntry();
-        Console.WriteLine(\"All tests passed.\");
+        Console.WriteLine("All tests passed.");
     }
 }`,
             hints: [
@@ -165,12 +165,12 @@ public class LogEntry
         char directionLetter = tokens[2][tokens[2].Length - 1];
         if (directionLetter == 'E') Direction = "EAST";
         else if (directionLetter == 'W') Direction = "WEST";
-        else Debug.Assert(false, \"Invalid direction\");
+        else Debug.Assert(false, "Invalid direction");
     }
 
     public override string ToString()
     {
-        return string.Format(\"<LogEntry timestamp: {0}  license: {1}  location: {2}  direction: {3}  booth type: {4}>\",
+        return string.Format("<LogEntry timestamp: {0}  license: {1}  location: {2}  direction: {3}  booth type: {4}>",
             Timestamp, LicensePlate, Location, Direction, BoothType);
     }
 }
@@ -194,39 +194,39 @@ public class Solution
     {
         if (!object.Equals(actual, expected))
         {
-            Console.WriteLine(\"TEST FAILED: {0}\\nExpected: {1} ({2})\\nActual:   {3} ({4})\",
+            Console.WriteLine("TEST FAILED: {0}\nExpected: {1} ({2})\\nActual:   {3} ({4})",
                 name, expected, expected?.GetType(), actual, actual?.GetType());
-            throw new Exception(\"Test failed: \" + name);
+            throw new Exception("Test failed: " + name);
         }
         else
         {
-            Console.WriteLine(\"OK: {0}\", name);
+            Console.WriteLine("OK: {0}", name);
         }
     }
 
     public static void TestLogEntry()
     {
-        string logLine = \"44776.619 KTB918 310E MAINROAD\";
+        string logLine = "44776.619 KTB918 310E MAINROAD";
         LogEntry logEntry = new LogEntry(logLine);
-        AssertEqual(logEntry.Timestamp, 44776.619, \"Timestamp\");
-        AssertEqual(logEntry.LicensePlate, \"KTB918\", \"LicensePlate\");
-        AssertEqual(logEntry.Location, 310, \"Location\");
-        AssertEqual(logEntry.Direction, \"EAST\", \"Direction\");
-        AssertEqual(logEntry.BoothType, \"MAINROAD\", \"BoothType\");
+        AssertEqual(logEntry.Timestamp, 44776.619, "Timestamp");
+        AssertEqual(logEntry.LicensePlate, "KTB918", "LicensePlate");
+        AssertEqual(logEntry.Location, 310, "Location");
+        AssertEqual(logEntry.Direction, "EAST", "Direction");
+        AssertEqual(logEntry.BoothType, "MAINROAD", "BoothType");
 
-        logLine = \"52160.132 ABC123 400W ENTRY\";
+        logLine = "52160.132 ABC123 400W ENTRY";
         logEntry = new LogEntry(logLine);
-        AssertEqual(logEntry.Timestamp, 52160.132, \"Timestamp2\");
-        AssertEqual(logEntry.LicensePlate, \"ABC123\", \"LicensePlate2\");
-        AssertEqual(logEntry.Location, 400, \"Location2\");
-        AssertEqual(logEntry.Direction, \"WEST\", \"Direction2\");
-        AssertEqual(logEntry.BoothType, \"ENTRY\", \"BoothType2\");
+        AssertEqual(logEntry.Timestamp, 52160.132, "Timestamp2");
+        AssertEqual(logEntry.LicensePlate, "ABC123", "LicensePlate2");
+        AssertEqual(logEntry.Location, 400, "Location2");
+        AssertEqual(logEntry.Direction, "WEST", "Direction2");
+        AssertEqual(logEntry.BoothType, "ENTRY", "BoothType2");
     }
 
     public static void Main()
     {
         TestLogEntry();
-        Console.WriteLine(\"All tests passed.\");
+        Console.WriteLine("All tests passed.");
     }
 }`
         },
