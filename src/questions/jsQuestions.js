@@ -23,7 +23,11 @@ const input = [
 ];
 
 console.log(findConnections(input));`,
-      hint: "Use a hashmap to count the active connections of each person.",
+      hints: [
+        "Create an object (or Map) to store each persons connection count.",
+        "Iterate through the list and increment counts only when the status is `1`.",
+        "Finally, filter and return all persons whose count exceeds 3."
+      ],
       solution: `function findConnections(connections) {
   const map = {};
 
@@ -60,7 +64,11 @@ const records1 = [
 ];
 
 console.log(mismatches(records1));`,
-      hint: "Use sets to track who is currently inside and mismatched logs.",
+      hints: [
+        "Use a Set to track who is currently inside the room.",
+        "If someone enters twice without exit, add them to an 'enterWithoutExit' set.",
+        "At the end, anyone still inside should also be added to the 'enterWithoutExit' list."
+      ],
       solution: `function mismatches(records) {
   const enterWithoutExit = new Set();
   const exitWithoutEnter = new Set();
@@ -82,82 +90,6 @@ console.log(mismatches(records1));`,
 }`
     },
     {
-      id: 3,
-      title: "Blog Comment Editing Feature",
-      description: `
-Build a simple comment section for a blog.
-- Load 3 comments from https://dummyjson.com/posts/1/comments?limit=3
-- Users can click a comment to enter edit mode
-- Clicking "Save" should update the comment.`,
-      starterCode: `// React starter
-import React, { useState, useEffect } from "react";
-
-function Comments() {
-  const [comments, setComments] = useState([]);
-
-  useEffect(() => {
-    fetch("https://dummyjson.com/posts/1/comments?limit=3")
-      .then(res => res.json())
-      .then(data => setComments(data.comments));
-  }, []);
-
-  return (
-    <div>
-      <h2>Comments</h2>
-      {comments.map(c => (
-        <div key={c.id}>{c.body}</div>
-      ))}
-    </div>
-  );
-}
-
-export default Comments;`,
-      hint: "Use `useState` to toggle between view and edit mode for each comment.",
-      solution: `import React, { useState, useEffect } from "react";
-
-function Comments() {
-  const [comments, setComments] = useState([]);
-  const [editingId, setEditingId] = useState(null);
-  const [editText, setEditText] = useState("");
-
-  useEffect(() => {
-    fetch("https://dummyjson.com/posts/1/comments?limit=3")
-      .then(res => res.json())
-      .then(data => setComments(data.comments));
-  }, []);
-
-  const saveComment = (id) => {
-    setComments(comments.map(c =>
-      c.id === id ? { ...c, body: editText } : c
-    ));
-    setEditingId(null);
-    setEditText("");
-  };
-
-  return (
-    <div>
-      <h2>Comments</h2>
-      {comments.map(c => (
-        <div key={c.id}>
-          {editingId === c.id ? (
-            <>
-              <input value={editText} onChange={e => setEditText(e.target.value)} />
-              <button onClick={() => saveComment(c.id)}>Save</button>
-            </>
-          ) : (
-            <div onClick={() => { setEditingId(c.id); setEditText(c.body); }}>
-              {c.body}
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-export default Comments;`
-    },
-    {
       id: 4,
       title: "Flatten Nested Arrays",
       description: `
@@ -171,7 +103,11 @@ Output: [1,2,3,4,5]`,
 }
 
 console.log(flattenArray([1, [2, [3, [4]], 5]]));`,
-      hint: "Use recursion or stack to process nested arrays.",
+      hints: [
+        "Iterate through the array and check if each element is an array using `Array.isArray()`.",
+        "Use recursion to flatten subarrays into a result array.",
+        "Alternatively, use the ES6 method `arr.flat(Infinity)` for a simpler approach."
+      ],
       solution: `function flattenArray(arr) {
   const result = [];
 
@@ -208,7 +144,11 @@ Refactor the function below to remove duplication and improve readability.`,
   }
   return price;
 }`,
-      hint: "Use a lookup object or map instead of multiple if statements.",
+      hints: [
+        "Notice that all three branches perform the same formula with different rates.",
+        "Store discount values in an object with keys like 'student', 'senior', etc.",
+        "Use a lookup instead of multiple if/else conditions."
+      ],
       solution: `function calculateDiscount(price, type) {
   const discounts = { student: 0.1, senior: 0.2, veteran: 0.3 };
   return price - price * (discounts[type] || 0);
@@ -226,7 +166,11 @@ The following code suffers from callback hell. Refactor it using async/await.`,
     });
   });
 });`,
-      hint: "Wrap functions in promises and use async/await.",
+      hints: [
+        "Wrap the callback-based functions into Promises.",
+        "Use `await` sequentially to call `getUser`, `getPosts`, then `getComments`.",
+        "Handle errors using try/catch blocks for cleaner async code."
+      ],
       solution: `async function fetchUserComments() {
   const user = await getUser();
   const posts = await getPosts(user.id);
@@ -251,7 +195,11 @@ Current implementation of removing duplicates is O(n^2). Optimize it.`,
   }
   return result;
 }`,
-      hint: "Use a Set for O(n) performance.",
+      hints: [
+        "The `includes()` check makes the loop O(n²).",
+        "Use a `Set` to track seen elements efficiently.",
+        "Convert the Set back into an array using the spread operator."
+      ],
       solution: `function removeDuplicates(arr) {
   return [...new Set(arr)];
 }`
@@ -268,7 +216,11 @@ The function builds a large string inefficiently. Optimize the implementation.`,
   }
   return str;
 }`,
-      hint: "Use arrays and join for better performance.",
+      hints: [
+        "Repeated string concatenation in a loop is slow.",
+        "Collect all values in an array first, then join them.",
+        "Use `Array.from({ length: n }, (_, i) => i)` to build the sequence efficiently."
+      ],
       solution: `function buildString(n) {
   return Array.from({ length: n }, (_, i) => i).join(",");
 }`
@@ -287,7 +239,11 @@ Write unit tests for the palindrome checker function.`,
 
 // TODO: write tests using Jest
 `,
-      hint: "Cover cases: palindrome, non-palindrome, empty string.",
+      hints: [
+        "Write one test for a word that reads the same backward (e.g. 'madam').",
+        "Write another test for a non-palindrome word (e.g. 'hello').",
+        "Add a test for an empty string — it should be considered a palindrome."
+      ],
       solution: `test("isPalindrome returns true for palindrome", () => {
   expect(isPalindrome("madam")).toBe(true);
 });
@@ -311,7 +267,11 @@ Write unit tests for the sum function.`,
 
 // TODO: write tests using Jest
 `,
-      hint: "Test positive, negative, and zero values.",
+      hints: [
+        "Start by testing simple positive numbers like 2 + 3.",
+        "Then check edge cases like negative numbers.",
+        "Don’t forget to test zeros to ensure no unexpected behavior."
+      ],
       solution: `test("sum of two positive numbers", () => {
   expect(sum(2, 3)).toBe(5);
 });
@@ -328,4 +288,3 @@ test("sum of zeros", () => {
 };
 
 export default jsQuestions;
- 
