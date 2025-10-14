@@ -1237,9 +1237,9 @@ public class Solution
       `
         },
         {
-      id: 23,
-      title: "Q6 :Gym Membership Workout Tracker",
-      description: `
+            id: 23,
+            title: "Q6 :Gym Membership Workout Tracker",
+            description: `
 We are building a program to manage a gym's membership. The gym has multiple members, each with a unique ID, name, and membership status. The program allows gym staff to add new members, update member status, and get membership statistics.
 
 Recently, the system has been updated to include information about workouts for members. Each Workout object represents a single session with a unique ID, start time, and end time (in minutes from the start of the day). You need to implement:
@@ -1253,7 +1253,7 @@ Example:
 - Member 31 has workouts 40 and 100 → average = 70.
 - Member 4 does not exist → ignored.
       `,
-      starterCode: `
+            starterCode: `
 using System;
 using System.Collections.Generic;
 
@@ -1323,7 +1323,7 @@ public class Membership
     }
 }
       `,
-      solution: `
+            solution: `
 using System;
 using System.Collections.Generic;
 
@@ -1438,11 +1438,11 @@ public class Program
 }
 
       `,
-      hints: [
-        "Use a Dictionary<int, List<Workout>> to keep track of workouts per member.",
-        "When adding a workout, first check if the member exists.",
-        "For average durations, sum up durations for each member and divide by count of workouts."
-      ]
+            hints: [
+                "Use a Dictionary<int, List<Workout>> to keep track of workouts per member.",
+                "When adding a workout, first check if the member exists.",
+                "For average durations, sum up durations for each member and divide by count of workouts."
+            ]
         },
         {
             id: 5,
@@ -1712,7 +1712,7 @@ public class Solution
     }
 }`,
 
-            solution:`using System;
+            solution: `using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -2834,113 +2834,344 @@ class Solution {
     ],
     refactor: [
         {
-            "id": 101,
-            "title": "Refactor Nested Loops for Intersection",
-            "description": "You are given a function that calculates the intersection of two lists of integers. The current implementation uses nested loops and has O(n*m) time complexity. Refactor it to improve readability and efficiency using built-in C# data structures.",
-            "starterCode": "public List<int> FindIntersection(List<int> list1, List<int> list2) {\n    List<int> result = new List<int>();\n    foreach(var a in list1) {\n        foreach(var b in list2) {\n            if(a == b && !result.Contains(a)) {\n                result.Add(a);\n            }\n        }\n    }\n    return result;\n}",
-            "solution": "public List<int> FindIntersection(List<int> list1, List<int> list2) {\n    HashSet<int> set1 = new HashSet<int>(list1);\n    HashSet<int> resultSet = new HashSet<int>();\n    foreach(var b in list2) {\n        if(set1.Contains(b)) resultSet.Add(b);\n    }\n    return resultSet.ToList();\n}",
-            "hints": [
+            id: 101,
+            title: "Refactor Nested Loops for Intersection",
+            description: "You are given a function that calculates the intersection of two lists of integers. The current implementation uses nested loops and has O(n*m) time complexity. Refactor it to improve readability and efficiency using built-in C# data structures.",
+            starterCode: `using System;
+using System.Collections.Generic;
+
+public class Program {
+    public static void Main() {
+        var list1 = new List<int>{1,2,3,4};
+        var list2 = new List<int>{3,4,5,6};
+        var result = FindIntersection(list1, list2);
+        Console.WriteLine(string.Join(",", result));
+    }
+
+    public static List<int> FindIntersection(List<int> list1, List<int> list2) {
+        List<int> result = new List<int>();
+        foreach(var a in list1) {
+            foreach(var b in list2) {
+                if(a == b && !result.Contains(a)) {
+                    result.Add(a);
+                }
+            }
+        }
+        return result;
+    }
+}`,
+            solution: `public List<int> FindIntersection(List<int> list1, List<int> list2) {
+    HashSet<int> set1 = new HashSet<int>(list1);
+    HashSet<int> resultSet = new HashSet<int>();
+    foreach(var b in list2) {
+        if(set1.Contains(b)) resultSet.Add(b);
+    }
+    return resultSet.ToList();
+}`,
+            hints: [
                 "Use HashSet for faster lookups.",
                 "Avoid duplicate checks using the HashSet.",
                 "Time complexity should be O(n + m) instead of O(n*m)."
             ]
         },
         {
-            "id": 102,
-            "title": "Refactor Conditional Logic for Discounts",
-            "description": "The following code determines the discount for a customer. It is correct but hard to read. Refactor it to improve readability without changing behavior.",
-            "starterCode": "public double CalculateDiscount(int age, bool isMember) {\n    if(age < 18) {\n        if(isMember) {\n            return 0.2;\n        } else {\n            return 0.1;\n        }\n    } else {\n        if(isMember) {\n            return 0.15;\n        } else {\n            return 0.0;\n        }\n    }\n}",
-            "solution": "public double CalculateDiscount(int age, bool isMember) {\n    if(age < 18) return isMember ? 0.2 : 0.1;\n    return isMember ? 0.15 : 0.0;\n}",
-            "hints": [
+            id: 102,
+            title: "Refactor Conditional Logic for Discounts",
+            description: "The following code determines the discount for a customer. It is correct but hard to read. Refactor it to improve readability without changing behavior.",
+            starterCode: `using System;
+
+public class Program {
+    public static void Main() {
+        Console.WriteLine(CalculateDiscount(16, true));   // 0.2
+        Console.WriteLine(CalculateDiscount(20, false));  // 0.0
+    }
+
+    public static double CalculateDiscount(int age, bool isMember) {
+        if(age < 18) return isMember ? 0.2 : 0.1;
+        return isMember ? 0.15 : 0.0;
+    }
+}`,
+            solution: `public double CalculateDiscount(int age, bool isMember) {
+    if(age < 18) return isMember ? 0.2 : 0.1;
+    return isMember ? 0.15 : 0.0;
+}`,
+            hints: [
                 "Consider using ternary operators for simple conditionals.",
                 "Group conditions logically for clarity.",
                 "Avoid deeply nested if-else blocks."
             ]
         },
         {
-            "id": 103,
-            "title": "Refactor Repeated Code in Username Validation",
-            "description": "The following function validates a list of usernames. It repeats similar checks multiple times. Refactor to reduce code duplication.",
-            "starterCode": "public List<string> ValidateUsernames(List<string> usernames) {\n    List<string> valid = new List<string>();\n    foreach(var name in usernames) {\n        if(name.Length >= 5) {\n            if(name.Length <= 10) {\n                if(!name.Contains(\" \")) {\n                    valid.Add(name);\n                }\n            }\n        }\n    }\n    return valid;\n}",
-            "solution": "public List<string> ValidateUsernames(List<string> usernames) {\n    List<string> valid = new List<string>();\n    foreach(var name in usernames) {\n        if(name.Length >= 5 && name.Length <= 10 && !name.Contains(\" \")) {\n            valid.Add(name);\n        }\n    }\n    return valid;\n}",
-            "hints": [
+            id: 103,
+            title: "Refactor Repeated Code in Username Validation",
+            description: "The following function validates a list of usernames. It repeats similar checks multiple times. Refactor to reduce code duplication.",
+            starterCode: `using System;
+using System.Collections.Generic;
+
+public class Program {
+    public static void Main() {
+        var usernames = new List<string>{"Alice", "Bob123", "John Doe", "Anna"};
+        var valid = ValidateUsernames(usernames);
+        Console.WriteLine(string.Join(",", valid));
+    }
+
+    public static List<string> ValidateUsernames(List<string> usernames) {
+        List<string> valid = new List<string>();
+        foreach(var name in usernames) {
+            if(name.Length >= 5 && name.Length <= 10 && !name.Contains(" ")) {
+                valid.Add(name);
+            }
+        }
+        return valid;
+    }
+}`,
+            solution: `public List<string> ValidateUsernames(List<string> usernames) {
+    List<string> valid = new List<string>();
+    foreach(var name in usernames) {
+        if(name.Length >= 5 && name.Length <= 10 && !name.Contains(" ")) {
+            valid.Add(name);
+        }
+    }
+    return valid;
+}`,
+            hints: [
                 "Combine conditions using logical AND (&&).",
                 "Consider extracting a helper method for clarity.",
                 "Avoid deeply nested if-statements."
             ]
-        },
+        }
     ],
     unitTests: [
         {
-            "id": 201,
-            "title": "Unit Test Calculator Methods",
-            "description": "You have a simple Calculator class. Write unit tests to verify its Add and Divide methods, including edge cases like division by zero.",
-            "starterCode": "using System;\n\npublic class Calculator {\n    public int Add(int a, int b) => a + b;\n    public int Divide(int a, int b) => a / b;\n}",
-            "solution": "// Example NUnit tests\n[TestFixture]\npublic class CalculatorTests {\n    [Test]\n    public void TestAdd() {\n        Calculator calc = new Calculator();\n        Assert.AreEqual(5, calc.Add(2,3));\n        Assert.AreEqual(-1, calc.Add(-2,1));\n    }\n\n    [Test]\n    public void TestDivide() {\n        Calculator calc = new Calculator();\n        Assert.AreEqual(2, calc.Divide(4,2));\n        Assert.Throws<DivideByZeroException>(() => calc.Divide(5,0));\n    }\n}",
-            "hints": [
-                "Use Assert.Throws for exception testing.",
-                "Test both positive and negative numbers.",
-                "Cover edge cases explicitly."
-            ]
-        },
-        {
-            "id": 202,
-            "title": "Unit Test Email Validation",
-            "description": "Write unit tests for a function IsValidEmail(string email) that validates emails. Cover valid emails, invalid emails, and empty or null input.",
-            "starterCode": "using System;\n\npublic class EmailValidator {\n    public bool IsValidEmail(string email) {\n        return email != null && email.Contains(\"@\") && email.Contains(\".\");\n    }\n}",
-            "solution": "// Example NUnit tests\n[TestFixture]\npublic class EmailTests {\n    [Test]\n    [TestCase(\"user@example.com\", ExpectedResult = true)]\n    [TestCase(\"userexample.com\", ExpectedResult = false)]\n    [TestCase(\"\", ExpectedResult = false)]\n    [TestCase(null, ExpectedResult = false)]\n    public bool TestIsValidEmail(string email) {\n        EmailValidator validator = new EmailValidator();\n        return validator.IsValidEmail(email);\n    }\n}",
-            "hints": [
-                "Use parameterized tests for multiple cases.",
-                "Consider null or empty input.",
-                "Cover edge cases like missing '@' or '.'"
-            ]
-        },
-        {
-            "id": 203,
-            "title": "Unit Test Shopping Cart Total",
-            "description": "Write unit tests to verify the GetTotal method of a ShoppingCart class, including empty cart, single item, and multiple items.",
-            "starterCode": "using System;\nusing System.Collections.Generic;\n\npublic class ShoppingCart {\n    public List<double> Prices = new List<double>();\n    public double GetTotal() {\n        double total = 0;\n        foreach(var price in Prices) {\n            total += price;\n        }\n        return total;\n    }\n}",
-            "solution": "// Example NUnit tests\n[TestFixture]\npublic class ShoppingCartTests {\n    [Test]\n    public void TestEmptyCart() {\n        ShoppingCart cart = new ShoppingCart();\n        Assert.AreEqual(0, cart.GetTotal());\n    }\n\n    [Test]\n    public void TestSingleItem() {\n        ShoppingCart cart = new ShoppingCart();\n        cart.Prices.Add(50);\n        Assert.AreEqual(50, cart.GetTotal());\n    }\n\n    [Test]\n    public void TestMultipleItems() {\n        ShoppingCart cart = new ShoppingCart();\n        cart.Prices.AddRange(new double[]{10,20,30});\n        Assert.AreEqual(60, cart.GetTotal());\n    }\n}",
-            "hints": [
-                "Test empty, single, and multiple items.",
-                "Check for floating-point precision.",
-                "Use Assert.AreEqual to verify totals."
-            ]
+            id: 201,
+            title: "Test Calculator Methods",
+            description: "You have a simple Calculator class. Run some tests to verify its Add and Divide methods, including handling division by zero.",
+            starterCode: `using System;
+
+public class Calculator {
+    public int Add(int a, int b) => a + b;
+    public int Divide(int a, int b) => a / b;
+}
+
+public class Program {
+    public static void Main() {
+        Calculator calc = new Calculator();
+
+        // Test Add
+        Console.WriteLine("Add(2,3) = " + calc.Add(2,3));
+        Console.WriteLine("Add(-2,1) = " + calc.Add(-2,1));
+
+        // Test Divide
+        Console.WriteLine("Divide(4,2) = " + calc.Divide(4,2));
+
+        try {
+            Console.WriteLine("Divide(5,0) = " + calc.Divide(5,0));
+        } catch (DivideByZeroException) {
+            Console.WriteLine("Divide(5,0) throws DivideByZeroException");
         }
-    ]
-    ,
+    }
+}`,
+            hints: [
+                "Use try-catch to handle divide by zero exceptions.",
+                "Test both positive and negative numbers.",
+                "Print outputs using Console.WriteLine to verify results."
+            ],
+            solution: `using System;
+
+public class Calculator {
+    public int Add(int a, int b) => a + b;
+    public int Divide(int a, int b) => a / b;
+}
+
+public class Program {
+    public static void Main() {
+        Calculator calc = new Calculator();
+        Console.WriteLine(calc.Add(2,3)); // 5
+        Console.WriteLine(calc.Add(-2,1)); // -1
+        Console.WriteLine(calc.Divide(4,2)); // 2
+        try { Console.WriteLine(calc.Divide(5,0)); } 
+        catch (DivideByZeroException) { Console.WriteLine("DivideByZeroException"); }
+    }
+}`
+        },
+        {
+            id: 202,
+            title: "Test Email Validation",
+            description: "Write tests for a function IsValidEmail(string email) that validates emails. Cover valid emails, invalid emails, and empty or null input.",
+            starterCode: `using System;
+
+public class EmailValidator {
+    public bool IsValidEmail(string email) {
+        return email != null && email.Contains("@") && email.Contains(".");
+    }
+}
+
+public class Program {
+    public static void Main() {
+        EmailValidator validator = new EmailValidator();
+        string[] emails = {"user@example.com", "userexample.com", "", null};
+        foreach(var email in emails) {
+            Console.WriteLine($"{email ?? "null"} -> {validator.IsValidEmail(email)}");
+        }
+    }
+}`,
+            hints: [
+                "Iterate through sample emails and print results using Console.WriteLine.",
+                "Check null and empty strings.",
+                "Check emails missing '@' or '.'"
+            ],
+            solution: `using System;
+
+public class EmailValidator {
+    public bool IsValidEmail(string email) {
+        return email != null && email.Contains("@") && email.Contains(".");
+    }
+}
+
+public class Program {
+    public static void Main() {
+        EmailValidator validator = new EmailValidator();
+        Console.WriteLine(validator.IsValidEmail("user@example.com")); // True
+        Console.WriteLine(validator.IsValidEmail("userexample.com")); // False
+        Console.WriteLine(validator.IsValidEmail("")); // False
+        Console.WriteLine(validator.IsValidEmail(null)); // False
+    }
+}`
+        },
+        {
+            id: 203,
+            title: "Test Shopping Cart Total",
+            description: "Write tests to verify the GetTotal method of a ShoppingCart class, including empty cart, single item, and multiple items.",
+            starterCode: `using System;
+using System.Collections.Generic;
+
+public class ShoppingCart {
+    public List<double> Prices = new List<double>();
+    public double GetTotal() {
+        double total = 0;
+        foreach(var price in Prices) total += price;
+        return total;
+    }
+}
+
+public class Program {
+    public static void Main() {
+        ShoppingCart cart = new ShoppingCart();
+
+        // Empty cart
+        Console.WriteLine("Empty cart total: " + cart.GetTotal());
+
+        // Single item
+        cart.Prices.Add(50);
+        Console.WriteLine("Single item total: " + cart.GetTotal());
+
+        // Multiple items
+        cart.Prices.AddRange(new double[]{10,20,30});
+        Console.WriteLine("Multiple items total: " + cart.GetTotal());
+    }
+}`,
+            hints: [
+                "Print totals for empty, single, and multiple item carts.",
+                "Use a List<double> to store prices.",
+                "Verify totals using Console.WriteLine."
+            ],
+            solution: `using System;
+using System.Collections.Generic;
+
+public class ShoppingCart {
+    public List<double> Prices = new List<double>();
+    public double GetTotal() {
+        double total = 0;
+        foreach(var price in Prices) total += price;
+        return total;
+    }
+}
+
+public class Program {
+    public static void Main() {
+        ShoppingCart cart = new ShoppingCart();
+        Console.WriteLine(cart.GetTotal()); // 0
+        cart.Prices.Add(50);
+        Console.WriteLine(cart.GetTotal()); // 50
+        cart.Prices.AddRange(new double[]{10,20,30});
+        Console.WriteLine(cart.GetTotal()); // 110
+    }
+}`
+        }
+    ],
     performance: [
         {
-            "id": 301,
-            "title": "Performance Optimize Array Sum",
-            "description": "Sum all even numbers in a large integer array. Current code uses LINQ but is slow for very large arrays. Optimize for performance.",
-            "starterCode": "public int SumEvenNumbers(int[] arr) {\n    return arr.Where(x => x % 2 == 0).Sum();\n}",
-            "solution": "public int SumEvenNumbers(int[] arr) {\n    int sum = 0;\n    foreach(var x in arr) {\n        if(x % 2 == 0) sum += x;\n    }\n    return sum;\n}",
-            "hints": [
+            id: 301,
+            title: "Performance Optimize Array Sum",
+            description: "Sum all even numbers in a large integer array. Current code uses LINQ but is slow for very large arrays. Optimize for performance.",
+            starterCode: `using System;
+using System.Linq;
+
+public class Program {
+    public static void Main() {
+        int[] arr = {1,2,3,4,5,6};
+        Console.WriteLine(SumEvenNumbers(arr)); // 12
+    }
+
+    public static int SumEvenNumbers(int[] arr) {
+        return arr.Where(x => x % 2 == 0).Sum();
+    }
+}`,
+            hints: [
                 "Avoid LINQ for tight loops in performance-critical code.",
                 "Use a single loop with a running total.",
                 "Check modulo operation for even numbers."
             ]
         },
         {
-            "id": 302,
-            "title": "Performance Optimize Fibonacci",
-            "description": "Compute the nth Fibonacci number. The naive recursive solution is very slow for n > 40. Optimize using memoization or iterative approach.",
-            "starterCode": "public int Fibonacci(int n) {\n    if(n <= 1) return n;\n    return Fibonacci(n-1) + Fibonacci(n-2);\n}",
-            "solution": "public int Fibonacci(int n) {\n    if(n <= 1) return n;\n    int a = 0, b = 1;\n    for(int i = 2; i <= n; i++) {\n        int temp = a + b;\n        a = b;\n        b = temp;\n    }\n    return b;\n}",
-            "hints": [
+            id: 302,
+            title: "Performance Optimize Fibonacci",
+            description: "Compute the nth Fibonacci number. The naive recursive solution is very slow for n > 40. Optimize using memoization or iterative approach.",
+            starterCode: `using System;
+
+public class Program {
+    public static void Main() {
+        Console.WriteLine(Fibonacci(10)); // 55
+    }
+
+    public static int Fibonacci(int n) {
+        if(n <= 1) return n;
+        int a = 0, b = 1;
+        for(int i = 2; i <= n; i++) {
+            int temp = a + b;
+            a = b;
+            b = temp;
+        }
+        return b;
+    }
+}`,
+            hints: [
                 "Store previously computed results in a dictionary or array.",
                 "Consider bottom-up iterative computation.",
                 "Avoid naive recursion for large n."
             ]
         },
         {
-            "id": 303,
-            "title": "Performance Optimize String Concatenation",
-            "description": "Concatenating many strings using '+' is slow. Optimize the code using a more efficient method for large n.",
-            "starterCode": "public string ConcatNumbers(int n) {\n    string result = \"\";\n    for(int i = 0; i < n; i++) {\n        result += i.ToString();\n    }\n    return result;\n}",
-            "solution": "public string ConcatNumbers(int n) {\n    var sb = new System.Text.StringBuilder();\n    for(int i = 0; i < n; i++) {\n        sb.Append(i.ToString());\n    }\n    return sb.ToString();\n}",
-            "hints": [
+            id: 303,
+            title: "Performance Optimize String Concatenation",
+            description: "Concatenating many strings using '+' is slow. Optimize the code using a more efficient method for large n.",
+            starterCode: `using System;
+using System.Text;
+
+public class Program {
+    public static void Main() {
+        Console.WriteLine(ConcatNumbers(10)); // 0123456789
+    }
+
+    public static string ConcatNumbers(int n) {
+        var sb = new StringBuilder();
+        for(int i = 0; i < n; i++) {
+            sb.Append(i.ToString());
+        }
+        return sb.ToString();
+    }
+}`,
+            hints: [
                 "Use System.Text.StringBuilder for large concatenations.",
                 "Avoid repeated string copies in loops.",
                 "Append numbers directly to StringBuilder instead of converting each to string individually."

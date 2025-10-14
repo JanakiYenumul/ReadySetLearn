@@ -4,8 +4,9 @@ import Editor from "@monaco-editor/react";
 import javaQuestions from "../questions/javaQuestions";
 import jsQuestions from "../questions/jsQuestions";
 import dotnetQuestions from "../questions/dotnetQuestions";
-// import nodeQuestions from "../questions/nodeQuestions";
+import nodeQuestions from "../questions/nodeQuestions";
 // import sqlQuestions from "../questions/sqlQuestions";
+import pythonQuestions from "../questions/pythonQuestions";
 
 const JUDGE0_API = "https://ce.judge0.com";
 
@@ -13,16 +14,18 @@ const LANGUAGE_MAP = {
   javascript: 63,
   java: 62,
   dotnet: 51,
-  // nodejs: 63,
+  nodejs: 63,
   // sql: 82, 
+  python: 71,
 };
 
 const QUESTIONS_BY_TECH = {
   java: javaQuestions,
   javascript: jsQuestions,
   dotnet: dotnetQuestions,
-  // nodejs: nodeQuestions,
+  nodejs: nodeQuestions,
   // sql: sqlQuestions,
+  python: pythonQuestions, 
 };
 
 export default function InterviewApp() {
@@ -56,7 +59,7 @@ export default function InterviewApp() {
       // Comment style (generic)
       const commentPrefix = "/*";
       const commentSuffix = "*/";
-      const questionAsComment = `${commentPrefix}\n${q?.description}\n${commentSuffix}\n\n`;
+      const questionAsComment = `${commentPrefix}\n${q?.description}\n${commentSuffix}\n`;
 
       setCode(questionAsComment + (q?.starterCode || "// No starter code available"));
       setHint("");
@@ -94,14 +97,23 @@ export default function InterviewApp() {
     return `${m}:${s}`;
   };
 
-  const getHint = () => {
-    if (!selectedQuestion) return setHint("Select a question first.");
-    if (solutionUnlocked) return; // disable hint if solution unlocked
+ const getHint = () => {
+  if (!selectedQuestion) return setHint("Select a question first.");
+  if (solutionUnlocked) return;
 
-    const q = questionsData[category].find((q) => q.title === selectedQuestion);
-    setHint(q?.hint || "No hint available.");
+  const q = questionsData[category].find((q) => q.title === selectedQuestion);
+
+  if (Array.isArray(q?.hints) && hintCount < q.hints.length) {
+    const nextHint = q.hints[hintCount]; 
+    setHint((prev) => (prev ? `${prev}\n\n${nextHint}` : nextHint));
     setHintCount((prev) => prev + 1);
-  };
+  } else if (!Array.isArray(q?.hints)) {
+    setHint(q?.hint || "No hint available.");
+  } else {
+    setHint("No more hints available.");
+  }
+};
+
 
   const handleShowSolution = () => {
     if (!selectedQuestion) return;
@@ -160,6 +172,7 @@ export default function InterviewApp() {
             <option value="java">Java</option>
             <option value="dotnet">DOTNET</option>
             <option value="nodejs">NodeJs</option>
+            <option value="python">Python</option>
             <option value="sql">SQL</option>
           </select>
         </div>
@@ -222,23 +235,64 @@ export default function InterviewApp() {
         <div style={{ display: "flex", flexDirection: "column", minHeight: 0 }}>
           {/* Buttons above Output */}
           <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginBottom: 4 }}>
-            {/* <button onClick={runCode} disabled={loading || timeLeft <= 0}>Run Code</button> */}
-            <button style={{backgroundColor : "rgba(133, 61, 210,1)", color:"white", border:"none"}}onClick={runCode} disabled={loading}>Run Code</button>
+            {/* Run Code Button */}
             <button
-              style={{backgroundColor : "rgba(133, 61, 210, 1)", color:"white"}}
+              onClick={runCode}
+              disabled={loading}
+              style={{
+                backgroundColor: loading ? "grey" : "rgba(133, 61, 210, 1)",
+                color: "white",
+                border: "none",
+                cursor: loading ? "not-allowed" : "pointer",
+                padding: "6px 10px",
+              }}
+            >
+              Run Code
+            </button>
+
+            {/* Get Hint Button */}
+            <button
               onClick={getHint}
               disabled={!selectedQuestion || solutionUnlocked || hintCount >= 3 || timeLeft <= 0}
+              style={{
+                backgroundColor:
+                  !selectedQuestion || solutionUnlocked || hintCount >= 3 || timeLeft <= 0
+                    ? "grey"
+                    : "rgba(133, 61, 210, 1)",
+                color: "white",
+                border: "none",
+                cursor:
+                  !selectedQuestion || solutionUnlocked || hintCount >= 3 || timeLeft <= 0
+                    ? "not-allowed"
+                    : "pointer",
+                padding: "6px 10px",
+              }}
             >
               Get Hint ({3 - hintCount} left)
             </button>
+
+            {/* Get Solution Button */}
             <button
-              style={{backgroundColor : "rgba(133, 61, 210, 1)", color:"white"}}
               onClick={handleShowSolution}
               disabled={!selectedQuestion || (!solutionUnlocked && timeLeft > 0)}
+              style={{
+                backgroundColor:
+                  !selectedQuestion || (!solutionUnlocked && timeLeft > 0)
+                    ? "grey"
+                    : "rgba(133, 61, 210, 1)",
+                color: "white",
+                border: "none",
+                cursor:
+                  !selectedQuestion || (!solutionUnlocked && timeLeft > 0)
+                    ? "not-allowed"
+                    : "pointer",
+                padding: "6px 10px",
+              }}
             >
               Get Solution
             </button>
           </div>
+
 
           {/* Output */}
           <div style={{ flex: 1, overflow: "auto", border: "1px solid #ddd", padding: 5, background: "#fff", marginBottom: 8 }}>
@@ -252,7 +306,7 @@ export default function InterviewApp() {
             {hint && (
               <>
                 <h4>Hint</h4>
-                <pre style={{ textAlign: "left" }}>{hint}</pre>
+                <pre style={{ textAlign: "left", whiteSpace: "pre-wrap" }}>{hint}</pre>
               </>
             )}
             {showSolution && solution && (
