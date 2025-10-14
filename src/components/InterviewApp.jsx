@@ -4,6 +4,8 @@ import Editor from "@monaco-editor/react";
 import javaQuestions from "../questions/javaQuestions";
 import jsQuestions from "../questions/jsQuestions";
 import dotnetQuestions from "../questions/dotnetQuestions";
+// import nodeQuestions from "../questions/nodeQuestions";
+// import sqlQuestions from "../questions/sqlQuestions";
 
 const JUDGE0_API = "https://ce.judge0.com";
 
@@ -11,12 +13,16 @@ const LANGUAGE_MAP = {
   javascript: 63,
   java: 62,
   dotnet: 51,
+  // nodejs: 63,
+  // sql: 82, 
 };
 
 const QUESTIONS_BY_TECH = {
   java: javaQuestions,
   javascript: jsQuestions,
   dotnet: dotnetQuestions,
+  // nodejs: nodeQuestions,
+  // sql: sqlQuestions,
 };
 
 export default function InterviewApp() {
@@ -31,7 +37,7 @@ export default function InterviewApp() {
   const [loading, setLoading] = useState(false);
 
   // Timer
-  const [timeLeft, setTimeLeft] = useState(6);
+  const [timeLeft, setTimeLeft] = useState(1200);
   const timerRef = useRef(null);
 
   // Hint & solution state
@@ -57,9 +63,11 @@ export default function InterviewApp() {
       setSolution(q?.solution || "");
       setShowSolution(false);
       setOutput("");
-      setTimeLeft(6); // reset back to 600
       setHintCount(0);
       setSolutionUnlocked(false);
+
+      const duration = category === "problems" ? 1200 : 300;
+      setTimeLeft(duration);
     }
   };
 
@@ -137,7 +145,7 @@ export default function InterviewApp() {
   return (
     <div style={{ fontFamily: "sans-serif", height: "100vh", display: "flex", flexDirection: "column" }}>
       {/* Navbar */}
-      <nav style={{ background: "#222", color: "#fff", padding: "15px", display: "flex", justifyContent: "space-between", gap: 8 }}>
+      <nav style={{ background: "rgba(133, 61, 210, 1)", color: "#fff", padding: "15px", display: "flex", justifyContent: "space-between", gap: 8 }}>
         <div style={{ fontSize: 20 }}>Ready Set Learn</div>
         <div style={{ display: "flex", gap: 8 }}>
           <select
@@ -151,6 +159,8 @@ export default function InterviewApp() {
             <option value="javascript">JavaScript</option>
             <option value="java">Java</option>
             <option value="dotnet">DOTNET</option>
+            <option value="nodejs">NodeJs</option>
+            <option value="sql">SQL</option>
           </select>
         </div>
       </nav>
@@ -213,14 +223,16 @@ export default function InterviewApp() {
           {/* Buttons above Output */}
           <div style={{ display: "flex", justifyContent: "flex-end", gap: 8, marginBottom: 4 }}>
             {/* <button onClick={runCode} disabled={loading || timeLeft <= 0}>Run Code</button> */}
-            <button onClick={runCode} disabled={loading}>Run Code</button>
+            <button style={{backgroundColor : "rgba(133, 61, 210,1)", color:"white", border:"none"}}onClick={runCode} disabled={loading}>Run Code</button>
             <button
+              style={{backgroundColor : "rgba(133, 61, 210, 1)", color:"white"}}
               onClick={getHint}
               disabled={!selectedQuestion || solutionUnlocked || hintCount >= 3 || timeLeft <= 0}
             >
               Get Hint ({3 - hintCount} left)
             </button>
             <button
+              style={{backgroundColor : "rgba(133, 61, 210, 1)", color:"white"}}
               onClick={handleShowSolution}
               disabled={!selectedQuestion || (!solutionUnlocked && timeLeft > 0)}
             >
@@ -255,4 +267,3 @@ export default function InterviewApp() {
     </div>
   );
 }
- 
