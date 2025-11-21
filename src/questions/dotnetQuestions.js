@@ -2939,6 +2939,36 @@ public class Program {
                 "Consider extracting a helper method for clarity.",
                 "Avoid deeply nested if-statements."
             ]
+        },
+        {
+            id: 104,
+            title: "Optimize the Code",
+            description: "You need to process thousands of CSV-formatted messages per second.The current code parses each message using string.Split(',') and creates an object for each message.How would you optimize this code for high-throughput scenarios?",
+            starterCode: `public class Message
+{
+    public string Id { get; set; }
+    public string Value { get; set; }
+
+    public static Message Parse(string csv)
+    {
+        var parts = csv.Split(',');
+        return new Message { Id = parts[0], Value = parts[1] };
+    }
+}`,
+            solution: `public static Message Parse(string csv)
+{
+    ReadOnlySpan<char> span = csv.AsSpan();
+    int comma = span.IndexOf(',');
+    var id = span.Slice(0, comma).ToString();
+    var value = span.Slice(comma + 1).ToString();
+    return new Message { Id = id, Value = value };
+}`,
+            hints: [
+                "string.Split(',') allocates memory for every message; consider using Span<char> or ReadOnlySpan<char> for zero-allocation parsing",
+                "Avoid unnecessary string allocations and object creation",
+                "Use parallel processing or batching if messages can be processed independently.",
+                "Profile and benchmark different parsing strategies."
+            ]
         }
     ],
     unitTests: [
@@ -3170,14 +3200,264 @@ public class Program {
         }
         return sb.ToString();
     }
-}`,
+        }`,
             hints: [
                 "Use System.Text.StringBuilder for large concatenations.",
                 "Avoid repeated string copies in loops.",
                 "Append numbers directly to StringBuilder instead of converting each to string individually."
             ]
+        },
+        {
+            id: 304,
+            title: "Performance Singleton Pattern",
+            description: "The snippet shows that the performance of getting the Instance is slow. What is the cause of performance degradation? How would you fix it",
+            starterCode: `public static Singleton Instance {
+private Singleton (){}
+
+private static readonly object Lock = new Object();
+
+private static Singleton instance;
+
+public static Singleton instance
+
+{ 
+get
+{ lock (Lock) 
+ { 
+if (instance == null)
+ { 
+instance = new Singleton();
+ }
+ }
+  return instance; 
+  }
+}
+
+public void Log(string message)
+ {
+ Console.WriteLine($"[{DateTime.Now}] {message}");
+  }
+  }
+   // Usage example
+    public class Program
+     {
+     public static void Main() 
+     { 
+     Parallel.For(0, 10, i =>
+{
+         Logger.Instance.Log($"Log message {i}"); 
+         }); 
+         }
+          }`,
+            hints: [
+                "The lock is acquired every time Instance is accessed, even after the singleton is initialized.",
+                "This causes unnecessary contention and slows down access in multi-threaded scenarios.",
+                "Use double-checked locking so the lock is only acquired when the instance is not yet created.",
+                "Consider using Lazy<T> or static initialization for thread-safe singletons in C#."
+            ],
+              solution: `public class Singleton
+{
+    private Singleton() {}
+
+    private static readonly object Lock = new object();
+    private static Singleton instance;
+
+    public static Singleton Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                lock (Lock)
+                {
+                    if (instance == null)
+                        instance = new Singleton();
+                }
+            }
+            return instance;
         }
+    }
+
+    public void Log(string message)
+    {
+        Console.WriteLine($"[{DateTime.Now}] {message}");
+    }
+}`
+        },
+        {
+            id: 305,
+            title: "Performance Microservices",
+            description: "The following code uses a microservice to retrieve a list of companies' data. While profiling the code, we have observed that the microservice is being called multiple times when `GetReportableCompanies` is invoked.",
+            starterCode: `public class CompanyInfo
+{
+public Guid Id { get; set; }
+public string Name { get; set; }
+public string Description { get; set; }
+public bool IsVip { get; set; }
+}
+public class CompanyService
+{
+private const int MaxReportableCompanies = 100;
+private readonly HttpClient _httpClient;
+public CompanyService(HttpClient httpClient)
+{
+_httpClient = httpClient;
+}
+public IEnumerable<CompanyInfo> GetReportableCompanies()
+{
+var companies = GetCompanyInfoList();
+if (!companies.Any()) return Array.Empty<CompanyInfo>();
+var vipCompanies = companies.Where(c => c.IsVip);
+if (vipCompanies.Count() > MaxReportableCompanies)
+{
+return vipCompanies.Take(MaxReportableCompanies);
+}
+var nonVipReportableCompanies = companies
+.Where(c => !c.IsVip)
+.Where(c => c.Description.Contains("REPORT"));
+return vipCompanies.Concat(nonVipReportableCompanies.Take(MaxReportableCompanies - vipCompanies.Count()));
+}
+private List<CompanyInfo> GetCompanyInfoList()
+{
+var text = _httpClient.GetStringAsync("/").Result;
+var csvLines = text.Split(Environment.NewLine);
+foreach (var csvLine in csvLines)
+{
+yield return ParseCompanyInfo(csvLine);
+}
+}
+private static CompanyInfo ParseCompanyInfo(string csvLine)
+{
+var parts = csvLine.Split(',');
+return new CompanyInfo
+{
+Id = Guid.Parse(parts[0]),
+Name = parts[1],
+Description = parts[2],
+IsVip = bool.Parse(parts[3])
+};
+}
+}`,
+            hints: [
+                "The method GetCompanyInfoList() calls the microservice every time it's invoked, which can lead to multiple network requests in GetReportableCompanies().",
+                "Using .Result on an async method can cause blocking and deadlocks; prefer await with async methods.",
+                "Refactor to fetch the company list once, cache the result, and use async/await for non-blocking calls.",
+                "Consider changing GetReportableCompanies to be async and return Task<IEnumerable<CompanyInfo>>.",
+                "Use ToList() to materialize the collection after fetching to avoid multiple enumerations.",
+                "Parse all company data in one pass then filter as needed."
+            ],
+            solution : `using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+
+public class CompanyInfo
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public bool IsVip { get; set; }
+}
+
+public class CompanyService
+{
+    private const int MaxReportableCompanies = 100;
+    private readonly HttpClient _httpClient;
+
+    public CompanyService(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
+
+    public async Task<IEnumerable<CompanyInfo>> GetReportableCompaniesAsync()
+    {
+        var companies = await GetCompanyInfoListAsync();
+        if (!companies.Any()) return Array.Empty<CompanyInfo>();
+
+        var vipCompanies = companies.Where(c => c.IsVip).ToList();
+        if (vipCompanies.Count > MaxReportableCompanies)
+        {
+            return vipCompanies.Take(MaxReportableCompanies);
+        }
+
+        var nonVipReportableCompanies = companies
+            .Where(c => !c.IsVip)
+            .Where(c => c.Description.Contains("REPORT"))
+            .ToList();
+
+        return vipCompanies.Concat(
+            nonVipReportableCompanies.Take(MaxReportableCompanies - vipCompanies.Count)
+        );
+    }
+
+    private async Task<List<CompanyInfo>> GetCompanyInfoListAsync()
+    {
+        var text = await _httpClient.GetStringAsync("/");
+        var csvLines = text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+        var result = new List<CompanyInfo>();
+        foreach (var csvLine in csvLines)
+        {
+            result.Add(ParseCompanyInfo(csvLine));
+        }
+        return result;
+    }
+
+    private static CompanyInfo ParseCompanyInfo(string csvLine)
+    {
+        var parts = csvLine.Split(',');
+        return new CompanyInfo
+        {
+            Id = Guid.Parse(parts[0]),
+            Name = parts[1],
+            Description = parts[2],
+            IsVip = bool.Parse(parts[3])
+        };
+    }
+}`
+        },
+        {
+            id: 306,
+            title: "Implementing a thread-safe counter",
+            description: "You are implementing a thread-safe counter using Interlocked.Increment and Interlocked.Decrement.However, sometimes your code throws a NullReferenceException.Why does this happen, and how can you fix it",
+            starterCode: `public class Counter
+{
+    public int? Value = 0;
+
+    public void Increment()
+    {
+        Interlocked.Increment(ref Value);
+    }
+
+    public void Decrement()
+    {
+        Interlocked.Decrement(ref Value);
+    }
+}`,
+            hints: [
+                "Interlocked.Increment and Interlocked.Decrement require a reference to a non-null variable.",
+                "Nullable types (int?) are not supported by Interlocked methods.",
+                "Use a non-nullable int for the counter field"
+            ],
+            solution: `public class Counter
+{
+    public int Value = 0; // FIX: Use non-nullable int
+
+    public void Increment()
+    {
+        Interlocked.Increment(ref Value);
+    }
+
+    public void Decrement()
+    {
+        Interlocked.Decrement(ref Value);
+    }
+}`
+        }
+        
     ]
+  
 };
 
 export default dotnetQuestions;
+
