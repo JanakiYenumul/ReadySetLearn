@@ -437,6 +437,81 @@ public class DiscountApp {
     }
 }
       `
+    },
+    {
+      id: 3,
+      title: "Singleton Pattern Refactor",
+      description: `
+Analyze the code and suggest way to control creation of multiple instances in the singleton class..
+      `,
+      starterCode: `
+      public class GameBoard {
+
+    private static GameBoard gameBoard;
+
+    private GameBoard() {}
+
+    public static GameBoard getGameBoard() {  //Answer: public static synchronized GameBoard getGameBoard()
+        if (gameBoard == null) {
+            gameBoard = new GameBoard();
+        }
+        return gameBoard;
+    }
+}
+      `,
+      hints: [
+        "The current code can create multiple instances if accessed by multiple threads at the same time.",
+        "To make the singleton thread-safe, synchronize the method that returns the instance",
+        "Use the synchronized keyword in the method signature to prevent concurrent access.",
+        "Alternatively, you can use other thread-safe singleton patterns (like double-checked locking or static initialization)."
+      ],
+      solution: `
+public class GameBoard {
+
+    private static GameBoard gameBoard;
+
+    private GameBoard() {}
+
+    public static synchronized GameBoard getGameBoard() {
+        if (gameBoard == null) {
+            gameBoard = new GameBoard();
+        }
+        return gameBoard;
+    }
+}
+      `
+    },
+    {
+      id: 4,
+      title: "HashMap scenario, when the key will be null",
+      description: `
+Write code to demonstrate storing and retrieving a value using a null key
+      `,
+      starterCode: `
+      import java.util.HashMap;
+
+public class HashMapNullKeyErrorDemo {
+    public static void main(String[] args) {
+        HashMap<int, String> map = new HashMap<>();
+         map.put(null, "Value"); // Compile-time error: int cannot be null
+    }
+}
+      `,
+      hints: [
+        "Primitive types (like int) cannot be null.",
+        "Only object types (like Integer, String) can be assigned null.",
+        "Java's HashMap allows one null key if the key type is an object."
+      ],
+      solution: `import java.util.HashMap;
+
+public class HashMapNullKeyDemo {
+    public static void main(String[] args) {
+        HashMap<Integer, String> map = new HashMap<>();
+        map.put(null, "NullKeyValue");
+        System.out.println("Value for null key: " + map.get(null)); // Output: NullKeyValue
+    }
+}
+      `
     }
   ],
 
