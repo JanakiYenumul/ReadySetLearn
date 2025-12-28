@@ -2971,52 +2971,36 @@ class Solution
     /// </summary>
     /// <param name="songTimes">Array of [songName, duration] pairs</param>
     /// <returns>Array with two song names, or empty array if no pair found</returns>
-    static string[] FindPair(string[][] songTimes)
-    {
-        // Convert time string "M:SS" to seconds
-        int TimeToSeconds(string timeStr)
-        {
-            var parts = timeStr.Split(':');
-            int minutes = int.Parse(parts[0]);
-            int seconds = int.Parse(parts[1]);
-            return minutes * 60 + seconds;
+  static int ParseTimeToSeconds(string timeStr) {
+    var parts = timeStr.Split(':');
+    int minutes = int.Parse(parts[0]);
+    int seconds = int.Parse(parts[1]);
+    return minutes * 60 + seconds;
+}
+
+static string[] FindPair(string[][] songTimes) {
+    const int TARGET = 7 * 60; // 420 seconds
+    var seen = new Dictionary<int, int>(); // seconds -> index
+
+    for (int i = 0; i < songTimes.Length; i++) {
+        var title = songTimes[i][0];
+        var timeStr = songTimes[i][1];
+        int secs = ParseTimeToSeconds(timeStr);
+        int need = TARGET - secs;
+
+        if (seen.ContainsKey(need)) {
+            // return names of the two songs (distinct by index)
+            return new string[] { songTimes[seen[need]][0], title };
         }
 
-        // Create a map of duration -> song name for O(n) lookup
-        var durationMap = new Dictionary<int, string>();
-        
-        foreach (var song in songTimes)
-        {
-            int durationInSeconds = TimeToSeconds(song[1]);
-            durationMap[durationInSeconds] = song[0];
-        }
-
-        // Target is 7 minutes = 420 seconds
-        const int TARGET = 420;
-
-        // Find the pair
-        foreach (var song in songTimes)
-        {
-            int durationInSeconds = TimeToSeconds(song[1]);
-            int complementDuration = TARGET - durationInSeconds;
-
-            // Check if complement exists and is not the same song
-            if (durationMap.ContainsKey(complementDuration))
-            {
-                string complementSongName = durationMap[complementDuration];
-                
-                // Ensure we're not pairing a song with itself (distinct songs)
-                if (complementSongName != song[0])
-                {
-                    return new string[] { song[0], complementSongName };
-                }
-            }
-        }
-
-        return new string[] { };
+        // store first occurrence of this duration
+        if (!seen.ContainsKey(secs)) seen[secs] = i;
     }
 
-    static void Main(string[] args)
+    return new string[0]; // no pair found
+}
+
+static void Main(string[] args)
     {
         var songTimes1 = new string[][]
         {
@@ -3091,7 +3075,8 @@ class Solution
         Console.WriteLine("Test 5: " + string.Join(", ", FindPair(songTimes5))); // Celebration Day, Going to California
         Console.WriteLine("Test 6: " + string.Join(", ", FindPair(songTimes6))); // Day and night, Tempo song
     }
-}`
+}
+`
         }
     ],
     refactor: [
