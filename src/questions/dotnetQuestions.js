@@ -3,12 +3,7 @@ const dotnetQuestions = {
         {
             id: 1,
             title: "Q1 : Fix the Bug in LogEntry",
-            description: `using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-
-/*
+            description: `/*
 We are writing software to analyze logs for toll booths on a highway. This highway is a divided highway with limited access; the only way on to or off of the highway is through a toll booth.
 
 There are three types of toll booths:
@@ -40,7 +35,6 @@ For our first task:
 1:2) The tests are not passing due to a bug in the code. Make the necessary changes to LogEntry to fix the bug.
 `,
 
-            // STARTER: Judge0-friendly, self-contained, compiles — but has the original bug:
             starterCode: `using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -48,7 +42,6 @@ using System.IO;
 
 public class LogEntry
 {
-    // NOTE: this is intentionally the buggy (original) version: Timestamp stored as string
     public string Timestamp { get; private set; }
     public string LicensePlate { get; private set; }
     public string BoothType { get; private set; }
@@ -57,9 +50,8 @@ public class LogEntry
 
     public LogEntry(string logLine)
     {
-        // use char overload for compatibility
         string[] tokens = logLine.Split(' ');
-        Timestamp = tokens[0]; // bug: should be numeric in tests
+        Timestamp = tokens[0]; 
         LicensePlate = tokens[1];
         BoothType = tokens[3];
         Location = int.Parse(tokens[2].Substring(0, tokens[2].Length - 1));
@@ -91,7 +83,6 @@ public class LogFile : List<LogEntry>
 
 public class Solution
 {
-    // simple assert helper that throws on failure so Judge0 shows a runtime error when tests fail
     private static void AssertEqual(object actual, object expected, string name)
     {
         if (!object.Equals(actual, expected))
@@ -108,10 +99,8 @@ public class Solution
 
     public static void TestLogEntry()
     {
-        // in-memory test lines (no external file) so this runs on Judge0
         string logLine = "44776.619 KTB918 310E MAINROAD";
         LogEntry logEntry = new LogEntry(logLine);
-        // THESE ASSERTIONS MATCH THE ORIGINAL PROBLEM — the first check will fail here because Timestamp is string
         AssertEqual(logEntry.Timestamp, 44776.619, "Timestamp");
         AssertEqual(logEntry.LicensePlate, "KTB918", "LicensePlate");
         AssertEqual(logEntry.Location, 310, "Location");
@@ -129,7 +118,6 @@ public class Solution
 
     public static void Main()
     {
-        // Running the tests; starter is expected to fail on the timestamp assert
         TestLogEntry();
         Console.WriteLine("All tests passed.");
     }
@@ -140,7 +128,6 @@ public class Solution
                 "Remove nullable reference syntax (e.g. `string?`) and avoid reading external files — Judge0 runs code in a sandbox with no extra files."
             ],
 
-            // SOLUTION: Judge0-ready, self-contained, fixes Timestamp to double so tests pass
             solution: `using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -233,11 +220,7 @@ public class Solution
         {
             id: 4,
             title: "Q2 :Fix the Bug in LogEntry (File + Timestamp)",
-            description: `using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-
+            description: `
 /*
 We are writing software to analyze logs for toll booths on a highway. This highway is a divided highway with limited access; the only way on to or off of the highway is through a toll booth.
 
@@ -245,8 +228,6 @@ There are three types of toll booths:
 * ENTRY (E in the diagram) toll booths, where a car goes through a booth as it enters the highway.
 * EXIT (X in the diagram) toll booths, where a car goes through a booth as it exits the highway.
 * MAINROAD (M in the diagram), which have sensors that record a license plate as a car drives through at full speed.
-
-
 
 For this task:
 1-1) Read through and understand the code and comments below. Feel free to run the code and tests.
@@ -260,7 +241,6 @@ using System.IO;
 
 public class LogEntry
 {
-    // BUG: Timestamp stored as string
     public string Timestamp { get; private set; }
     public string LicensePlate { get; private set; }
     public string BoothType { get; private set; }
@@ -270,7 +250,7 @@ public class LogEntry
     public LogEntry(string logLine)
     {
         string[] tokens = logLine.Split(' ');
-        Timestamp = tokens[0]; // bug: should be numeric
+        Timestamp = tokens[0]; 
         LicensePlate = tokens[1];
         BoothType = tokens[3];
         Location = int.Parse(tokens[2].Substring(0, tokens[2].Length - 1));
@@ -289,8 +269,7 @@ public class LogEntry
 
 public class LogFile : List<LogEntry>
 {
-    // reads lines into LogEntry objects
-    public LogFile(StringReader sr)
+     public LogFile(StringReader sr)
     {
         string line;
         while ((line = sr.ReadLine()) != null)
@@ -320,7 +299,6 @@ public class Solution
     {
         string logLine = "44776.619 KTB918 310E MAINROAD";
         LogEntry logEntry = new LogEntry(logLine);
-        // this will fail (string vs double)
         AssertEqual(logEntry.Timestamp, 44776.619, "Timestamp");
         AssertEqual(logEntry.LicensePlate, "KTB918", "LicensePlate");
         AssertEqual(logEntry.Location, 310, "Location");
@@ -500,16 +478,8 @@ using System.Threading.Tasks;
 
 class Program
 {
-    static async Task Main()
+   static void Main(string[] args)
     {
-        var url = "https://public.karat.io/content/referrals_4.txt";
-        using (var client = new HttpClient())
-        {
-            var text = await client.GetStringAsync(url);
-            var firstLine = text.Split('\\n')[0].Trim();
-            var result = ExtractDomains(firstLine);
-            Console.WriteLine($"[\\"{result[0]}\\", \\"{result[1]}\\"]");
-        }
     }
 
     static string[] ExtractDomains(string url)
@@ -580,7 +550,6 @@ Tasks:
 2. The test for StockCollection is not passing due to a bug in the code. Make the necessary changes to StockCollection to fix the bug.`,
             starterCode: `using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Diagnostics;
 
 public class Stock
@@ -1300,8 +1269,7 @@ public class Workout
 public class Membership
 {
     private List<Member> members;
-    // TODO: Add dictionary to store member workouts
-    public Membership()
+   public Membership()
     {
         members = new List<Member>();
     }
@@ -1447,11 +1415,7 @@ public class Program
         {
             id: 5,
             title: "Q7 :Count Complete Journeys in Toll Log",
-            description: `using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-
+            description: `
 /*
 We are writing software to analyze logs for toll booths on a highway. This highway is a divided highway with limited access; the only way on to or off of the highway is through a toll booth.
 
@@ -1459,8 +1423,6 @@ There are three types of toll booths:
 * ENTRY (E in the diagram) toll booths, where a car goes through a booth as it enters the highway.
 * EXIT (X in the diagram) toll booths, where a car goes through a booth as it exits the highway.
 * MAINROAD (M in the diagram), which have sensors that record a license plate as a car drives through at full speed.
-
-
 
 We are interested in how many people are using the highway, and so we would like to count how many complete journeys are taken in the log file.
 
@@ -1662,40 +1624,12 @@ public class Solution
 {
     public static List<string> filter_rooms(string[][] instructions, string[] treasureRooms)
     {
-        HashSet<string> treasure = new HashSet<string>(treasureRooms);
-        Dictionary<string, List<string>> source = new Dictionary<string, List<string>>();
-        Dictionary<string, string> nextRooms = new Dictionary<string,string>();
-
-        foreach(var inst in instructions)
-        {
-            string src = inst[0], dst = inst[1];
-            if(!source.ContainsKey(dst))
-            {
-                source[dst] = new List<string>();
-            }
-            // BUG: adding self references
-            source[dst].Add(src);
-            nextRooms[src] = dst;
-        }
-
-        List<string> result = new List<string>();
-        foreach(var room in source.Keys)
-        {
-            if(source[room].Count >= 2)
-            {
-                string nextTresRoom = nextRooms.ContainsKey(room) ? nextRooms[room] : null;
-                if(nextTresRoom != null && treasure.Contains(nextTresRoom))
-                {
-                    result.Add(room);
-                }
-            }
-        }
-        return result;
+     //TODO
     }
 
     public static void Main()
     {
-        string[][] instructions_1 = new string[][] {
+     string[][] instructions_1 = new string[][] {
             new string[] {"jasmin", "tulip"},
             new string[] {"lily", "tulip"},
             new string[] {"tulip", "tulip"},
@@ -1705,10 +1639,20 @@ public class Solution
             new string[] {"daisy", "violet"},
             new string[] {"iris", "violet"}
         };
-        string[] treasure_rooms_1 = new string[] {"lily", "tulip", "violet", "rose"};
+        string[][] instructions_2 = new string[][] {
+            new string[] {"jasmin", "tulip"},
+            new string[] {"lily", "tulip"},
+            new string[] {"tulip", "violet"},
+            new string[] {"violet", "violet"}
+        };
 
-        var res = filter_rooms(instructions_1, treasure_rooms_1);
-        Console.WriteLine(string.Join(", ", res)); // BUG: may include "tulip" incorrectly
+        string[] treasure_rooms_1 = new string[] {"lily", "tulip", "violet", "rose"};
+        string[] treasure_rooms_2 = new string[] {"lily", "jasmin", "violet"};  
+        string[] treasure_rooms_3 = new string[] {"violet"};
+
+        Console.WriteLine(string.Join(", ", filter_rooms(instructions_1, treasure_rooms_1)));  
+        Console.WriteLine(string.Join(", ", filter_rooms(instructions_1, treasure_rooms_2)));  
+        Console.WriteLine(string.Join(", ", filter_rooms(instructions_2, treasure_rooms_3)));   
     }
 }`,
 
@@ -1731,7 +1675,6 @@ public class Solution
             {
                 source[dst] = new List<string>();
             }
-             FIX: exclude self references when counting
             if(src != dst)
                 source[dst].Add(src);
 
@@ -1776,9 +1719,9 @@ public class Solution
         string[] treasure_rooms_2 = new string[] {"lily", "jasmin", "violet"};  
         string[] treasure_rooms_3 = new string[] {"violet"};
 
-        Console.WriteLine(string.Join(", ", filter_rooms(instructions_1, treasure_rooms_1)));  tulip, violet
+        Console.WriteLine(string.Join(", ", filter_rooms(instructions_1, treasure_rooms_1)));  
         Console.WriteLine(string.Join(", ", filter_rooms(instructions_1, treasure_rooms_2)));  
-        Console.WriteLine(string.Join(", ", filter_rooms(instructions_2, treasure_rooms_3)));  tulip
+        Console.WriteLine(string.Join(", ", filter_rooms(instructions_2, treasure_rooms_3)));  
     }
 }`,
 
@@ -2363,31 +2306,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 class Solution {
-    static List<int> Destinations(string[] teleporters, int dieSides, int start, int N) {
-        var teleporterMap = new Dictionary<int, int>();
-        foreach (var t in teleporters) {
-            var parts = t.Split(',');
-            int from = int.Parse(parts[0]);
-            int to = int.Parse(parts[1]);
-            teleporterMap[from] = to;
-        }
-
-        var result = new HashSet<int>();
-
-        // BUGGY: Does not correctly handle edge cases
-        for (int roll = 1; roll <= dieSides; roll++) {
-            int pos = start + roll;
-            if (pos > N) continue;
-            if (teleporterMap.ContainsKey(pos)) {
-                // Incorrect handling: might apply multiple teleports if chained
-                pos = teleporterMap[pos];
-            }
-            result.Add(pos);
-        }
-
-        return result.ToList();
-    }
-
+  
     static void Main(string[] args) {
         var teleporters1 = new string[] {"3,1", "4,2", "5,10"};
         var result = Destinations(teleporters1, 6, 0, 12);
@@ -2503,74 +2422,53 @@ Complexity variables:
             starterCode: `using System;
 using System.Collections.Generic;
 using System.Linq;
-
 class Solution {
-    static int[] BestDayToCross(int[] baseAltitudes, int[][] forecast) {
-        int days = forecast.Length;
-        int n = baseAltitudes.Length;
-        int[] snow = new int[n];
-        int[] lastSnow = new int[n];
-        Array.Fill(lastSnow, -2);
-
-        int bestDay = -1;
-        int minClimbs = int.MaxValue;
-
-        for (int day = 0; day < days; day++) {
-            // Add snowfall
-            for (int i = 0; i < n; i++) {
-                if (forecast[day][i] > 0) {
-                    snow[i] += forecast[day][i];
-                    lastSnow[i] = day;
-                }
-            }
-
-            // BUGGY: melting is not applied correctly
-            for (int i = 0; i < n; i++) {
-                if (day - lastSnow[i] >= 2 && snow[i] > 0) {
-                    snow[i]--; // might under-melt or over-melt
-                }
-            }
-
-            // Build current profile
-            int[] profile = new int[n];
-            for (int i = 0; i < n; i++) {
-                profile[i] = baseAltitudes[i] + snow[i];
-            }
-
-            int climbs = CalculateClimbs(profile);
-
-            if (climbs >= 0 && climbs < minClimbs) {
-                minClimbs = climbs;
-                bestDay = day;
-            }
-        }
-
-        if (bestDay == -1) return new int[] {-1, -1};
-        return new int[] {bestDay, minClimbs};
-    }
-
-    // Simplified climb check (BUGGY: may miscount climbs)
-    static int CalculateClimbs(int[] profile) {
-        int climbs = 0;
-        for (int i = 1; i < profile.Length; i++) {
-            int diff = Math.Abs(profile[i] - profile[i-1]);
-            if (diff > 1) return -1;
-            if (profile[i] > profile[i-1]) climbs++;
-        }
-        return climbs;
-    }
-
-    static void Main(string[] args) {
+    static void Main(String[] args) {
         int[] altitudes_1 = new int[] {0, 1, 2, 1};
         int[][] snow_1 = new int[][] {
             new int[] {1, 0, 1, 0},
             new int[] {0, 0, 0, 0},
             new int[] {1, 1, 0, 2}
         };
-        var result = BestDayToCross(altitudes_1, snow_1);
-        Console.WriteLine(string.Join(", ", result));
-    }
-}`,
+
+        int[] altitudes_2 = new int[] {0, 0, 0, 0};
+        int[][] snow_2 = new int[][] {
+            new int[] {2, 2, 2, 2},
+            new int[] {1, 0, 0, 0},
+            new int[] {1, 0, 0, 0}
+        };
+
+        int[] altitudes_3 = new int[] {0, 0, 0, 1};
+        int[][] snow_3 = new int[][] {
+            new int[] {0, 0, 2, 0},
+            new int[] {1, 1, 0, 0},
+            new int[] {0, 0, 0, 0},
+            new int[] {1, 1, 1, 0}
+        };
+
+        int[] altitudes_4 = new int[] {0, 1, 2, 0};
+        int[][] snow_4 = new int[][] {
+            new int[] {1, 0, 0, 0},
+            new int[] {0, 1, 0, 0}
+        };
+
+        int[] altitudes_5 = new int[] {0, 0, 0};
+        int[][] snow_5 = new int[][] {
+            new int[] {5, 5, 0},
+            new int[] {0, 0, 0},
+            new int[] {0, 0, 0},
+            new int[] {0, 0, 0},
+            new int[] {0, 0, 0},
+            new int[] {0, 0, 0}
+        };
+
+        int[] altitudes_6 = new int[] {0, 0, 0, 0, 0};
+        int[][] snow_6 = new int[][] {
+            new int[] {2, 1, 2, 1, 2}
+        };
+        
+        }
+    }`,
             solution: `using System;
 using System.Collections.Generic;
 using System.Linq;
