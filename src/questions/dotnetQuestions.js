@@ -3181,57 +3181,96 @@ public class Program
     ],
     unitTests: [
         {
-            id: 201,
-            title: "Test Calculator Methods",
-            description: "You have a simple Calculator class. Run some tests to verify its Add and Divide methods, including handling division by zero.",
-            starterCode: `using System;
+    id: 201,
+    title: "Test Calculator Methods",
+    description: "You have a simple Calculator class. The current test code incorrectly verifies the divide-by-zero scenario as a normal value. Update the tests so that the exception case is validated correctly.",
+    starterCode: `using System;
 
-public class Calculator {
+public class Calculator
+{
     public int Add(int a, int b) => a + b;
     public int Divide(int a, int b) => a / b;
 }
 
-public class Program {
-    public static void Main() {
+public class Program
+{
+    public static void Main()
+    {
         Calculator calc = new Calculator();
 
-        // Test Add
-        Console.WriteLine("Add(2,3) = " + calc.Add(2,3));
-        Console.WriteLine("Add(-2,1) = " + calc.Add(-2,1));
+        Console.WriteLine("---- Running tests (Problem Code) ----");
 
-        // Test Divide
-        Console.WriteLine("Divide(4,2) = " + calc.Divide(4,2));
+        AssertEqual(5, calc.Add(2, 3), "Add(2,3)");
+        AssertEqual(-1, calc.Add(-2, 1), "Add(-2,1)");
+        AssertEqual(2, calc.Divide(4, 2), "Divide(4,2)");
 
-        try {
-            Console.WriteLine("Divide(5,0) = " + calc.Divide(5,0));
-        } catch (DivideByZeroException) {
-            Console.WriteLine("Divide(5,0) throws DivideByZeroException");
-        }
+        // ❌ WRONG test: exception case is tested like a normal value
+        // Program will crash here
+        AssertEqual(0, calc.Divide(5, 0), "Divide(5,0)");
+    }
+
+    private static void AssertEqual(int expected, int actual, string testName)
+    {
+        if (expected == actual)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName +
+                              " expected=" + expected +
+                              " actual=" + actual);
     }
 }`,
-            hints: [
-                "Use try-catch to handle divide by zero exceptions.",
-                "Test both positive and negative numbers.",
-                "Print outputs using Console.WriteLine to verify results."
-            ],
-            solution: `using System;
+    hints: [
+        "Division by zero throws an exception, it should not be tested like a normal return value.",
+        "Create a separate assertion method for exception cases.",
+        "Use try-catch to validate that DivideByZeroException is thrown."
+    ],
+    solution: `using System;
 
-public class Calculator {
+public class Calculator
+{
     public int Add(int a, int b) => a + b;
     public int Divide(int a, int b) => a / b;
 }
 
-public class Program {
-    public static void Main() {
+public class Program
+{
+    public static void Main()
+    {
         Calculator calc = new Calculator();
-        Console.WriteLine(calc.Add(2,3)); // 5
-        Console.WriteLine(calc.Add(-2,1)); // -1
-        Console.WriteLine(calc.Divide(4,2)); // 2
-        try { Console.WriteLine(calc.Divide(5,0)); } 
-        catch (DivideByZeroException) { Console.WriteLine("DivideByZeroException"); }
+
+        Console.WriteLine("---- Running tests (Solution Code) ----");
+
+        AssertEqual(5, calc.Add(2, 3), "Add(2,3)");
+        AssertEqual(-1, calc.Add(-2, 1), "Add(-2,1)");
+        AssertEqual(2, calc.Divide(4, 2), "Divide(4,2)");
+
+        AssertThrowsDivideByZero(calc, "Divide(5,0)");
+    }
+
+    private static void AssertEqual(int expected, int actual, string testName)
+    {
+        if (expected == actual)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName +
+                              " expected=" + expected +
+                              " actual=" + actual);
+    }
+
+    private static void AssertThrowsDivideByZero(Calculator calc, string testName)
+    {
+        try
+        {
+            calc.Divide(5, 0);
+            Console.WriteLine("FAIL : " + testName + " (exception expected)");
+        }
+        catch (DivideByZeroException)
+        {
+            Console.WriteLine("PASS : " + testName + " (DivideByZeroException)");
+        }
     }
 }`
-        },
+},
         {
             id: 202,
             title: "Test Email Validation",
