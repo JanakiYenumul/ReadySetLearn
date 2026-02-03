@@ -3527,72 +3527,12 @@ public class Program
 }`
 },
         {
-            id: 305,
-            title: "Performance Microservices",
-            description: "The following code uses a microservice to retrieve a list of companies' data. While profiling the code, we have observed that the microservice is being called multiple times when `GetReportableCompanies` is invoked.",
-            starterCode: `public class CompanyInfo
-{
-public Guid Id { get; set; }
-public string Name { get; set; }
-public string Description { get; set; }
-public bool IsVip { get; set; }
-}
-public class CompanyService
-{
-private const int MaxReportableCompanies = 100;
-private readonly HttpClient _httpClient;
-public CompanyService(HttpClient httpClient)
-{
-_httpClient = httpClient;
-}
-public IEnumerable<CompanyInfo> GetReportableCompanies()
-{
-var companies = GetCompanyInfoList();
-if (!companies.Any()) return Array.Empty<CompanyInfo>();
-var vipCompanies = companies.Where(c => c.IsVip);
-if (vipCompanies.Count() > MaxReportableCompanies)
-{
-return vipCompanies.Take(MaxReportableCompanies);
-}
-var nonVipReportableCompanies = companies
-.Where(c => !c.IsVip)
-.Where(c => c.Description.Contains("REPORT"));
-return vipCompanies.Concat(nonVipReportableCompanies.Take(MaxReportableCompanies - vipCompanies.Count()));
-}
-private List<CompanyInfo> GetCompanyInfoList()
-{
-var text = _httpClient.GetStringAsync("/").Result;
-var csvLines = text.Split(Environment.NewLine);
-foreach (var csvLine in csvLines)
-{
-yield return ParseCompanyInfo(csvLine);
-}
-}
-private static CompanyInfo ParseCompanyInfo(string csvLine)
-{
-var parts = csvLine.Split(',');
-return new CompanyInfo
-{
-Id = Guid.Parse(parts[0]),
-Name = parts[1],
-Description = parts[2],
-IsVip = bool.Parse(parts[3])
-};
-}
-}`,
-            hints: [
-                "The method GetCompanyInfoList() calls the microservice every time it's invoked, which can lead to multiple network requests in GetReportableCompanies().",
-                "Using .Result on an async method can cause blocking and deadlocks; prefer await with async methods.",
-                "Refactor to fetch the company list once, cache the result, and use async/await for non-blocking calls.",
-                "Consider changing GetReportableCompanies to be async and return Task<IEnumerable<CompanyInfo>>.",
-                "Use ToList() to materialize the collection after fetching to avoid multiple enumerations.",
-                "Parse all company data in one pass then filter as needed."
-            ],
-            solution : `using System;
+    id: 305,
+    title: "Performance Microservices",
+    description: "The following code uses a microservice to retrieve a list of companies' data. While profiling the code, we observed that the microservice is effectively used multiple times because the result is re-enumerated several times. Identify the performance issue and fix it so the microservice result is fetched and enumerated only once.",
+    starterCode: `using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 public class CompanyInfo
 {
@@ -3600,6 +3540,22 @@ public class CompanyInfo
     public string Name { get; set; }
     public string Description { get; set; }
     public bool IsVip { get; set; }
+}
+
+/* --------------------------------------------------
+   Fake HttpClient for old compiler
+-------------------------------------------------- */
+public class HttpClient
+{
+    public string GetString(string url)
+    {
+        Console.WriteLine("Microservice called...");
+
+        return
+            Guid.NewGuid() + ",A,REPORT COMPANY,true" + Environment.NewLine +
+            Guid.NewGuid() + ",B,NORMAL,false" + Environment.NewLine +
+            Guid.NewGuid() + ",C,REPORT,false";
+    }
 }
 
 public class CompanyService
@@ -3612,42 +3568,46 @@ public class CompanyService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<CompanyInfo>> GetReportableCompaniesAsync()
+    public IEnumerable<CompanyInfo> GetReportableCompanies()
     {
-        var companies = await GetCompanyInfoListAsync();
-        if (!companies.Any()) return Array.Empty<CompanyInfo>();
+        var companies = GetCompanyInfoList();
 
-        var vipCompanies = companies.Where(c => c.IsVip).ToList();
-        if (vipCompanies.Count > MaxReportableCompanies)
+        if (!companies.Any()) return new CompanyInfo[0];
+
+        var vipCompanies = companies.Where(c => c.IsVip);
+
+        if (vipCompanies.Count() > MaxReportableCompanies)
         {
             return vipCompanies.Take(MaxReportableCompanies);
         }
 
         var nonVipReportableCompanies = companies
             .Where(c => !c.IsVip)
-            .Where(c => c.Description.Contains("REPORT"))
-            .ToList();
+            .Where(c => c.Description.Contains("REPORT"));
 
         return vipCompanies.Concat(
-            nonVipReportableCompanies.Take(MaxReportableCompanies - vipCompanies.Count)
-        );
+            nonVipReportableCompanies.Take(
+                MaxReportableCompanies - vipCompanies.Count()));
     }
 
-    private async Task<List<CompanyInfo>> GetCompanyInfoListAsync()
+    private IEnumerable<CompanyInfo> GetCompanyInfoList()
     {
-        var text = await _httpClient.GetStringAsync("/");
-        var csvLines = text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-        var result = new List<CompanyInfo>();
+        var text = _httpClient.GetString("/");
+
+        var csvLines = text.Split(
+            new[] { Environment.NewLine },
+            StringSplitOptions.None);
+
         foreach (var csvLine in csvLines)
         {
-            result.Add(ParseCompanyInfo(csvLine));
+            yield return ParseCompanyInfo(csvLine);
         }
-        return result;
     }
 
     private static CompanyInfo ParseCompanyInfo(string csvLine)
     {
         var parts = csvLine.Split(',');
+
         return new CompanyInfo
         {
             Id = Guid.Parse(parts[0]),
@@ -3656,8 +3616,129 @@ public class CompanyService
             IsVip = bool.Parse(parts[3])
         };
     }
+}
+
+/* ---------------- Main ---------------- */
+
+public class Program
+{
+    public static void Main()
+    {
+        var httpClient = new HttpClient();
+        var service = new CompanyService(httpClient);
+
+        var result = service.GetReportableCompanies().ToList();
+
+        Console.WriteLine("Companies returned: " + result.Count);
+    }
+}`,
+    hints: [
+        "The IEnumerable returned by GetCompanyInfoList is enumerated multiple times.",
+        "Each LINQ operation such as Any(), Count() and Where() can re-enumerate the source.",
+        "Materialize the result once using ToList() before applying multiple queries."
+    ],
+    solution: `using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class CompanyInfo
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public bool IsVip { get; set; }
+}
+
+/* Fake HttpClient (same as above) */
+public class HttpClient
+{
+    public string GetString(string url)
+    {
+        Console.WriteLine("Microservice called...");
+
+        return
+            Guid.NewGuid() + ",A,REPORT COMPANY,true" + Environment.NewLine +
+            Guid.NewGuid() + ",B,NORMAL,false" + Environment.NewLine +
+            Guid.NewGuid() + ",C,REPORT,false";
+    }
+}
+
+public class CompanyService
+{
+    private const int MaxReportableCompanies = 100;
+    private readonly HttpClient _httpClient;
+
+    public CompanyService(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
+
+    public IEnumerable<CompanyInfo> GetReportableCompanies()
+    {
+        // FIX: materialize once
+        var companies = GetCompanyInfoList().ToList();
+
+        if (!companies.Any()) return new CompanyInfo[0];
+
+        var vipCompanies = companies.Where(c => c.IsVip);
+
+        if (vipCompanies.Count() > MaxReportableCompanies)
+        {
+            return vipCompanies.Take(MaxReportableCompanies);
+        }
+
+        var nonVipReportableCompanies = companies
+            .Where(c => !c.IsVip)
+            .Where(c => c.Description.Contains("REPORT"));
+
+        return vipCompanies.Concat(
+            nonVipReportableCompanies.Take(
+                MaxReportableCompanies - vipCompanies.Count()));
+    }
+
+    private IEnumerable<CompanyInfo> GetCompanyInfoList()
+    {
+        var text = _httpClient.GetString("/");
+
+        var csvLines = text.Split(
+            new[] { Environment.NewLine },
+            StringSplitOptions.None);
+
+        foreach (var csvLine in csvLines)
+        {
+            yield return ParseCompanyInfo(csvLine);
+        }
+    }
+
+    private static CompanyInfo ParseCompanyInfo(string csvLine)
+    {
+        var parts = csvLine.Split(',');
+
+        return new CompanyInfo
+        {
+            Id = Guid.Parse(parts[0]),
+            Name = parts[1],
+            Description = parts[2],
+            IsVip = bool.Parse(parts[3])
+        };
+    }
+}
+
+/* ---------------- Main ---------------- */
+
+public class Program
+{
+    public static void Main()
+    {
+        var httpClient = new HttpClient();
+        var service = new CompanyService(httpClient);
+
+        var result = service.GetReportableCompanies().ToList();
+
+        Console.WriteLine("Companies returned: " + result.Count);
+    }
 }`
-        },
+},
         {
             id: 306,
             title: "Implementing a thread-safe counter",
