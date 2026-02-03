@@ -3298,34 +3298,74 @@ public class Program {
                 "Check modulo operation for even numbers."
             ]
         },
-        {
-            id: 302,
-            title: "Performance Optimize Fibonacci",
-            description: "Compute the nth Fibonacci number. The naive recursive solution is very slow for n > 40. Optimize using memoization or iterative approach.",
-            starterCode: `using System;
+       {
+id: 302,
+title: "Performance Optimize Fibonacci",
+description: "Compute the nth Fibonacci number. The naive recursive solution is very slow for n > 40. Optimize using memoization or iterative approach. Expected time complexity after optimization: O(n). Assume 0 <= n <= 45.",
+starterCode: `using System;
 
-public class Program {
-    public static void Main() {
-        Console.WriteLine(Fibonacci(10)); // 55
-    }
 
-    public static int Fibonacci(int n) {
-        if(n <= 1) return n;
-        int a = 0, b = 1;
-        for(int i = 2; i <= n; i++) {
-            int temp = a + b;
-            a = b;
-            b = temp;
-        }
-        return b;
-    }
+public class Program
+{
+public static void Main()
+{
+Console.WriteLine(Fibonacci(10)); // 55
+}
+
+
+// Naive recursive solution (very slow for n > 40)
+public static long Fibonacci(int n)
+{
+if (n < 0) throw new ArgumentException();
+
+
+if (n <= 1)
+return n;
+
+
+return Fibonacci(n - 1) + Fibonacci(n - 2);
+}
 }`,
-            hints: [
-                "Store previously computed results in a dictionary or array.",
-                "Consider bottom-up iterative computation.",
-                "Avoid naive recursion for large n."
-            ]
-        },
+hints: [
+"The recursive solution recomputes the same Fibonacci values many times.",
+"Use an iterative bottom-up approach to compute the result in O(n) time.",
+"You can also use memoization to cache already computed values."
+],
+solution: `using System;
+
+
+public class Program
+{
+public static void Main()
+{
+Console.WriteLine(Fibonacci(10)); // 55
+}
+
+
+// Optimized iterative solution
+public static long Fibonacci(int n)
+{
+if (n < 0) throw new ArgumentException();
+
+
+if (n <= 1) return n;
+
+
+long a = 0, b = 1;
+
+
+for (int i = 2; i <= n; i++)
+{
+long temp = a + b;
+a = b;
+b = temp;
+}
+
+
+return b;
+}
+}`
+},
         {
             id: 303,
             title: "Performance Optimize String Concatenation",
