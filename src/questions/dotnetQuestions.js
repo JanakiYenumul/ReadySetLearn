@@ -3366,32 +3366,69 @@ return b;
 }
 }`
 },
-        {
-            id: 303,
-            title: "Performance Optimize String Concatenation",
-            description: "Concatenating many strings using '+' is slow. Optimize the code using a more efficient method for large n.",
-            starterCode: `using System;
+    {
+id: 303,
+title: "Performance Optimize String Concatenation",
+description: "Concatenating many strings using '+' is slow. Optimize the code using a more efficient method for large n. Expected time complexity after optimization: O(n).",
+starterCode: `using System;
+
+
+public class Program
+{
+public static void Main()
+{
+Console.WriteLine(ConcatNumbers(10)); // 0123456789
+}
+
+
+// Naive and slow approach
+public static string ConcatNumbers(int n)
+{
+string result = "";
+
+
+for (int i = 0; i < n; i++)
+{
+result = result + i.ToString(); // slow
+}
+
+
+return result;
+}
+}`,
+hints: [
+"String concatenation using '+' inside a loop creates many temporary strings.",
+"Use StringBuilder to avoid repeated allocations.",
+"Append values to a buffer and convert to string at the end."
+],
+solution: `using System;
 using System.Text;
 
-public class Program {
-    public static void Main() {
-        Console.WriteLine(ConcatNumbers(10)); // 0123456789
-    }
 
-    public static string ConcatNumbers(int n) {
-        var sb = new StringBuilder();
-        for(int i = 0; i < n; i++) {
-            sb.Append(i.ToString());
-        }
-        return sb.ToString();
-    }
-        }`,
-            hints: [
-                "Use System.Text.StringBuilder for large concatenations.",
-                "Avoid repeated string copies in loops.",
-                "Append numbers directly to StringBuilder instead of converting each to string individually."
-            ]
-        },
+public class Program
+{
+public static void Main()
+{
+Console.WriteLine(ConcatNumbers(10)); // 0123456789
+}
+
+
+// Optimized approach using StringBuilder
+public static string ConcatNumbers(int n)
+{
+var sb = new StringBuilder();
+
+
+for (int i = 0; i < n; i++)
+{
+sb.Append(i.ToString());
+}
+
+
+return sb.ToString();
+}
+}`
+},
         {
             id: 304,
             title: "Performance Singleton Pattern",
