@@ -3020,32 +3020,61 @@ public class Program {
             ]
         },
         {
-            id: 102,
-            title: "Refactor Conditional Logic for Discounts",
-            description: "The following code determines the discount for a customer. It is correct but hard to read. Refactor it to improve readability without changing behavior.",
-            starterCode: `using System;
+    id: 102,
+    title: "Refactor Conditional Logic for Discounts",
+    description: "The following code determines the discount for a customer. It is correct but hard to read. Refactor it to improve readability without changing behavior.",
+    starterCode: `using System;
 
-public class Program {
-    public static void Main() {
+public class Program
+{
+    public static void Main()
+    {
         Console.WriteLine(CalculateDiscount(16, true));   // 0.2
         Console.WriteLine(CalculateDiscount(20, false));  // 0.0
     }
 
-    public static double CalculateDiscount(int age, bool isMember) {
-        if(age < 18) return isMember ? 0.2 : 0.1;
+    // Hard to read (nested ternary logic)
+    public static double CalculateDiscount(int age, bool isMember)
+    {
+        if (age < 18)
+            return isMember ? 0.2 : 0.1;
+
         return isMember ? 0.15 : 0.0;
     }
 }`,
-            solution: `public double CalculateDiscount(int age, bool isMember) {
-    if(age < 18) return isMember ? 0.2 : 0.1;
-    return isMember ? 0.15 : 0.0;
-}`,
-            hints: [
-                "Consider using ternary operators for simple conditionals.",
-                "Group conditions logically for clarity.",
-                "Avoid deeply nested if-else blocks."
-            ]
-        },
+    hints: [
+        "Introduce meaningful boolean variables to clarify the conditions.",
+        "Avoid nested or compact conditional expressions when readability suffers.",
+        "Ensure the refactoring does not change the original behavior."
+    ],
+    solution: `using System;
+
+public class Program
+{
+    public static void Main()
+    {
+        Console.WriteLine(CalculateDiscount(16, true));   // 0.2
+        Console.WriteLine(CalculateDiscount(20, false));  // 0.0
+    }
+
+    // Refactored for readability (no behavior change)
+    public static double CalculateDiscount(int age, bool isMember)
+    {
+        bool isMinor = age < 18;
+
+        if (isMinor && isMember)
+            return 0.2;
+
+        if (isMinor && !isMember)
+            return 0.1;
+
+        if (!isMinor && isMember)
+            return 0.15;
+
+        return 0.0;
+    }
+}`
+},
         {
             id: 103,
             title: "Refactor Repeated Code in Username Validation",
