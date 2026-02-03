@@ -3739,11 +3739,14 @@ public class Program
     }
 }`
 },
-        {
-            id: 306,
-            title: "Implementing a thread-safe counter",
-            description: "You are implementing a thread-safe counter using Interlocked.Increment and Interlocked.Decrement.However, sometimes your code throws a NullReferenceException.Why does this happen, and how can you fix it",
-            starterCode: `public class Counter
+       {
+    id: 306,
+    title: "Implementing a thread-safe counter",
+    description: "You are implementing a thread-safe counter using Interlocked.Increment and Interlocked.Decrement. However, sometimes your code throws a NullReferenceException. Why does this happen, and how can you fix it?",
+    starterCode: `using System;
+using System.Threading;
+
+public class Counter
 {
     public int? Value = 0;
 
@@ -3756,15 +3759,35 @@ public class Program
     {
         Interlocked.Decrement(ref Value);
     }
-}`,
-            hints: [
-                "Interlocked.Increment and Interlocked.Decrement require a reference to a non-null variable.",
-                "Nullable types (int?) are not supported by Interlocked methods.",
-                "Use a non-nullable int for the counter field"
-            ],
-            solution: `public class Counter
+}
+
+public class Program
 {
-    public int Value = 0; // FIX: Use non-nullable int
+    public static void Main()
+    {
+        Counter counter = new Counter();
+
+        // Somewhere in the program, Value becomes null
+        counter.Value = null;
+
+        // This will sometimes throw NullReferenceException
+        counter.Increment();
+
+        Console.WriteLine(counter.Value);
+    }
+}`,
+    hints: [
+        "Interlocked methods do not support nullable variables.",
+        "If the field becomes null, Interlocked.Increment cannot operate on it safely.",
+        "Use a non-nullable int field for counters that are updated with Interlocked."
+    ],
+    solution: `using System;
+using System.Threading;
+
+public class Counter
+{
+    // FIX: use non-nullable int
+    public int Value = 0;
 
     public void Increment()
     {
@@ -3775,11 +3798,21 @@ public class Program
     {
         Interlocked.Decrement(ref Value);
     }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        Counter counter = new Counter();
+
+        counter.Increment();
+        counter.Increment();
+        counter.Decrement();
+
+        Console.WriteLine(counter.Value);
+    }
 }`
-        }
-        
-    ]
-  
 };
 
 export default dotnetQuestions;
