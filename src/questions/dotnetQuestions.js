@@ -3076,44 +3076,78 @@ public class Program
 }`
 },
         {
-            id: 103,
-            title: "Refactor Repeated Code in Username Validation",
-            description: "The following function validates a list of usernames. It repeats similar checks multiple times. Refactor to reduce code duplication.",
-            starterCode: `using System;
+    id: 103,
+    title: "Refactor Repeated Code in Username Validation",
+    description: "The following function validates a list of usernames. The validation logic is embedded inside the loop. Refactor the code to reduce duplication and improve readability by extracting reusable validation logic.",
+    starterCode: `using System;
 using System.Collections.Generic;
 
-public class Program {
-    public static void Main() {
-        var usernames = new List<string>{"Alice", "Bob123", "John Doe", "Anna"};
+public class Program
+{
+    public static void Main()
+    {
+        var usernames = new List<string> { "Alice", "Bob123", "John Doe", "Anna" };
         var valid = ValidateUsernames(usernames);
         Console.WriteLine(string.Join(",", valid));
     }
 
-    public static List<string> ValidateUsernames(List<string> usernames) {
+    public static List<string> ValidateUsernames(List<string> usernames)
+    {
         List<string> valid = new List<string>();
-        foreach(var name in usernames) {
-            if(name.Length >= 5 && name.Length <= 10 && !name.Contains(" ")) {
+
+        foreach (var name in usernames)
+        {
+            // validation logic is embedded here
+            if (name.Length >= 5 && name.Length <= 10 && !name.Contains(" "))
+            {
                 valid.Add(name);
             }
         }
+
         return valid;
     }
 }`,
-            solution: `public List<string> ValidateUsernames(List<string> usernames) {
-    List<string> valid = new List<string>();
-    foreach(var name in usernames) {
-        if(name.Length >= 5 && name.Length <= 10 && !name.Contains(" ")) {
-            valid.Add(name);
-        }
+    hints: [
+        "Extract the validation logic into a separate method.",
+        "The refactoring should not change the behavior.",
+        "A small helper method can make the main loop easier to read."
+    ],
+    solution: `using System;
+using System.Collections.Generic;
+
+public class Program
+{
+    public static void Main()
+    {
+        var usernames = new List<string> { "Alice", "Bob123", "John Doe", "Anna" };
+        var valid = ValidateUsernames(usernames);
+        Console.WriteLine(string.Join(",", valid));
     }
-    return valid;
-}`,
-            hints: [
-                "Combine conditions using logical AND (&&).",
-                "Consider extracting a helper method for clarity.",
-                "Avoid deeply nested if-statements."
-            ]
-        },
+
+    public static List<string> ValidateUsernames(List<string> usernames)
+    {
+        List<string> valid = new List<string>();
+
+        foreach (var name in usernames)
+        {
+            if (IsValidUsername(name))
+            {
+                valid.Add(name);
+            }
+        }
+
+        return valid;
+    }
+
+    // extracted reusable validation logic
+    private static bool IsValidUsername(string name)
+    {
+        return name.Length >= 5
+               && name.Length <= 10
+               && !name.Contains(" ");
+    }
+}`
+},
         {
             id: 104,
             title: "Optimize the Code",
