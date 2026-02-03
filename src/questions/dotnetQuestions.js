@@ -3429,83 +3429,103 @@ return sb.ToString();
 }
 }`
 },
-        {
-            id: 304,
-            title: "Performance Singleton Pattern",
-            description: "The snippet shows that the performance of getting the Instance is slow. What is the cause of performance degradation? How would you fix it",
-            starterCode: `public static Singleton Instance {
-private Singleton (){}
+  {
+    id: 304,
+    title: "Performance Singleton Pattern",
+    description: "The snippet shows that the performance and correctness of getting the Singleton instance is problematic in a multi-threaded environment. Identify the cause of the issue and fix it using a thread-safe and efficient approach.",
+    starterCode: `using System;
+using System.Threading.Tasks;
 
-private static readonly object Lock = new Object();
-
-private static Singleton instance;
-
-public static Singleton instance
-
-{ 
-get
-{ lock (Lock) 
- { 
-if (instance == null)
- { 
-instance = new Singleton();
- }
- }
-  return instance; 
-  }
-}
-
-public void Log(string message)
- {
- Console.WriteLine($"[{DateTime.Now}] {message}");
-  }
-  }
-   // Usage example
-    public class Program
-     {
-     public static void Main() 
-     { 
-     Parallel.For(0, 10, i =>
+public class Singleton
 {
-         Logger.Instance.Log($"Log message {i}"); 
-         }); 
-         }
-          }`,
-            hints: [
-                "The lock is acquired every time Instance is accessed, even after the singleton is initialized.",
-                "This causes unnecessary contention and slows down access in multi-threaded scenarios.",
-                "Use double-checked locking so the lock is only acquired when the instance is not yet created.",
-                "Consider using Lazy<T> or static initialization for thread-safe singletons in C#."
-            ],
-              solution: `public class Singleton
-{
-    private Singleton() {}
+    private static Singleton _instance;
 
-    private static readonly object Lock = new object();
-    private static Singleton instance;
+    private Singleton() { }
 
+    // PROBLEM: Not thread-safe
     public static Singleton Instance
     {
         get
         {
-            if (instance == null)
+            if (_instance == null)
             {
-                lock (Lock)
-                {
-                    if (instance == null)
-                        instance = new Singleton();
-                }
+                _instance = new Singleton();
             }
-            return instance;
+            return _instance;
         }
     }
 
-    public void Log(string message)
+    public void Show()
     {
-        Console.WriteLine($"[{DateTime.Now}] {message}");
+        Console.WriteLine("Singleton instance used");
+    }
+}
+
+// Test / Usage
+public class Program
+{
+    public static void Main()
+    {
+        Parallel.For(0, 10, i =>
+        {
+            Singleton.Instance.Show();
+        });
+    }
+}`,
+    hints: [
+        "The current implementation is not thread-safe and may create multiple instances under concurrency.",
+        "Multiple threads can enter the null check at the same time.",
+        "Use locking carefully to avoid unnecessary performance overhead.",
+        "Double-checked locking is a common pattern to solve this problem."
+    ],
+    solution: `using System;
+using System.Threading.Tasks;
+
+public class Singleton
+{
+    private static Singleton _instance;
+    private static readonly object _lock = new object();
+
+    private Singleton() { }
+
+    // Thread-safe Singleton using double-checked locking
+    public static Singleton Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                lock (_lock)
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new Singleton();
+                    }
+                }
+            }
+
+            return _instance;
+        }
+    }
+
+    public void Show()
+    {
+        Console.WriteLine($"Singleton instance hash: {GetHashCode()}");
+    }
+}
+
+// Test / Usage
+public class Program
+{
+    public static void Main()
+    {
+        Parallel.For(0, 10, i =>
+        {
+            Singleton.Instance.Show();
+        });
     }
 }`
-        },
+},
         {
             id: 305,
             title: "Performance Microservices",
