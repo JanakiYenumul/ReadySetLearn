@@ -3271,50 +3271,117 @@ public class Program
     }
 }`
 },
-        {
-            id: 202,
-            title: "Test Email Validation",
-            description: "Write tests for a function IsValidEmail(string email) that validates emails. Cover valid emails, invalid emails, and empty or null input.",
-            starterCode: `using System;
+       {
+    id: 202,
+    title: "Test Email Validation",
+    description: "The current email validation logic is too weak and allows some invalid email formats to pass. Run the given tests, identify the failing case, and fix the validation logic without changing the test code.",
+    starterCode: `using System;
 
-public class EmailValidator {
-    public bool IsValidEmail(string email) {
-        return email != null && email.Contains("@") && email.Contains(".");
+public class EmailValidator
+{
+    // BUG: validation is too weak
+    public bool IsValidEmail(string email)
+    {
+        return email != null
+            && email.Contains("@")
+            && email.Contains(".");
     }
 }
 
-public class Program {
-    public static void Main() {
+public class Program
+{
+    public static void Main()
+    {
         EmailValidator validator = new EmailValidator();
-        string[] emails = {"user@example.com", "userexample.com", "", null};
-        foreach(var email in emails) {
-            Console.WriteLine($"{email ?? "null"} -> {validator.IsValidEmail(email)}");
-        }
+
+        Console.WriteLine("---- Running tests (Problem Code) ----");
+
+        RunTest(true,  validator.IsValidEmail("user@example.com"), "Valid email");
+        RunTest(false, validator.IsValidEmail("userexample.com"), "Missing @");
+        RunTest(false, validator.IsValidEmail("user@examplecom"), "Missing dot");
+        RunTest(false, validator.IsValidEmail(""), "Empty string");
+        RunTest(false, validator.IsValidEmail(null), "Null input");
+
+        // This test SHOULD FAIL with current implementation
+        RunTest(false, validator.IsValidEmail("user.example@com"),
+            "Dot before @ (invalid format)");
+    }
+
+    private static void RunTest(bool expected, bool actual, string testName)
+    {
+        if (expected == actual)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName +
+                              " expected=" + expected +
+                              " actual=" + actual);
     }
 }`,
-            hints: [
-                "Iterate through sample emails and print results using Console.WriteLine.",
-                "Check null and empty strings.",
-                "Check emails missing '@' or '.'"
-            ],
-            solution: `using System;
+    hints: [
+        "The current implementation only checks for the presence of '@' and '.'.",
+        "Ensure there is exactly one '@' character.",
+        "Ensure the dot appears after the '@' and is not the last character.",
+        "Do not change the test code—fix only the validation logic."
+    ],
+    solution: `using System;
 
-public class EmailValidator {
-    public bool IsValidEmail(string email) {
-        return email != null && email.Contains("@") && email.Contains(".");
+public class EmailValidator
+{
+    // FIX: stricter validation without changing test code
+    public bool IsValidEmail(string email)
+    {
+        if (string.IsNullOrEmpty(email))
+            return false;
+
+        int atIndex = email.IndexOf('@');
+        int lastDotIndex = email.LastIndexOf('.');
+
+        // must contain exactly one '@'
+        if (atIndex <= 0)
+            return false;
+
+        if (email.LastIndexOf('@') != atIndex)
+            return false;
+
+        // dot must be after @ and not at the end
+        if (lastDotIndex < atIndex + 2)
+            return false;
+
+        if (lastDotIndex == email.Length - 1)
+            return false;
+
+        return true;
     }
 }
 
-public class Program {
-    public static void Main() {
+public class Program
+{
+    public static void Main()
+    {
         EmailValidator validator = new EmailValidator();
-        Console.WriteLine(validator.IsValidEmail("user@example.com")); // True
-        Console.WriteLine(validator.IsValidEmail("userexample.com")); // False
-        Console.WriteLine(validator.IsValidEmail("")); // False
-        Console.WriteLine(validator.IsValidEmail(null)); // False
+
+        Console.WriteLine("---- Running tests (Solution Code) ----");
+
+        RunTest(true,  validator.IsValidEmail("user@example.com"), "Valid email");
+        RunTest(false, validator.IsValidEmail("userexample.com"), "Missing @");
+        RunTest(false, validator.IsValidEmail("user@examplecom"), "Missing dot");
+        RunTest(false, validator.IsValidEmail(""), "Empty string");
+        RunTest(false, validator.IsValidEmail(null), "Null input");
+        RunTest(false, validator.IsValidEmail("user.example@com"),
+            "Dot before @ (invalid format)");
+    }
+
+    private static void RunTest(bool expected, bool actual, string testName)
+    {
+        if (expected == actual)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName +
+                              " expected=" + expected +
+                              " actual=" + actual);
     }
 }`
-        },
+},
         {
             id: 203,
             title: "Test Shopping Cart Total",
