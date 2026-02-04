@@ -3020,71 +3020,134 @@ public class Program {
             ]
         },
         {
-            id: 102,
-            title: "Refactor Conditional Logic for Discounts",
-            description: "The following code determines the discount for a customer. It is correct but hard to read. Refactor it to improve readability without changing behavior.",
-            starterCode: `using System;
+    id: 102,
+    title: "Refactor Conditional Logic for Discounts",
+    description: "The following code determines the discount for a customer. It is correct but hard to read. Refactor it to improve readability without changing behavior.",
+    starterCode: `using System;
 
-public class Program {
-    public static void Main() {
+public class Program
+{
+    public static void Main()
+    {
         Console.WriteLine(CalculateDiscount(16, true));   // 0.2
         Console.WriteLine(CalculateDiscount(20, false));  // 0.0
     }
 
-    public static double CalculateDiscount(int age, bool isMember) {
-        if(age < 18) return isMember ? 0.2 : 0.1;
+    // Hard to read (nested ternary logic)
+    public static double CalculateDiscount(int age, bool isMember)
+    {
+        if (age < 18)
+            return isMember ? 0.2 : 0.1;
+
         return isMember ? 0.15 : 0.0;
     }
 }`,
-            solution: `public double CalculateDiscount(int age, bool isMember) {
-    if(age < 18) return isMember ? 0.2 : 0.1;
-    return isMember ? 0.15 : 0.0;
-}`,
-            hints: [
-                "Consider using ternary operators for simple conditionals.",
-                "Group conditions logically for clarity.",
-                "Avoid deeply nested if-else blocks."
-            ]
-        },
+    hints: [
+        "Introduce meaningful boolean variables to clarify the conditions.",
+        "Avoid nested or compact conditional expressions when readability suffers.",
+        "Ensure the refactoring does not change the original behavior."
+    ],
+    solution: `using System;
+
+public class Program
+{
+    public static void Main()
+    {
+        Console.WriteLine(CalculateDiscount(16, true));   // 0.2
+        Console.WriteLine(CalculateDiscount(20, false));  // 0.0
+    }
+
+    // Refactored for readability (no behavior change)
+    public static double CalculateDiscount(int age, bool isMember)
+    {
+        bool isMinor = age < 18;
+
+        if (isMinor && isMember)
+            return 0.2;
+
+        if (isMinor && !isMember)
+            return 0.1;
+
+        if (!isMinor && isMember)
+            return 0.15;
+
+        return 0.0;
+    }
+}`
+},
         {
-            id: 103,
-            title: "Refactor Repeated Code in Username Validation",
-            description: "The following function validates a list of usernames. It repeats similar checks multiple times. Refactor to reduce code duplication.",
-            starterCode: `using System;
+    id: 103,
+    title: "Refactor Repeated Code in Username Validation",
+    description: "The following function validates a list of usernames. The validation logic is embedded inside the loop. Refactor the code to reduce duplication and improve readability by extracting reusable validation logic.",
+    starterCode: `using System;
 using System.Collections.Generic;
 
-public class Program {
-    public static void Main() {
-        var usernames = new List<string>{"Alice", "Bob123", "John Doe", "Anna"};
+public class Program
+{
+    public static void Main()
+    {
+        var usernames = new List<string> { "Alice", "Bob123", "John Doe", "Anna" };
         var valid = ValidateUsernames(usernames);
         Console.WriteLine(string.Join(",", valid));
     }
 
-    public static List<string> ValidateUsernames(List<string> usernames) {
+    public static List<string> ValidateUsernames(List<string> usernames)
+    {
         List<string> valid = new List<string>();
-        foreach(var name in usernames) {
-            if(name.Length >= 5 && name.Length <= 10 && !name.Contains(" ")) {
+
+        foreach (var name in usernames)
+        {
+            // validation logic is embedded here
+            if (name.Length >= 5 && name.Length <= 10 && !name.Contains(" "))
+            {
                 valid.Add(name);
             }
         }
+
         return valid;
     }
 }`,
-            solution: `public List<string> ValidateUsernames(List<string> usernames) {
-    List<string> valid = new List<string>();
-    foreach(var name in usernames) {
-        if(name.Length >= 5 && name.Length <= 10 && !name.Contains(" ")) {
-            valid.Add(name);
-        }
+    hints: [
+        "Extract the validation logic into a separate method.",
+        "The refactoring should not change the behavior.",
+        "A small helper method can make the main loop easier to read."
+    ],
+    solution: `using System;
+using System.Collections.Generic;
+
+public class Program
+{
+    public static void Main()
+    {
+        var usernames = new List<string> { "Alice", "Bob123", "John Doe", "Anna" };
+        var valid = ValidateUsernames(usernames);
+        Console.WriteLine(string.Join(",", valid));
     }
-    return valid;
-}`,
-            hints: [
-                "Combine conditions using logical AND (&&).",
-                "Consider extracting a helper method for clarity.",
-                "Avoid deeply nested if-statements."
-            ]
-        },
+
+    public static List<string> ValidateUsernames(List<string> usernames)
+    {
+        List<string> valid = new List<string>();
+
+        foreach (var name in usernames)
+        {
+            if (IsValidUsername(name))
+            {
+                valid.Add(name);
+            }
+        }
+
+        return valid;
+    }
+
+    // extracted reusable validation logic
+    private static bool IsValidUsername(string name)
+    {
+        return name.Length >= 5
+               && name.Length <= 10
+               && !name.Contains(" ");
+    }
+}`
+},
         {
             id: 104,
             title: "Optimize the Code",
@@ -3118,101 +3181,207 @@ public class Program {
     ],
     unitTests: [
         {
-            id: 201,
-            title: "Test Calculator Methods",
-            description: "You have a simple Calculator class. Run some tests to verify its Add and Divide methods, including handling division by zero.",
-            starterCode: `using System;
+    id: 201,
+    title: "Test Calculator Methods",
+    description: "You have a simple Calculator class. The current test code incorrectly verifies the divide-by-zero scenario as a normal value. Update the tests so that the exception case is validated correctly.",
+    starterCode: `using System;
 
-public class Calculator {
+public class Calculator
+{
     public int Add(int a, int b) => a + b;
     public int Divide(int a, int b) => a / b;
 }
 
-public class Program {
-    public static void Main() {
+public class Program
+{
+    public static void Main()
+    {
         Calculator calc = new Calculator();
 
-        // Test Add
-        Console.WriteLine("Add(2,3) = " + calc.Add(2,3));
-        Console.WriteLine("Add(-2,1) = " + calc.Add(-2,1));
+        Console.WriteLine("---- Running tests (Problem Code) ----");
 
-        // Test Divide
-        Console.WriteLine("Divide(4,2) = " + calc.Divide(4,2));
+        AssertEqual(5, calc.Add(2, 3), "Add(2,3)");
+        AssertEqual(-1, calc.Add(-2, 1), "Add(-2,1)");
+        AssertEqual(2, calc.Divide(4, 2), "Divide(4,2)");
 
-        try {
-            Console.WriteLine("Divide(5,0) = " + calc.Divide(5,0));
-        } catch (DivideByZeroException) {
-            Console.WriteLine("Divide(5,0) throws DivideByZeroException");
-        }
+        // ❌ WRONG test: exception case is tested like a normal value
+        // Program will crash here
+        AssertEqual(0, calc.Divide(5, 0), "Divide(5,0)");
+    }
+
+    private static void AssertEqual(int expected, int actual, string testName)
+    {
+        if (expected == actual)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName +
+                              " expected=" + expected +
+                              " actual=" + actual);
     }
 }`,
-            hints: [
-                "Use try-catch to handle divide by zero exceptions.",
-                "Test both positive and negative numbers.",
-                "Print outputs using Console.WriteLine to verify results."
-            ],
-            solution: `using System;
+    hints: [
+        "Division by zero throws an exception, it should not be tested like a normal return value.",
+        "Create a separate assertion method for exception cases.",
+        "Use try-catch to validate that DivideByZeroException is thrown."
+    ],
+    solution: `using System;
 
-public class Calculator {
+public class Calculator
+{
     public int Add(int a, int b) => a + b;
     public int Divide(int a, int b) => a / b;
 }
 
-public class Program {
-    public static void Main() {
+public class Program
+{
+    public static void Main()
+    {
         Calculator calc = new Calculator();
-        Console.WriteLine(calc.Add(2,3)); // 5
-        Console.WriteLine(calc.Add(-2,1)); // -1
-        Console.WriteLine(calc.Divide(4,2)); // 2
-        try { Console.WriteLine(calc.Divide(5,0)); } 
-        catch (DivideByZeroException) { Console.WriteLine("DivideByZeroException"); }
+
+        Console.WriteLine("---- Running tests (Solution Code) ----");
+
+        AssertEqual(5, calc.Add(2, 3), "Add(2,3)");
+        AssertEqual(-1, calc.Add(-2, 1), "Add(-2,1)");
+        AssertEqual(2, calc.Divide(4, 2), "Divide(4,2)");
+
+        AssertThrowsDivideByZero(calc, "Divide(5,0)");
     }
-}`
-        },
+
+    private static void AssertEqual(int expected, int actual, string testName)
+    {
+        if (expected == actual)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName +
+                              " expected=" + expected +
+                              " actual=" + actual);
+    }
+
+    private static void AssertThrowsDivideByZero(Calculator calc, string testName)
+    {
+        try
         {
-            id: 202,
-            title: "Test Email Validation",
-            description: "Write tests for a function IsValidEmail(string email) that validates emails. Cover valid emails, invalid emails, and empty or null input.",
-            starterCode: `using System;
-
-public class EmailValidator {
-    public bool IsValidEmail(string email) {
-        return email != null && email.Contains("@") && email.Contains(".");
-    }
-}
-
-public class Program {
-    public static void Main() {
-        EmailValidator validator = new EmailValidator();
-        string[] emails = {"user@example.com", "userexample.com", "", null};
-        foreach(var email in emails) {
-            Console.WriteLine($"{email ?? "null"} -> {validator.IsValidEmail(email)}");
+            calc.Divide(5, 0);
+            Console.WriteLine("FAIL : " + testName + " (exception expected)");
+        }
+        catch (DivideByZeroException)
+        {
+            Console.WriteLine("PASS : " + testName + " (DivideByZeroException)");
         }
     }
-}`,
-            hints: [
-                "Iterate through sample emails and print results using Console.WriteLine.",
-                "Check null and empty strings.",
-                "Check emails missing '@' or '.'"
-            ],
-            solution: `using System;
+}`
+},
+       {
+    id: 202,
+    title: "Test Email Validation",
+    description: "The current email validation logic is too weak and allows some invalid email formats to pass. Run the given tests, identify the failing case, and fix the validation logic without changing the test code.",
+    starterCode: `using System;
 
-public class EmailValidator {
-    public bool IsValidEmail(string email) {
-        return email != null && email.Contains("@") && email.Contains(".");
+public class EmailValidator
+{
+    // BUG: validation is too weak
+    public bool IsValidEmail(string email)
+    {
+        return email != null
+            && email.Contains("@")
+            && email.Contains(".");
     }
 }
 
-public class Program {
-    public static void Main() {
+public class Program
+{
+    public static void Main()
+    {
         EmailValidator validator = new EmailValidator();
-        Console.WriteLine(validator.IsValidEmail("user@example.com")); // True
-        Console.WriteLine(validator.IsValidEmail("userexample.com")); // False
-        Console.WriteLine(validator.IsValidEmail("")); // False
-        Console.WriteLine(validator.IsValidEmail(null)); // False
+
+        Console.WriteLine("---- Running tests (Problem Code) ----");
+
+        RunTest(true,  validator.IsValidEmail("user@example.com"), "Valid email");
+        RunTest(false, validator.IsValidEmail("userexample.com"), "Missing @");
+        RunTest(false, validator.IsValidEmail("user@examplecom"), "Missing dot");
+        RunTest(false, validator.IsValidEmail(""), "Empty string");
+        RunTest(false, validator.IsValidEmail(null), "Null input");
+
+        // This test SHOULD FAIL with current implementation
+        RunTest(false, validator.IsValidEmail("user.example@com"),
+            "Dot before @ (invalid format)");
+    }
+
+    private static void RunTest(bool expected, bool actual, string testName)
+    {
+        if (expected == actual)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName +
+                              " expected=" + expected +
+                              " actual=" + actual);
+    }
+}`,
+    hints: [
+        "The current implementation only checks for the presence of '@' and '.'.",
+        "Ensure there is exactly one '@' character.",
+        "Ensure the dot appears after the '@' and is not the last character.",
+        "Do not change the test code—fix only the validation logic."
+    ],
+    solution: `using System;
+
+public class EmailValidator
+{
+    // FIX: stricter validation without changing test code
+    public bool IsValidEmail(string email)
+    {
+        if (string.IsNullOrEmpty(email))
+            return false;
+
+        int atIndex = email.IndexOf('@');
+        int lastDotIndex = email.LastIndexOf('.');
+
+        // must contain exactly one '@'
+        if (atIndex <= 0)
+            return false;
+
+        if (email.LastIndexOf('@') != atIndex)
+            return false;
+
+        // dot must be after @ and not at the end
+        if (lastDotIndex < atIndex + 2)
+            return false;
+
+        if (lastDotIndex == email.Length - 1)
+            return false;
+
+        return true;
+    }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        EmailValidator validator = new EmailValidator();
+
+        Console.WriteLine("---- Running tests (Solution Code) ----");
+
+        RunTest(true,  validator.IsValidEmail("user@example.com"), "Valid email");
+        RunTest(false, validator.IsValidEmail("userexample.com"), "Missing @");
+        RunTest(false, validator.IsValidEmail("user@examplecom"), "Missing dot");
+        RunTest(false, validator.IsValidEmail(""), "Empty string");
+        RunTest(false, validator.IsValidEmail(null), "Null input");
+        RunTest(false, validator.IsValidEmail("user.example@com"),
+            "Dot before @ (invalid format)");
+    }
+
+    private static void RunTest(bool expected, bool actual, string testName)
+    {
+        if (expected == actual)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName +
+                              " expected=" + expected +
+                              " actual=" + actual);
     }
 }`
-        },
+},
         {
             id: 203,
             title: "Test Shopping Cart Total",
@@ -3298,204 +3467,241 @@ public class Program {
                 "Check modulo operation for even numbers."
             ]
         },
-        {
-            id: 302,
-            title: "Performance Optimize Fibonacci",
-            description: "Compute the nth Fibonacci number. The naive recursive solution is very slow for n > 40. Optimize using memoization or iterative approach.",
-            starterCode: `using System;
+       {
+id: 302,
+title: "Performance Optimize Fibonacci",
+description: "Compute the nth Fibonacci number. The naive recursive solution is very slow for n > 40. Optimize using memoization or iterative approach. Expected time complexity after optimization: O(n). Assume 0 <= n <= 45.",
+starterCode: `using System;
 
-public class Program {
-    public static void Main() {
-        Console.WriteLine(Fibonacci(10)); // 55
-    }
 
-    public static int Fibonacci(int n) {
-        if(n <= 1) return n;
-        int a = 0, b = 1;
-        for(int i = 2; i <= n; i++) {
-            int temp = a + b;
-            a = b;
-            b = temp;
-        }
-        return b;
-    }
-}`,
-            hints: [
-                "Store previously computed results in a dictionary or array.",
-                "Consider bottom-up iterative computation.",
-                "Avoid naive recursion for large n."
-            ]
-        },
-        {
-            id: 303,
-            title: "Performance Optimize String Concatenation",
-            description: "Concatenating many strings using '+' is slow. Optimize the code using a more efficient method for large n.",
-            starterCode: `using System;
-using System.Text;
-
-public class Program {
-    public static void Main() {
-        Console.WriteLine(ConcatNumbers(10)); // 0123456789
-    }
-
-    public static string ConcatNumbers(int n) {
-        var sb = new StringBuilder();
-        for(int i = 0; i < n; i++) {
-            sb.Append(i.ToString());
-        }
-        return sb.ToString();
-    }
-        }`,
-            hints: [
-                "Use System.Text.StringBuilder for large concatenations.",
-                "Avoid repeated string copies in loops.",
-                "Append numbers directly to StringBuilder instead of converting each to string individually."
-            ]
-        },
-        {
-            id: 304,
-            title: "Performance Singleton Pattern",
-            description: "The snippet shows that the performance of getting the Instance is slow. What is the cause of performance degradation? How would you fix it",
-            starterCode: `public static Singleton Instance {
-private Singleton (){}
-
-private static readonly object Lock = new Object();
-
-private static Singleton instance;
-
-public static Singleton instance
-
-{ 
-get
-{ lock (Lock) 
- { 
-if (instance == null)
- { 
-instance = new Singleton();
- }
- }
-  return instance; 
-  }
+public class Program
+{
+public static void Main()
+{
+Console.WriteLine(Fibonacci(10)); // 55
 }
 
-public void Log(string message)
- {
- Console.WriteLine($"[{DateTime.Now}] {message}");
-  }
-  }
-   // Usage example
-    public class Program
-     {
-     public static void Main() 
-     { 
-     Parallel.For(0, 10, i =>
-{
-         Logger.Instance.Log($"Log message {i}"); 
-         }); 
-         }
-          }`,
-            hints: [
-                "The lock is acquired every time Instance is accessed, even after the singleton is initialized.",
-                "This causes unnecessary contention and slows down access in multi-threaded scenarios.",
-                "Use double-checked locking so the lock is only acquired when the instance is not yet created.",
-                "Consider using Lazy<T> or static initialization for thread-safe singletons in C#."
-            ],
-              solution: `public class Singleton
-{
-    private Singleton() {}
 
-    private static readonly object Lock = new object();
-    private static Singleton instance;
+// Naive recursive solution (very slow for n > 40)
+public static long Fibonacci(int n)
+{
+if (n < 0) throw new ArgumentException();
 
+
+if (n <= 1)
+return n;
+
+
+return Fibonacci(n - 1) + Fibonacci(n - 2);
+}
+}`,
+hints: [
+"The recursive solution recomputes the same Fibonacci values many times.",
+"Use an iterative bottom-up approach to compute the result in O(n) time.",
+"You can also use memoization to cache already computed values."
+],
+solution: `using System;
+
+
+public class Program
+{
+public static void Main()
+{
+Console.WriteLine(Fibonacci(10)); // 55
+}
+
+
+// Optimized iterative solution
+public static long Fibonacci(int n)
+{
+if (n < 0) throw new ArgumentException();
+
+
+if (n <= 1) return n;
+
+
+long a = 0, b = 1;
+
+
+for (int i = 2; i <= n; i++)
+{
+long temp = a + b;
+a = b;
+b = temp;
+}
+
+
+return b;
+}
+}`
+},
+    {
+id: 303,
+title: "Performance Optimize String Concatenation",
+description: "Concatenating many strings using '+' is slow. Optimize the code using a more efficient method for large n. Expected time complexity after optimization: O(n).",
+starterCode: `using System;
+
+
+public class Program
+{
+public static void Main()
+{
+Console.WriteLine(ConcatNumbers(10)); // 0123456789
+}
+
+
+// Naive and slow approach
+public static string ConcatNumbers(int n)
+{
+string result = "";
+
+
+for (int i = 0; i < n; i++)
+{
+result = result + i.ToString(); // slow
+}
+
+
+return result;
+}
+}`,
+hints: [
+"String concatenation using '+' inside a loop creates many temporary strings.",
+"Use StringBuilder to avoid repeated allocations.",
+"Append values to a buffer and convert to string at the end."
+],
+solution: `using System;
+using System.Text;
+
+
+public class Program
+{
+public static void Main()
+{
+Console.WriteLine(ConcatNumbers(10)); // 0123456789
+}
+
+
+// Optimized approach using StringBuilder
+public static string ConcatNumbers(int n)
+{
+var sb = new StringBuilder();
+
+
+for (int i = 0; i < n; i++)
+{
+sb.Append(i.ToString());
+}
+
+
+return sb.ToString();
+}
+}`
+},
+  {
+    id: 304,
+    title: "Performance Singleton Pattern",
+    description: "The snippet shows that the performance and correctness of getting the Singleton instance is problematic in a multi-threaded environment. Identify the cause of the issue and fix it using a thread-safe and efficient approach.",
+    starterCode: `using System;
+using System.Threading.Tasks;
+
+public class Singleton
+{
+    private static Singleton _instance;
+
+    private Singleton() { }
+
+    // PROBLEM: Not thread-safe
     public static Singleton Instance
     {
         get
         {
-            if (instance == null)
+            if (_instance == null)
             {
-                lock (Lock)
-                {
-                    if (instance == null)
-                        instance = new Singleton();
-                }
+                _instance = new Singleton();
             }
-            return instance;
+            return _instance;
         }
     }
 
-    public void Log(string message)
+    public void Show()
     {
-        Console.WriteLine($"[{DateTime.Now}] {message}");
+        Console.WriteLine("Singleton instance used");
+    }
+}
+
+// Test / Usage
+public class Program
+{
+    public static void Main()
+    {
+        Parallel.For(0, 10, i =>
+        {
+            Singleton.Instance.Show();
+        });
+    }
+}`,
+    hints: [
+        "The current implementation is not thread-safe and may create multiple instances under concurrency.",
+        "Multiple threads can enter the null check at the same time.",
+        "Use locking carefully to avoid unnecessary performance overhead.",
+        "Double-checked locking is a common pattern to solve this problem."
+    ],
+    solution: `using System;
+using System.Threading.Tasks;
+
+public class Singleton
+{
+    private static Singleton _instance;
+    private static readonly object _lock = new object();
+
+    private Singleton() { }
+
+    // Thread-safe Singleton using double-checked locking
+    public static Singleton Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                lock (_lock)
+                {
+                    if (_instance == null)
+                    {
+                        _instance = new Singleton();
+                    }
+                }
+            }
+
+            return _instance;
+        }
+    }
+
+    public void Show()
+    {
+        Console.WriteLine($"Singleton instance hash: {GetHashCode()}");
+    }
+}
+
+// Test / Usage
+public class Program
+{
+    public static void Main()
+    {
+        Parallel.For(0, 10, i =>
+        {
+            Singleton.Instance.Show();
+        });
     }
 }`
-        },
+},
         {
-            id: 305,
-            title: "Performance Microservices",
-            description: "The following code uses a microservice to retrieve a list of companies' data. While profiling the code, we have observed that the microservice is being called multiple times when `GetReportableCompanies` is invoked.",
-            starterCode: `public class CompanyInfo
-{
-public Guid Id { get; set; }
-public string Name { get; set; }
-public string Description { get; set; }
-public bool IsVip { get; set; }
-}
-public class CompanyService
-{
-private const int MaxReportableCompanies = 100;
-private readonly HttpClient _httpClient;
-public CompanyService(HttpClient httpClient)
-{
-_httpClient = httpClient;
-}
-public IEnumerable<CompanyInfo> GetReportableCompanies()
-{
-var companies = GetCompanyInfoList();
-if (!companies.Any()) return Array.Empty<CompanyInfo>();
-var vipCompanies = companies.Where(c => c.IsVip);
-if (vipCompanies.Count() > MaxReportableCompanies)
-{
-return vipCompanies.Take(MaxReportableCompanies);
-}
-var nonVipReportableCompanies = companies
-.Where(c => !c.IsVip)
-.Where(c => c.Description.Contains("REPORT"));
-return vipCompanies.Concat(nonVipReportableCompanies.Take(MaxReportableCompanies - vipCompanies.Count()));
-}
-private List<CompanyInfo> GetCompanyInfoList()
-{
-var text = _httpClient.GetStringAsync("/").Result;
-var csvLines = text.Split(Environment.NewLine);
-foreach (var csvLine in csvLines)
-{
-yield return ParseCompanyInfo(csvLine);
-}
-}
-private static CompanyInfo ParseCompanyInfo(string csvLine)
-{
-var parts = csvLine.Split(',');
-return new CompanyInfo
-{
-Id = Guid.Parse(parts[0]),
-Name = parts[1],
-Description = parts[2],
-IsVip = bool.Parse(parts[3])
-};
-}
-}`,
-            hints: [
-                "The method GetCompanyInfoList() calls the microservice every time it's invoked, which can lead to multiple network requests in GetReportableCompanies().",
-                "Using .Result on an async method can cause blocking and deadlocks; prefer await with async methods.",
-                "Refactor to fetch the company list once, cache the result, and use async/await for non-blocking calls.",
-                "Consider changing GetReportableCompanies to be async and return Task<IEnumerable<CompanyInfo>>.",
-                "Use ToList() to materialize the collection after fetching to avoid multiple enumerations.",
-                "Parse all company data in one pass then filter as needed."
-            ],
-            solution : `using System;
+    id: 305,
+    title: "Performance Microservices",
+    description: "The following code uses a microservice to retrieve a list of companies' data. While profiling the code, we observed that the microservice is effectively used multiple times because the result is re-enumerated several times. Identify the performance issue and fix it so the microservice result is fetched and enumerated only once.",
+    starterCode: `using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 public class CompanyInfo
 {
@@ -3503,6 +3709,22 @@ public class CompanyInfo
     public string Name { get; set; }
     public string Description { get; set; }
     public bool IsVip { get; set; }
+}
+
+/* --------------------------------------------------
+   Fake HttpClient for old compiler
+-------------------------------------------------- */
+public class HttpClient
+{
+    public string GetString(string url)
+    {
+        Console.WriteLine("Microservice called...");
+
+        return
+            Guid.NewGuid() + ",A,REPORT COMPANY,true" + Environment.NewLine +
+            Guid.NewGuid() + ",B,NORMAL,false" + Environment.NewLine +
+            Guid.NewGuid() + ",C,REPORT,false";
+    }
 }
 
 public class CompanyService
@@ -3515,42 +3737,46 @@ public class CompanyService
         _httpClient = httpClient;
     }
 
-    public async Task<IEnumerable<CompanyInfo>> GetReportableCompaniesAsync()
+    public IEnumerable<CompanyInfo> GetReportableCompanies()
     {
-        var companies = await GetCompanyInfoListAsync();
-        if (!companies.Any()) return Array.Empty<CompanyInfo>();
+        var companies = GetCompanyInfoList();
 
-        var vipCompanies = companies.Where(c => c.IsVip).ToList();
-        if (vipCompanies.Count > MaxReportableCompanies)
+        if (!companies.Any()) return new CompanyInfo[0];
+
+        var vipCompanies = companies.Where(c => c.IsVip);
+
+        if (vipCompanies.Count() > MaxReportableCompanies)
         {
             return vipCompanies.Take(MaxReportableCompanies);
         }
 
         var nonVipReportableCompanies = companies
             .Where(c => !c.IsVip)
-            .Where(c => c.Description.Contains("REPORT"))
-            .ToList();
+            .Where(c => c.Description.Contains("REPORT"));
 
         return vipCompanies.Concat(
-            nonVipReportableCompanies.Take(MaxReportableCompanies - vipCompanies.Count)
-        );
+            nonVipReportableCompanies.Take(
+                MaxReportableCompanies - vipCompanies.Count()));
     }
 
-    private async Task<List<CompanyInfo>> GetCompanyInfoListAsync()
+    private IEnumerable<CompanyInfo> GetCompanyInfoList()
     {
-        var text = await _httpClient.GetStringAsync("/");
-        var csvLines = text.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
-        var result = new List<CompanyInfo>();
+        var text = _httpClient.GetString("/");
+
+        var csvLines = text.Split(
+            new[] { Environment.NewLine },
+            StringSplitOptions.None);
+
         foreach (var csvLine in csvLines)
         {
-            result.Add(ParseCompanyInfo(csvLine));
+            yield return ParseCompanyInfo(csvLine);
         }
-        return result;
     }
 
     private static CompanyInfo ParseCompanyInfo(string csvLine)
     {
         var parts = csvLine.Split(',');
+
         return new CompanyInfo
         {
             Id = Guid.Parse(parts[0]),
@@ -3559,13 +3785,137 @@ public class CompanyService
             IsVip = bool.Parse(parts[3])
         };
     }
-}`
-        },
+}
+
+/* ---------------- Main ---------------- */
+
+public class Program
+{
+    public static void Main()
+    {
+        var httpClient = new HttpClient();
+        var service = new CompanyService(httpClient);
+
+        var result = service.GetReportableCompanies().ToList();
+
+        Console.WriteLine("Companies returned: " + result.Count);
+    }
+}`,
+    hints: [
+        "The IEnumerable returned by GetCompanyInfoList is enumerated multiple times.",
+        "Each LINQ operation such as Any(), Count() and Where() can re-enumerate the source.",
+        "Materialize the result once using ToList() before applying multiple queries."
+    ],
+    solution: `using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class CompanyInfo
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; }
+    public string Description { get; set; }
+    public bool IsVip { get; set; }
+}
+
+/* Fake HttpClient (same as above) */
+public class HttpClient
+{
+    public string GetString(string url)
+    {
+        Console.WriteLine("Microservice called...");
+
+        return
+            Guid.NewGuid() + ",A,REPORT COMPANY,true" + Environment.NewLine +
+            Guid.NewGuid() + ",B,NORMAL,false" + Environment.NewLine +
+            Guid.NewGuid() + ",C,REPORT,false";
+    }
+}
+
+public class CompanyService
+{
+    private const int MaxReportableCompanies = 100;
+    private readonly HttpClient _httpClient;
+
+    public CompanyService(HttpClient httpClient)
+    {
+        _httpClient = httpClient;
+    }
+
+    public IEnumerable<CompanyInfo> GetReportableCompanies()
+    {
+        // FIX: materialize once
+        var companies = GetCompanyInfoList().ToList();
+
+        if (!companies.Any()) return new CompanyInfo[0];
+
+        var vipCompanies = companies.Where(c => c.IsVip);
+
+        if (vipCompanies.Count() > MaxReportableCompanies)
         {
-            id: 306,
-            title: "Implementing a thread-safe counter",
-            description: "You are implementing a thread-safe counter using Interlocked.Increment and Interlocked.Decrement.However, sometimes your code throws a NullReferenceException.Why does this happen, and how can you fix it",
-            starterCode: `public class Counter
+            return vipCompanies.Take(MaxReportableCompanies);
+        }
+
+        var nonVipReportableCompanies = companies
+            .Where(c => !c.IsVip)
+            .Where(c => c.Description.Contains("REPORT"));
+
+        return vipCompanies.Concat(
+            nonVipReportableCompanies.Take(
+                MaxReportableCompanies - vipCompanies.Count()));
+    }
+
+    private IEnumerable<CompanyInfo> GetCompanyInfoList()
+    {
+        var text = _httpClient.GetString("/");
+
+        var csvLines = text.Split(
+            new[] { Environment.NewLine },
+            StringSplitOptions.None);
+
+        foreach (var csvLine in csvLines)
+        {
+            yield return ParseCompanyInfo(csvLine);
+        }
+    }
+
+    private static CompanyInfo ParseCompanyInfo(string csvLine)
+    {
+        var parts = csvLine.Split(',');
+
+        return new CompanyInfo
+        {
+            Id = Guid.Parse(parts[0]),
+            Name = parts[1],
+            Description = parts[2],
+            IsVip = bool.Parse(parts[3])
+        };
+    }
+}
+
+/* ---------------- Main ---------------- */
+
+public class Program
+{
+    public static void Main()
+    {
+        var httpClient = new HttpClient();
+        var service = new CompanyService(httpClient);
+
+        var result = service.GetReportableCompanies().ToList();
+
+        Console.WriteLine("Companies returned: " + result.Count);
+    }
+}`
+},
+       {
+    id: 306,
+    title: "Implementing a thread-safe counter",
+    description: "You are implementing a thread-safe counter using Interlocked.Increment and Interlocked.Decrement. However, sometimes your code throws a NullReferenceException. Why does this happen, and how can you fix it?",
+    starterCode: `using System;
+using System.Threading;
+
+public class Counter
 {
     public int? Value = 0;
 
@@ -3578,15 +3928,35 @@ public class CompanyService
     {
         Interlocked.Decrement(ref Value);
     }
-}`,
-            hints: [
-                "Interlocked.Increment and Interlocked.Decrement require a reference to a non-null variable.",
-                "Nullable types (int?) are not supported by Interlocked methods.",
-                "Use a non-nullable int for the counter field"
-            ],
-            solution: `public class Counter
+}
+
+public class Program
 {
-    public int Value = 0; // FIX: Use non-nullable int
+    public static void Main()
+    {
+        Counter counter = new Counter();
+
+        // Somewhere in the program, Value becomes null
+        counter.Value = null;
+
+        // This will sometimes throw NullReferenceException
+        counter.Increment();
+
+        Console.WriteLine(counter.Value);
+    }
+}`,
+    hints: [
+        "Interlocked methods do not support nullable variables.",
+        "If the field becomes null, Interlocked.Increment cannot operate on it safely.",
+        "Use a non-nullable int field for counters that are updated with Interlocked."
+    ],
+    solution: `using System;
+using System.Threading;
+
+public class Counter
+{
+    // FIX: use non-nullable int
+    public int Value = 0;
 
     public void Increment()
     {
@@ -3597,11 +3967,21 @@ public class CompanyService
     {
         Interlocked.Decrement(ref Value);
     }
+}
+
+public class Program
+{
+    public static void Main()
+    {
+        Counter counter = new Counter();
+
+        counter.Increment();
+        counter.Increment();
+        counter.Decrement();
+
+        Console.WriteLine(counter.Value);
+    }
 }`
-        }
-        
-    ]
-  
 };
 
 export default dotnetQuestions;
