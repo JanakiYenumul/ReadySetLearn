@@ -2864,6 +2864,568 @@ class Program
         );
     }
 }`
+},{
+    id: 308,
+    title: "Q : Flatten a Deeply Nested Array",
+    description: `
+/*
+
+Write a function that flattens a deeply nested array into a single-level array.
+
+Example:
+Input: [1, [2, [3, [4]], 5]]
+Output: [1,2,3,4,5]
+
+*/
+`,
+    starterCode: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<object> input = new List<object>
+        {
+            1,
+            new List<object>
+            {
+                2,
+                new List<object>
+                {
+                    3,
+                    new List<object> { 4 }
+                },
+                5
+            }
+        };
+
+        List<int> result = FlattenArray(input);
+
+        Console.WriteLine("Result : " + string.Join(", ", result));
+    }
+
+    static List<int> FlattenArray(List<object> arr)
+    {
+        // ❌ TODO : Not implemented yet
+        return new List<int>();
+    }
+}`,
+    hints: [
+        "This is a recursive problem.",
+        "If the current element is an integer, add it to the result list.",
+        "If the current element is a list, recursively flatten it.",
+        "Use a helper method to avoid creating multiple lists."
+    ],
+    solution: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<object> input = new List<object>
+        {
+            1,
+            new List<object>
+            {
+                2,
+                new List<object>
+                {
+                    3,
+                    new List<object> { 4 }
+                },
+                5
+            }
+        };
+
+        List<int> result = FlattenArray(input);
+
+        Console.WriteLine("Result : " + string.Join(", ", result));
+    }
+
+    static List<int> FlattenArray(List<object> arr)
+    {
+        List<int> result = new List<int>();
+
+        FlattenInternal(arr, result);
+
+        return result;
+    }
+
+    static void FlattenInternal(List<object> arr, List<int> result)
+    {
+        foreach (object item in arr)
+        {
+            if (item is int)
+            {
+                result.Add((int)item);
+            }
+            else if (item is List<object>)
+            {
+                FlattenInternal((List<object>)item, result);
+            }
+        }
+    }
+}`
+},{
+    id: 309,
+    title: "Q : Library Borrowing and Fine Calculation System",
+    description: `
+/*
+
+A public library maintains a record of books and borrowers.
+You need to design a system to track borrowed books and calculate overdue fines.
+      
+*/
+`,
+    starterCode: `using System;
+
+class Book
+{
+    public int id;
+    public string title;
+    public string author;
+
+    // ❌ Constructor missing
+}
+
+class Borrower
+{
+    public int id;
+    public string name;
+    public Book borrowedBook;
+
+    // ❌ Constructor missing
+
+    public int CalculateFine(int daysBorrowed)
+    {
+        // ❌ Not implemented yet
+        return 0;
+    }
+}
+
+class LibrarySystem
+{
+    static void Main(string[] args)
+    {
+        // ❌ Create book and borrower
+        Book book = new Book();
+        Borrower borrower = new Borrower();
+
+        borrower.borrowedBook = book;
+
+        int fine = borrower.CalculateFine(20);
+
+        Console.WriteLine("Fine for 20 days = " + fine);
+        // Expected: 12
+    }
+}`,
+    hints: [
+        "Add constructors to initialize Book and Borrower objects.",
+        "Borrower should store the borrowed Book.",
+        "Allow a fixed number of free days before applying a fine.",
+        "Calculate fine only for the days exceeding the free period."
+    ],
+    solution: `using System;
+
+class Book
+{
+    public int id;
+    public string title;
+    public string author;
+
+    public Book(int id, string title, string author)
+    {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+    }
+}
+
+class Borrower
+{
+    public int id;
+    public string name;
+    public Book borrowedBook;
+
+    public Borrower(int id, string name, Book borrowedBook)
+    {
+        this.id = id;
+        this.name = name;
+        this.borrowedBook = borrowedBook;
+    }
+
+    public int CalculateFine(int daysBorrowed)
+    {
+        int freeDays = 14;
+        int finePerDay = 2;
+
+        if (daysBorrowed <= freeDays)
+            return 0;
+
+        int extraDays = daysBorrowed - freeDays;
+        return extraDays * finePerDay;
+    }
+}
+
+class LibrarySystem
+{
+    static void Main(string[] args)
+    {
+        Book book = new Book(1, "Clean Code", "Robert C. Martin");
+
+        Borrower borrower = new Borrower(101, "Pankaj", book);
+
+        int fine = borrower.CalculateFine(20);
+
+        Console.WriteLine("Fine for 20 days = " + fine);
+        // Output: 12
+    }
+}`
+},{
+    id: 310,
+    title: "Q : Online Food Order Management and Billing",
+    description: `
+/*
+
+An online food app tracks restaurant orders.
+You must implement order management and calculate bills with delivery charges.
+      
+*/
+`,
+    starterCode: `using System;
+
+class FoodItem
+{
+    public string name;
+    public int price;
+
+    // ❌ Constructor missing
+}
+
+class Order
+{
+    public FoodItem[] items;
+
+    // ❌ Constructor missing
+
+    public int CalculateBill()
+    {
+        // ❌ Not implemented yet
+        return 0;
+    }
+}
+
+class FoodApp
+{
+    static void Main(string[] args)
+    {
+        // ❌ Create 3 food items
+        FoodItem f1 = new FoodItem();
+        FoodItem f2 = new FoodItem();
+        FoodItem f3 = new FoodItem();
+
+        Order order = new Order();
+
+        int bill = order.CalculateBill();
+
+        Console.WriteLine("Final Bill = " + bill);
+        // Expected output : 480
+    }
+}`,
+    hints: [
+        "Create constructors for FoodItem and Order classes.",
+        "Order should accept a list of FoodItem objects.",
+        "Calculate the total price of all food items in the order.",
+        "Add a fixed delivery charge to the final bill."
+    ],
+    solution: `using System;
+
+class FoodItem
+{
+    public string name;
+    public int price;
+
+    public FoodItem(string name, int price)
+    {
+        this.name = name;
+        this.price = price;
+    }
+}
+
+class Order
+{
+    public FoodItem[] items;
+
+    public Order(FoodItem[] items)
+    {
+        this.items = items;
+    }
+
+    public int CalculateBill()
+    {
+        int total = 0;
+
+        for (int i = 0; i < items.Length; i++)
+        {
+            total += items[i].price;
+        }
+
+        int deliveryCharge = 30;
+
+        return total + deliveryCharge;
+    }
+}
+
+class FoodApp
+{
+    static void Main(string[] args)
+    {
+        FoodItem f1 = new FoodItem("Burger", 100);
+        FoodItem f2 = new FoodItem("Pizza", 200);
+        FoodItem f3 = new FoodItem("Pasta", 150);
+
+        FoodItem[] items = new FoodItem[] { f1, f2, f3 };
+
+        Order order = new Order(items);
+
+        int bill = order.CalculateBill();
+
+        Console.WriteLine("Final Bill = " + bill);
+        // Output : 480
+    }
+}`
+},{
+    id: 311,
+    title: "Q : Cinema Hall Ticket Booking and Revenue Calculation",
+    description: `
+/*
+
+A cinema hall manages movie bookings.
+Implement a ticket booking system and calculate revenue.
+      
+*/
+`,
+    starterCode: `using System;
+
+class Movie
+{
+    public string name;
+    public int price;
+
+    // ❌ Constructor missing
+}
+
+class Customer
+{
+    public string name;
+    public int tickets;
+    public Movie movie;
+
+    // ❌ Constructor missing
+
+    public int TotalCost()
+    {
+        // ❌ Not implemented
+        return 0;
+    }
+}
+
+class CinemaHall
+{
+    static void Main(string[] args)
+    {
+        Movie movie = new Movie();
+
+        Customer c1 = new Customer();
+        Customer c2 = new Customer();
+        Customer c3 = new Customer();
+
+        int revenue =
+            c1.TotalCost() +
+            c2.TotalCost() +
+            c3.TotalCost();
+
+        Console.WriteLine("Total Revenue = " + revenue);
+        // Expected : 1200
+    }
+}`,
+    hints: [
+        "Create constructors for Movie and Customer classes.",
+        "Each customer should store the selected movie and number of tickets.",
+        "Total cost should be calculated using ticket count and movie price.",
+        "Revenue is the sum of total cost of all customers."
+    ],
+    solution: `using System;
+
+class Movie
+{
+    public string name;
+    public int price;
+
+    public Movie(string name, int price)
+    {
+        this.name = name;
+        this.price = price;
+    }
+}
+
+class Customer
+{
+    public string name;
+    public int tickets;
+    public Movie movie;
+
+    public Customer(string name, int tickets, Movie movie)
+    {
+        this.name = name;
+        this.tickets = tickets;
+        this.movie = movie;
+    }
+
+    public int TotalCost()
+    {
+        return tickets * movie.price;
+    }
+}
+
+class CinemaHall
+{
+    static void Main(string[] args)
+    {
+        Movie movie = new Movie("Avatar", 200);
+
+        Customer c1 = new Customer("Rahul", 2, movie);
+        Customer c2 = new Customer("Anita", 3, movie);
+        Customer c3 = new Customer("Rohit", 1, movie);
+
+        int revenue =
+            c1.TotalCost() +
+            c2.TotalCost() +
+            c3.TotalCost();
+
+        Console.WriteLine("Total Revenue = " + revenue);
+        // Output : 1200
+    }
+}`
+},{
+    id: 312,
+    title: "Q : E-commerce Cart Billing with Discount",
+    description: `
+/*
+
+An e-commerce platform tracks shopping carts.
+Build a system to calculate total bill with discounts.
+      
+*/
+`,
+    starterCode: `using System;
+
+class Product
+{
+    public string name;
+    public int price;
+
+    // ❌ Constructor missing
+}
+
+class Cart
+{
+    public Product[] items;
+
+    // ❌ Constructor missing
+
+    public double CalculateBill()
+    {
+        // ❌ Not implemented
+        return 0;
+    }
+}
+
+class ShoppingApp
+{
+    static void Main(string[] args)
+    {
+        Product p1 = new Product();
+        Product p2 = new Product();
+        Product p3 = new Product();
+        Product p4 = new Product();
+
+        Cart cart = new Cart();
+
+        double bill = cart.CalculateBill();
+
+        Console.WriteLine("Final Bill = " + bill);
+        // Expected : 720
+    }
+}`,
+    hints: [
+        "Create constructors for Product and Cart.",
+        "Add all product prices to calculate the total amount.",
+        "Apply a discount only if the total exceeds a threshold.",
+        "Return the discounted total as a double value."
+    ],
+    solution: `using System;
+
+class Product
+{
+    public string name;
+    public int price;
+
+    public Product(string name, int price)
+    {
+        this.name = name;
+        this.price = price;
+    }
+}
+
+class Cart
+{
+    public Product[] items;
+
+    public Cart(Product[] items)
+    {
+        this.items = items;
+    }
+
+    public double CalculateBill()
+    {
+        int total = 0;
+
+        for (int i = 0; i < items.Length; i++)
+        {
+            total += items[i].price;
+        }
+
+        if (total > 500)
+        {
+            return total - (total * 0.10);
+        }
+
+        return total;
+    }
+}
+
+class ShoppingApp
+{
+    static void Main(string[] args)
+    {
+        Product p1 = new Product("Shoes", 300);
+        Product p2 = new Product("Shirt", 200);
+        Product p3 = new Product("Jeans", 250);
+        Product p4 = new Product("Cap", 50);
+
+        Product[] products = new Product[] { p1, p2, p3, p4 };
+
+        Cart cart = new Cart(products);
+
+        double bill = cart.CalculateBill();
+
+        Console.WriteLine("Final Bill = " + bill);
+        // Output : 720
+    }
+}`
 },
           {
             id: 21,
