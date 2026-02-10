@@ -444,9 +444,9 @@ public class Solution
 }`
         },
         {
-            id: 21,
-            title: " Q3 :Extract Full Domain and Second-Level Domain from URLs",
-            description: `
+    id: 21,
+    title: "Q3 : Extract Full Domain and Second-Level Domain from URLs",
+    description: `
 We have collected some HTTP/HTTPS referrer URLs from our web server. This data can be found at the address https://public.karat.io/content/referrals_4.txt, where each line contains a URL and nothing else.
 
 We want to learn more about the domains that refer traffic to our site.
@@ -465,76 +465,106 @@ Expected output for the file: ["world.news.yahoo.com", "yahoo.com"]
 
 Complexity Variable:
 L = length of the URL string
-      `,
-            hints: [
-                "Think about how to remove the protocol (http:// or https://) before parsing.",
-                "Identify where the domain ends by looking for '/', '#', or '?' in the string.",
-                "Split the remaining domain by '.' and reconstruct the last two parts."
-            ],
-            starterCode: `
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
+`,
+    starterCode: `using System;
 
 class Program
 {
-   static void Main(string[] args)
+    static void Main(string[] args)
     {
+        Console.WriteLine("---- Running test (Problem Code) ----");
+
+        string firstUrl = "http://world.news.yahoo.com/news/olympics/";
+
+        string[] result = ExtractDomains(firstUrl);
+
+        RunTest("world.news.yahoo.com", result[0], "Full domain");
+        RunTest("yahoo.com", result[1], "Last two domain parts");
+    }
+  
+    static void RunTest(string expected, string actual, string testName)
+    {
+        if (expected == actual)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName +
+                              " expected=" + expected +
+                              " actual=" + actual);
+    }
+}`,
+    hints: [
+        "Do not use URL parsing libraries.",
+        "Remove the protocol part (http:// or https://) manually.",
+        "The domain ends before '/', '?' or '#'.",
+        "Split the domain using '.' to compute the last two parts."
+    ],
+    solution: `using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("---- Running test (Solution Code) ----");
+
+        string firstUrl = "http://world.news.yahoo.com/news/olympics/";
+
+        string[] result = ExtractDomains(firstUrl);
+
+        RunTest("world.news.yahoo.com", result[0], "Full domain");
+        RunTest("yahoo.com", result[1], "Last two domain parts");
     }
 
     static string[] ExtractDomains(string url)
     {
-        // TODO: Implement logic to extract [fullDomain, secondLevelDomain]
-        return new string[] { "", "" };
-    }
-}
-      `,
-            solution: `
-using System;
- 
-class Solution
-{
-    static void Main(string[] args)
-    {
-        // Example input
-        string[] testUrls = {
-            "http://world.news.yahoo.com/news/olympics/",
-            "https://www.yahoo.co.uk/#finance",
-            "https://google.com/",
-            "https://google.com/search?query=groceries"
-        };
- 
-        foreach (var url in testUrls)
-        {
-            var result = ExtractDomains(url);
-            Console.WriteLine($"[\\"{result[0]}\\", \\"{result[1]}\\"]");
-        }
-    }
- 
-    static string[] ExtractDomains(string url)
-    {
-        // Remove protocol
+        int start = 0;
+
         if (url.StartsWith("http://"))
-            url = url.Substring(7);
+            start = "http://".Length;
         else if (url.StartsWith("https://"))
-            url = url.Substring(8);
- 
-        // Find first '/', '#', or '?'
-        int idx = url.IndexOfAny(new char[] { '/', '#', '?' });
-        if (idx != -1)
-            url = url.Substring(0, idx);
- 
-        string fullDomain = url;
-        var parts = fullDomain.Split('.');
-        string lastTwo = parts.Length >= 2
-            ? parts[parts.Length - 2] + "." + parts[parts.Length - 1]
-            : fullDomain;
- 
+            start = "https://".Length;
+
+        string remaining = url.Substring(start);
+
+        int end = remaining.Length;
+
+        int slashIndex = remaining.IndexOf('/');
+        if (slashIndex >= 0 && slashIndex < end)
+            end = slashIndex;
+
+        int questionIndex = remaining.IndexOf('?');
+        if (questionIndex >= 0 && questionIndex < end)
+            end = questionIndex;
+
+        int hashIndex = remaining.IndexOf('#');
+        if (hashIndex >= 0 && hashIndex < end)
+            end = hashIndex;
+
+        string fullDomain = remaining.Substring(0, end);
+
+        string[] parts = fullDomain.Split('.');
+
+        string lastTwo;
+
+        if (parts.Length >= 2)
+            lastTwo = parts[parts.Length - 2] + "." + parts[parts.Length - 1];
+        else
+            lastTwo = fullDomain;
+
         return new string[] { fullDomain, lastTwo };
     }
+
+    static void RunTest(string expected, string actual, string testName)
+    {
+        if (expected == actual)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName +
+                              " expected=" + expected +
+                              " actual=" + actual);
+    }
+}`
 }
-      `
-        },
+,
         {
             id: 8,
             title: "Q4 : Stock Trading Data Management",
