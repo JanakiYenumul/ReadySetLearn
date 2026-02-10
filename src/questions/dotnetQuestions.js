@@ -3426,6 +3426,404 @@ class ShoppingApp
         // Output : 720
     }
 }`
+},{
+    id: 313,
+    title: "Q : Frequent Badge Access Within One Hour",
+    description: `
+/*
+We are working on a security system for a badged-access room in our company's building.
+
+We want to find employees who badged into our secured room unusually often. We have an unordered list of names and entry times over a single day. Access times are given as numbers up to four digits in length using 24-hour time, such as "800" or "2250".
+
+Write a function that finds anyone who badged into the room three or more times in a one-hour period. Your function should return each of the employees who fit that criteria, plus the times that they badged in during the one-hour period. If there are multiple one-hour periods where this was true for an employee, just return the earliest one for that employee.
+
+badge_times = [ ["Paul", "1355"], ["Jennifer", "1910"], ["Jose", "835"], ["Jose", "830"], ["Paul", "1315"], ["Chloe", "0"], ["Chloe", "1910"], ["Jose", "1615"], ["Jose", "1640"], ["Paul", "1405"], ["Jose", "855"], ["Jose", "930"], ["Jose", "915"], ["Jose", "730"], ["Jose", "940"], ["Jennifer", "1335"], ["Jennifer", "730"], ["Jose", "1630"], ["Jennifer", "5"], ["Chloe", "1909"], ["Zhang", "1"], ["Zhang", "10"], ["Zhang", "109"], ["Zhang", "110"], ["Amos", "1"], ["Amos", "2"], ["Amos", "400"], ["Amos", "500"], ["Amos", "503"], ["Amos", "504"], ["Amos", "601"], ["Amos", "602"], ["Paul", "1416"], ];
+
+Expected output (in any order)
+Paul: 1315 1355 1405
+Jose: 830 835 855 915 930
+Zhang: 10 109 110
+Amos: 500 503 504
+
+n: length of the badge records array
+*/
+`,
+    starterCode: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<string[]> badgeTimes = new List<string[]>
+        {
+            new string[]{"Paul","1355"}, new string[]{"Jennifer","1910"},
+            new string[]{"Jose","835"}, new string[]{"Jose","830"},
+            new string[]{"Paul","1315"}, new string[]{"Chloe","0"},
+            new string[]{"Chloe","1910"}, new string[]{"Jose","1615"},
+            new string[]{"Jose","1640"}, new string[]{"Paul","1405"},
+            new string[]{"Jose","855"}, new string[]{"Jose","930"},
+            new string[]{"Jose","915"}, new string[]{"Jose","730"},
+            new string[]{"Jose","940"}, new string[]{"Jennifer","1335"},
+            new string[]{"Jennifer","730"}, new string[]{"Jose","1630"},
+            new string[]{"Jennifer","5"}, new string[]{"Chloe","1909"},
+            new string[]{"Zhang","1"}, new string[]{"Zhang","10"},
+            new string[]{"Zhang","109"}, new string[]{"Zhang","110"},
+            new string[]{"Amos","1"}, new string[]{"Amos","2"},
+            new string[]{"Amos","400"}, new string[]{"Amos","500"},
+            new string[]{"Amos","503"}, new string[]{"Amos","504"},
+            new string[]{"Amos","601"}, new string[]{"Amos","602"},
+            new string[]{"Paul","1416"}
+        };
+
+        Dictionary<string, List<string>> result =
+            FindFrequentBadgeAccess(badgeTimes);
+
+        foreach (var kv in result)
+        {
+            Console.WriteLine(kv.Key + ": " + string.Join(" ", kv.Value));
+        }
+    }
+
+    static Dictionary<string, List<string>> FindFrequentBadgeAccess(
+        List<string[]> records)
+    {
+        // ❌ TODO – logic not implemented
+        return new Dictionary<string, List<string>>();
+    }
+}`,
+    hints: [
+        "Group all badge times by employee name.",
+        "Convert time strings such as \"835\" or \"5\" into minutes for comparison.",
+        "Sort each employee's access times.",
+        "Use a sliding window to find three or more accesses within 60 minutes.",
+        "If multiple windows exist, return only the earliest one."
+    ],
+    solution: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<string[]> badgeTimes = new List<string[]>
+        {
+            new string[]{"Paul","1355"}, new string[]{"Jennifer","1910"},
+            new string[]{"Jose","835"}, new string[]{"Jose","830"},
+            new string[]{"Paul","1315"}, new string[]{"Chloe","0"},
+            new string[]{"Chloe","1910"}, new string[]{"Jose","1615"},
+            new string[]{"Jose","1640"}, new string[]{"Paul","1405"},
+            new string[]{"Jose","855"}, new string[]{"Jose","930"},
+            new string[]{"Jose","915"}, new string[]{"Jose","730"},
+            new string[]{"Jose","940"}, new string[]{"Jennifer","1335"},
+            new string[]{"Jennifer","730"}, new string[]{"Jose","1630"},
+            new string[]{"Jennifer","5"}, new string[]{"Chloe","1909"},
+            new string[]{"Zhang","1"}, new string[]{"Zhang","10"},
+            new string[]{"Zhang","109"}, new string[]{"Zhang","110"},
+            new string[]{"Amos","1"}, new string[]{"Amos","2"},
+            new string[]{"Amos","400"}, new string[]{"Amos","500"},
+            new string[]{"Amos","503"}, new string[]{"Amos","504"},
+            new string[]{"Amos","601"}, new string[]{"Amos","602"},
+            new string[]{"Paul","1416"}
+        };
+
+        Dictionary<string, List<string>> result =
+            FindFrequentBadgeAccess(badgeTimes);
+
+        foreach (var kv in result)
+        {
+            Console.WriteLine(kv.Key + ": " + string.Join(" ", kv.Value));
+        }
+    }
+
+    static Dictionary<string, List<string>> FindFrequentBadgeAccess(
+        List<string[]> records)
+    {
+        Dictionary<string, List<int>> map =
+            new Dictionary<string, List<int>>();
+
+        // Group by employee name
+        foreach (var r in records)
+        {
+            string name = r[0];
+            int time = ToMinutes(r[1]);
+
+            if (!map.ContainsKey(name))
+                map[name] = new List<int>();
+
+            map[name].Add(time);
+        }
+
+        Dictionary<string, List<string>> result =
+            new Dictionary<string, List<string>>();
+
+        foreach (var kv in map)
+        {
+            string name = kv.Key;
+            List<int> times = kv.Value;
+
+            times.Sort();
+            int n = times.Count;
+
+            for (int i = 0; i < n; i++)
+            {
+                List<int> window = new List<int>();
+
+                for (int j = i; j < n; j++)
+                {
+                    if (times[j] - times[i] <= 60)
+                        window.Add(times[j]);
+                    else
+                        break;
+                }
+
+                if (window.Count >= 3)
+                {
+                    List<string> formatted = new List<string>();
+
+                    for (int k = 0; k < window.Count; k++)
+                        formatted.Add(FromMinutes(window[k]));
+
+                    result[name] = formatted;
+                    break; // earliest window only
+                }
+            }
+        }
+
+        return result;
+    }
+
+    // Converts "835", "5", "1910" to minutes since 00:00
+    static int ToMinutes(string t)
+    {
+        int val = int.Parse(t);
+
+        int hours = val / 100;
+        int mins = val % 100;
+
+        return hours * 60 + mins;
+    }
+
+    // Converts minutes back to HHMM-like format
+    static string FromMinutes(int total)
+    {
+        int h = total / 60;
+        int m = total % 60;
+
+        int value = h * 100 + m;
+        return value.ToString();
+    }
+}`
+},{
+    id: 314,
+    title: "Q : Movie Recommendation Based on Similar User Ratings",
+    description: `
+/*
+/*
+One of the fun features of Aquaintly is that users can rate movies they have seen from 1 to 5. We want to use these ratings to make movie recommendations. Ratings will be provided in the following format: [Member Name, Movie Name, Rating]
+
+We consider two users to have similar taste in movies if they have both rated the same movie as 4 or 5.
+
+A movie should be recommended to a user if:
+- They haven't rated the movie
+- A user with similar taste has rated the movie as 4 or 5
+
+Example:
+
+ratings = [
+  ["Alice", "Frozen", "5"],
+  ["Bob", "Mad Max", "5"],
+  ["Charlie", "Lost In Translation", "4"],
+  ["Charlie", "Inception", "4"],
+  ["Bob", "All About Eve", "3"],
+  ["Bob", "Lost In Translation", "5"],
+  ["Dennis", "All About Eve", "5"],
+  ["Dennis", "Mad Max", "4"],
+  ["Charlie", "Topsy-Turvy", "2"],
+  ["Dennis", "Topsy-Turvy", "4"],
+  ["Alice", "Lost In Translation", "1"],
+  ["Franz", "Lost In Translation", "5"],
+  ["Franz", "Mad Max", "5"]
+]
+
+If we want to recommend a movie to Charlie, we would recommend "Mad Max" because:
+- Charlie has not rated "Mad Max"
+- Charlie and Bob have similar taste as they both rated "Lost in Translation" 4 or 5
+- Bob rated "Mad Max" a 5
+
+Write a function that takes the name of a user and a collection of ratings, and returns a collection of all movie recommendations that can be made for the given user.
+
+All test cases:
+recommendations("Charlie", ratings) => ["Mad Max"]
+recommendations("Bob", ratings) => ["Inception", "Topsy-Turvy"]
+recommendations("Dennis", ratings) => ["Lost In Translation"]
+recommendations("Alice", ratings) => []
+recommendations("Franz", ratings) => ["Inception", "All About Eve", "Topsy-Turvy"]
+
+Complexity Variable: R = number of ratings
+M = number of movies
+U = number of users
+*/
+*/
+`,
+    starterCode: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<string[]> ratings = new List<string[]>
+        {
+            new string[]{"Alice","Frozen","5"},
+            new string[]{"Bob","Mad Max","5"},
+            new string[]{"Charlie","Lost In Translation","4"},
+            new string[]{"Charlie","Inception","4"},
+            new string[]{"Bob","All About Eve","3"},
+            new string[]{"Bob","Lost In Translation","5"},
+            new string[]{"Dennis","All About Eve","5"},
+            new string[]{"Dennis","Mad Max","4"},
+            new string[]{"Charlie","Topsy-Turvy","2"},
+            new string[]{"Dennis","Topsy-Turvy","4"},
+            new string[]{"Alice","Lost In Translation","1"},
+            new string[]{"Franz","Lost In Translation","5"},
+            new string[]{"Franz","Mad Max","5"}
+        };
+
+        Print("Charlie", Recommendations("Charlie", ratings));
+        Print("Bob", Recommendations("Bob", ratings));
+        Print("Dennis", Recommendations("Dennis", ratings));
+        Print("Alice", Recommendations("Alice", ratings));
+        Print("Franz", Recommendations("Franz", ratings));
+    }
+
+    static List<string> Recommendations(string user, List<string[]> ratings)
+    {
+        // ❌ TODO – not implemented
+        return new List<string>();
+    }
+
+    static void Print(string user, List<string> movies)
+    {
+        Console.WriteLine(user + " => [" + string.Join(", ", movies) + "]");
+    }
+}`,
+    hints: [
+        "Group all ratings by user.",
+        "For the target user, find all movies rated 4 or 5.",
+        "Find other users who also rated any of those movies 4 or 5.",
+        "Recommend movies rated 4 or 5 by similar users that the target user has not rated."
+    ],
+    solution: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<string[]> ratings = new List<string[]>
+        {
+            new string[]{"Alice","Frozen","5"},
+            new string[]{"Bob","Mad Max","5"},
+            new string[]{"Charlie","Lost In Translation","4"},
+            new string[]{"Charlie","Inception","4"},
+            new string[]{"Bob","All About Eve","3"},
+            new string[]{"Bob","Lost In Translation","5"},
+            new string[]{"Dennis","All About Eve","5"},
+            new string[]{"Dennis","Mad Max","4"},
+            new string[]{"Charlie","Topsy-Turvy","2"},
+            new string[]{"Dennis","Topsy-Turvy","4"},
+            new string[]{"Alice","Lost In Translation","1"},
+            new string[]{"Franz","Lost In Translation","5"},
+            new string[]{"Franz","Mad Max","5"}
+        };
+
+        Print("Charlie", Recommendations("Charlie", ratings));
+        Print("Bob", Recommendations("Bob", ratings));
+        Print("Dennis", Recommendations("Dennis", ratings));
+        Print("Alice", Recommendations("Alice", ratings));
+        Print("Franz", Recommendations("Franz", ratings));
+    }
+
+    static List<string> Recommendations(string user, List<string[]> ratings)
+    {
+        Dictionary<string, Dictionary<string, int>> map =
+            new Dictionary<string, Dictionary<string, int>>();
+
+        foreach (var r in ratings)
+        {
+            string name = r[0];
+            string movie = r[1];
+            int rating = int.Parse(r[2]);
+
+            if (!map.ContainsKey(name))
+                map[name] = new Dictionary<string, int>();
+
+            map[name][movie] = rating;
+        }
+
+        Dictionary<string, int> userRatings;
+
+        if (!map.TryGetValue(user, out userRatings))
+            return new List<string>();
+
+        HashSet<string> likedByUser = new HashSet<string>();
+
+        foreach (var kv in userRatings)
+        {
+            if (kv.Value >= 4)
+                likedByUser.Add(kv.Key);
+        }
+
+        HashSet<string> similarUsers = new HashSet<string>();
+
+        foreach (var kv in map)
+        {
+            string otherUser = kv.Key;
+
+            if (otherUser == user)
+                continue;
+
+            Dictionary<string, int> otherRatings = kv.Value;
+
+            foreach (string movie in likedByUser)
+            {
+                int r;
+
+                if (otherRatings.TryGetValue(movie, out r) && r >= 4)
+                {
+                    similarUsers.Add(otherUser);
+                    break;
+                }
+            }
+        }
+
+        HashSet<string> recommendations = new HashSet<string>();
+
+        foreach (string similarUser in similarUsers)
+        {
+            Dictionary<string, int> otherRatings = map[similarUser];
+
+            foreach (var kv in otherRatings)
+            {
+                string movie = kv.Key;
+                int rating = kv.Value;
+
+                if (rating >= 4 && !userRatings.ContainsKey(movie))
+                {
+                    recommendations.Add(movie);
+                }
+            }
+        }
+
+        return new List<string>(recommendations);
+    }
+
+    static void Print(string user, List<string> movies)
+    {
+        Console.WriteLine(user + " => [" + string.Join(", ", movies) + "]");
+    }
+}`
 },
           {
             id: 21,
