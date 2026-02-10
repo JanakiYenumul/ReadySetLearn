@@ -2729,7 +2729,7 @@ class Solution {
     }
 }`
         },
-          {
+        {
             id: 21,
             title: "Q 15 : Local Radio Station Play",
             description: `We have a catalog of song titles (and their lengths) that we play at a local radio station. We have been asked to play two of those songs in a row, and they must add up to exactly seven minutes long. 
@@ -3020,10 +3020,10 @@ public class Program {
             ]
         },
         {
-    id: 102,
-    title: "Refactor Conditional Logic for Discounts",
-    description: "The following code determines the discount for a customer. It is correct but hard to read. Refactor it to improve readability without changing behavior.",
-    starterCode: `using System;
+            id: 102,
+            title: "Refactor Conditional Logic for Discounts",
+            description: "The following code determines the discount for a customer. It is correct but hard to read. Refactor it to improve readability without changing behavior.",
+            starterCode: `using System;
 
 public class Program
 {
@@ -3042,12 +3042,12 @@ public class Program
         return isMember ? 0.15 : 0.0;
     }
 }`,
-    hints: [
-        "Introduce meaningful boolean variables to clarify the conditions.",
-        "Avoid nested or compact conditional expressions when readability suffers.",
-        "Ensure the refactoring does not change the original behavior."
-    ],
-    solution: `using System;
+            hints: [
+                "Introduce meaningful boolean variables to clarify the conditions.",
+                "Avoid nested or compact conditional expressions when readability suffers.",
+                "Ensure the refactoring does not change the original behavior."
+            ],
+            solution: `using System;
 
 public class Program
 {
@@ -3074,12 +3074,12 @@ public class Program
         return 0.0;
     }
 }`
-},
+        },
         {
-    id: 103,
-    title: "Refactor Repeated Code in Username Validation",
-    description: "The following function validates a list of usernames. The validation logic is embedded inside the loop. Refactor the code to reduce duplication and improve readability by extracting reusable validation logic.",
-    starterCode: `using System;
+            id: 103,
+            title: "Refactor Repeated Code in Username Validation",
+            description: "The following function validates a list of usernames. The validation logic is embedded inside the loop. Refactor the code to reduce duplication and improve readability by extracting reusable validation logic.",
+            starterCode: `using System;
 using System.Collections.Generic;
 
 public class Program
@@ -3107,12 +3107,12 @@ public class Program
         return valid;
     }
 }`,
-    hints: [
-        "Extract the validation logic into a separate method.",
-        "The refactoring should not change the behavior.",
-        "A small helper method can make the main loop easier to read."
-    ],
-    solution: `using System;
+            hints: [
+                "Extract the validation logic into a separate method.",
+                "The refactoring should not change the behavior.",
+                "A small helper method can make the main loop easier to read."
+            ],
+            solution: `using System;
 using System.Collections.Generic;
 
 public class Program
@@ -3147,7 +3147,7 @@ public class Program
                && !name.Contains(" ");
     }
 }`
-},
+        },
         {
             id: 104,
             title: "Optimize the Code",
@@ -3181,10 +3181,10 @@ public class Program
     ],
     unitTests: [
         {
-    id: 201,
-    title: "Test Calculator Methods",
-    description: "You have a simple Calculator class. The current test code incorrectly verifies the divide-by-zero scenario as a normal value. Update the tests so that the exception case is validated correctly.",
-    starterCode: `using System;
+            id: 201,
+            title: "Test Calculator Methods",
+            description: "You have a simple Calculator class. The current test code incorrectly verifies the divide-by-zero scenario as a normal value. Update the tests so that the exception case is validated correctly.",
+            starterCode: `using System;
 
 public class Calculator
 {
@@ -3219,12 +3219,12 @@ public class Program
                               " actual=" + actual);
     }
 }`,
-    hints: [
-        "Division by zero throws an exception, it should not be tested like a normal return value.",
-        "Create a separate assertion method for exception cases.",
-        "Use try-catch to validate that DivideByZeroException is thrown."
-    ],
-    solution: `using System;
+            hints: [
+                "Division by zero throws an exception, it should not be tested like a normal return value.",
+                "Create a separate assertion method for exception cases.",
+                "Use try-catch to validate that DivideByZeroException is thrown."
+            ],
+            solution: `using System;
 
 public class Calculator
 {
@@ -3270,12 +3270,12 @@ public class Program
         }
     }
 }`
-},
-       {
-    id: 202,
-    title: "Test Email Validation",
-    description: "The current email validation logic is too weak and allows some invalid email formats to pass. Run the given tests, identify the failing case, and fix the validation logic without changing the test code.",
-    starterCode: `using System;
+        },
+        {
+            id: 202,
+            title: "Test Email Validation",
+            description: "The current email validation logic is too weak and allows some invalid email formats to pass. Run the given tests, identify the failing case, and fix the validation logic without changing the test code.",
+            starterCode: `using System;
 
 public class EmailValidator
 {
@@ -3317,13 +3317,13 @@ public class Program
                               " actual=" + actual);
     }
 }`,
-    hints: [
-        "The current implementation only checks for the presence of '@' and '.'.",
-        "Ensure there is exactly one '@' character.",
-        "Ensure the dot appears after the '@' and is not the last character.",
-        "Do not change the test code—fix only the validation logic."
-    ],
-    solution: `using System;
+            hints: [
+                "The current implementation only checks for the presence of '@' and '.'.",
+                "Ensure there is exactly one '@' character.",
+                "Ensure the dot appears after the '@' and is not the last character.",
+                "Do not change the test code—fix only the validation logic."
+            ],
+            solution: `using System;
 
 public class EmailValidator
 {
@@ -3381,7 +3381,7 @@ public class Program
                               " actual=" + actual);
     }
 }`
-},
+        },
         {
             id: 203,
             title: "Test Shopping Cart Total",
@@ -3467,11 +3467,11 @@ public class Program {
                 "Check modulo operation for even numbers."
             ]
         },
-       {
-id: 302,
-title: "Performance Optimize Fibonacci",
-description: "Compute the nth Fibonacci number. The naive recursive solution is very slow for n > 40. Optimize using memoization or iterative approach. Expected time complexity after optimization: O(n). Assume 0 <= n <= 45.",
-starterCode: `using System;
+        {
+            id: 302,
+            title: "Performance Optimize Fibonacci",
+            description: "Compute the nth Fibonacci number. The naive recursive solution is very slow for n > 40. Optimize using memoization or iterative approach. Expected time complexity after optimization: O(n). Assume 0 <= n <= 45.",
+            starterCode: `using System;
 
 
 public class Program
@@ -3495,12 +3495,12 @@ return n;
 return Fibonacci(n - 1) + Fibonacci(n - 2);
 }
 }`,
-hints: [
-"The recursive solution recomputes the same Fibonacci values many times.",
-"Use an iterative bottom-up approach to compute the result in O(n) time.",
-"You can also use memoization to cache already computed values."
-],
-solution: `using System;
+            hints: [
+                "The recursive solution recomputes the same Fibonacci values many times.",
+                "Use an iterative bottom-up approach to compute the result in O(n) time.",
+                "You can also use memoization to cache already computed values."
+            ],
+            solution: `using System;
 
 
 public class Program
@@ -3534,12 +3534,12 @@ b = temp;
 return b;
 }
 }`
-},
-    {
-id: 303,
-title: "Performance Optimize String Concatenation",
-description: "Concatenating many strings using '+' is slow. Optimize the code using a more efficient method for large n. Expected time complexity after optimization: O(n).",
-starterCode: `using System;
+        },
+        {
+            id: 303,
+            title: "Performance Optimize String Concatenation",
+            description: "Concatenating many strings using '+' is slow. Optimize the code using a more efficient method for large n. Expected time complexity after optimization: O(n).",
+            starterCode: `using System;
 
 
 public class Program
@@ -3565,12 +3565,12 @@ result = result + i.ToString(); // slow
 return result;
 }
 }`,
-hints: [
-"String concatenation using '+' inside a loop creates many temporary strings.",
-"Use StringBuilder to avoid repeated allocations.",
-"Append values to a buffer and convert to string at the end."
-],
-solution: `using System;
+            hints: [
+                "String concatenation using '+' inside a loop creates many temporary strings.",
+                "Use StringBuilder to avoid repeated allocations.",
+                "Append values to a buffer and convert to string at the end."
+            ],
+            solution: `using System;
 using System.Text;
 
 
@@ -3597,12 +3597,12 @@ sb.Append(i.ToString());
 return sb.ToString();
 }
 }`
-},
-  {
-    id: 304,
-    title: "Performance Singleton Pattern",
-    description: "The snippet shows that the performance and correctness of getting the Singleton instance is problematic in a multi-threaded environment. Identify the cause of the issue and fix it using a thread-safe and efficient approach.",
-    starterCode: `using System;
+        },
+        {
+            id: 304,
+            title: "Performance Singleton Pattern",
+            description: "The snippet shows that the performance and correctness of getting the Singleton instance is problematic in a multi-threaded environment. Identify the cause of the issue and fix it using a thread-safe and efficient approach.",
+            starterCode: `using System;
 using System.Threading.Tasks;
 
 public class Singleton
@@ -3641,13 +3641,13 @@ public class Program
         });
     }
 }`,
-    hints: [
-        "The current implementation is not thread-safe and may create multiple instances under concurrency.",
-        "Multiple threads can enter the null check at the same time.",
-        "Use locking carefully to avoid unnecessary performance overhead.",
-        "Double-checked locking is a common pattern to solve this problem."
-    ],
-    solution: `using System;
+            hints: [
+                "The current implementation is not thread-safe and may create multiple instances under concurrency.",
+                "Multiple threads can enter the null check at the same time.",
+                "Use locking carefully to avoid unnecessary performance overhead.",
+                "Double-checked locking is a common pattern to solve this problem."
+            ],
+            solution: `using System;
 using System.Threading.Tasks;
 
 public class Singleton
@@ -3694,12 +3694,12 @@ public class Program
         });
     }
 }`
-},
+        },
         {
-    id: 305,
-    title: "Performance Microservices",
-    description: "The following code uses a microservice to retrieve a list of companies' data. While profiling the code, we observed that the microservice is effectively used multiple times because the result is re-enumerated several times. Identify the performance issue and fix it so the microservice result is fetched and enumerated only once.",
-    starterCode: `using System;
+            id: 305,
+            title: "Performance Microservices",
+            description: "The following code uses a microservice to retrieve a list of companies' data. While profiling the code, we observed that the microservice is effectively used multiple times because the result is re-enumerated several times. Identify the performance issue and fix it so the microservice result is fetched and enumerated only once.",
+            starterCode: `using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -3801,12 +3801,12 @@ public class Program
         Console.WriteLine("Companies returned: " + result.Count);
     }
 }`,
-    hints: [
-        "The IEnumerable returned by GetCompanyInfoList is enumerated multiple times.",
-        "Each LINQ operation such as Any(), Count() and Where() can re-enumerate the source.",
-        "Materialize the result once using ToList() before applying multiple queries."
-    ],
-    solution: `using System;
+            hints: [
+                "The IEnumerable returned by GetCompanyInfoList is enumerated multiple times.",
+                "Each LINQ operation such as Any(), Count() and Where() can re-enumerate the source.",
+                "Materialize the result once using ToList() before applying multiple queries."
+            ],
+            solution: `using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -3907,12 +3907,12 @@ public class Program
         Console.WriteLine("Companies returned: " + result.Count);
     }
 }`
-},
-       {
-    id: 306,
-    title: "Implementing a thread-safe counter",
-    description: "You are implementing a thread-safe counter using Interlocked.Increment and Interlocked.Decrement. However, sometimes your code throws a NullReferenceException. Why does this happen, and how can you fix it?",
-    starterCode: `using System;
+        },
+        {
+            id: 306,
+            title: "Implementing a thread-safe counter",
+            description: "You are implementing a thread-safe counter using Interlocked.Increment and Interlocked.Decrement. However, sometimes your code throws a NullReferenceException. Why does this happen, and how can you fix it?",
+            starterCode: `using System;
 using System.Threading;
 
 public class Counter
@@ -3945,12 +3945,12 @@ public class Program
         Console.WriteLine(counter.Value);
     }
 }`,
-    hints: [
-        "Interlocked methods do not support nullable variables.",
-        "If the field becomes null, Interlocked.Increment cannot operate on it safely.",
-        "Use a non-nullable int field for counters that are updated with Interlocked."
-    ],
-    solution: `using System;
+            hints: [
+                "Interlocked methods do not support nullable variables.",
+                "If the field becomes null, Interlocked.Increment cannot operate on it safely.",
+                "Use a non-nullable int field for counters that are updated with Interlocked."
+            ],
+            solution: `using System;
 using System.Threading;
 
 public class Counter
@@ -3982,6 +3982,8 @@ public class Program
         Console.WriteLine(counter.Value);
     }
 }`
+        }
+    ]
 };
 
 export default dotnetQuestions;
