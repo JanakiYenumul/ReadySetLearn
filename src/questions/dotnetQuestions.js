@@ -2732,6 +2732,139 @@ class Solution {
     }
 }`
         },
+        {
+    id: 307,
+    title: "Q : Badge Access Mismatch Detection",
+    description: `
+/*
+
+Given an ordered list of employees who used their badge to enter or exit the room, return two collections:
+1. Employees who entered without exiting
+2. Employees who exited without entering.
+
+*/
+`,
+    starterCode: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<string[]> records1 = new List<string[]>
+        {
+            new string[] { "Paul", "enter" },
+            new string[] { "Pauline", "exit" },
+            new string[] { "Paul", "enter" },
+            new string[] { "Paul", "exit" },
+            new string[] { "Martha", "exit" },
+            new string[] { "Joe", "enter" }
+        };
+
+        Tuple<List<string>, List<string>> result = Mismatches(records1);
+
+        Console.WriteLine("Entered without exiting  : " + string.Join(\", \", result.Item1));
+        Console.WriteLine("Exited without entering : " + string.Join(\", \", result.Item2));
+    }
+
+    static Tuple<List<string>, List<string>> Mismatches(List<string[]> records)
+    {
+        // ❌ TODO: logic not implemented yet
+        return new Tuple<List<string>, List<string>>(
+            new List<string>(),
+            new List<string>()
+        );
+    }
+}`,
+    hints: [
+        "Track whether each employee is currently inside the room.",
+        "Use a dictionary to store the current state for each employee.",
+        "Use two collections to store employees who enter twice and who exit without entering.",
+        "After processing all records, employees still inside should be treated as entered without exiting."
+    ],
+    solution: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<string[]> records1 = new List<string[]>
+        {
+            new string[] { "Paul", "enter" },
+            new string[] { "Pauline", "exit" },
+            new string[] { "Paul", "enter" },
+            new string[] { "Paul", "exit" },
+            new string[] { "Martha", "exit" },
+            new string[] { "Joe", "enter" }
+        };
+
+        Tuple<List<string>, List<string>> result = Mismatches(records1);
+
+        Console.WriteLine("Entered without exiting  : " + string.Join(\", \", result.Item1));
+        Console.WriteLine("Exited without entering : " + string.Join(\", \", result.Item2));
+    }
+
+    static Tuple<List<string>, List<string>> Mismatches(List<string[]> records)
+    {
+        // Track current room state per employee
+        Dictionary<string, bool> inside = new Dictionary<string, bool>();
+
+        HashSet<string> enteredWithoutExit = new HashSet<string>();
+        HashSet<string> exitedWithoutEnter = new HashSet<string>();
+
+        foreach (string[] record in records)
+        {
+            string name = record[0];
+            string action = record[1];
+
+            bool isInside;
+
+            if (!inside.TryGetValue(name, out isInside))
+            {
+                isInside = false;
+            }
+
+            if (action == "enter")
+            {
+                if (!isInside)
+                {
+                    inside[name] = true;
+                }
+                else
+                {
+                    // entered again without exit
+                    enteredWithoutExit.Add(name);
+                }
+            }
+            else if (action == "exit")
+            {
+                if (!isInside)
+                {
+                    // exited without entering
+                    exitedWithoutEnter.Add(name);
+                }
+                else
+                {
+                    inside[name] = false;
+                }
+            }
+        }
+
+        // Anyone still inside at the end also entered without exiting
+        foreach (KeyValuePair<string, bool> kv in inside)
+        {
+            if (kv.Value)
+                enteredWithoutExit.Add(kv.Key);
+        }
+
+        return new Tuple<List<string>, List<string>>(
+            new List<string>(enteredWithoutExit),
+            new List<string>(exitedWithoutEnter)
+        );
+    }
+}`
+},
           {
             id: 21,
             title: "Q 15 : Local Radio Station Play",
