@@ -4285,7 +4285,7 @@ public class Membership
         }
     }
 
-    // ❌ BUG: only GOLD is treated as paid
+    
     public Dictionary<string, double> GetMembershipStatistics()
     {
         int totalMembers = members.Count;
@@ -4337,7 +4337,7 @@ class Program
 
         testmembership.UpdateMemberShip(1, MembershipStatus.SILVER);
 
-        // ❌ THIS TEST FAILS
+        
         Check("After upgrade to SILVER, TotalPaidMembers == 1",
             testmembership.GetMembershipStatistics()["TotalPaidMembers"] == 1);
 
