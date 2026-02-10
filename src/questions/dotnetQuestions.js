@@ -1308,19 +1308,8 @@ public class Membership
     {
         members.Add(member);
     }
-
-    public void AddWorkout(int memberId, Workout workout)
-    {
-        // TODO: Implement this function
-    }
-
-    public Dictionary<int, double> GetAverageWorkoutDurations()
-    {
-        // TODO: Implement this function
-        return new Dictionary<int, double>();
-    }
-}
-      `,
+  
+},
             solution: `
 using System;
 using System.Collections.Generic;
