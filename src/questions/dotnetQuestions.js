@@ -1641,10 +1641,7 @@ using System.Linq;
 
 public class Solution
 {
-    public static List<string> filter_rooms(string[][] instructions, string[] treasureRooms)
-    {
-     //TODO
-    }
+   
 
     public static void Main()
     {
@@ -1867,11 +1864,7 @@ using System.Collections.Generic;
 using System.Linq;
 class Program 
 {
-  public List<string> wrapLines(string[] words, int length) 
-  {
-    // TODO: Implement the wrap logic here
-    return new List<string>();
-  }
+  
 
   static void Main(String[] args) 
   {
@@ -2028,10 +2021,7 @@ class Solution {
         Console.WriteLine(ReachExit(obstacles, instructions));
     }
 
-    static bool ReachExit(int[] obstacles, string instructions) {
-        // TODO: Implement logic
-        return false;
-    }
+    
 }
       `,
             solution: `
@@ -2203,10 +2193,7 @@ class Solution {
         Console.WriteLine(FindTreasure(instructions, money));
     }
 
-    static int? FindTreasure(int[] instructions, int money) {
-        // TODO: Implement logic
-        return null;
-    }
+    
 }
       `,
             solution: `
@@ -2655,10 +2642,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 class Solution {
-    static List<List<string>> grouping(string[][] events, int N) {
-        // TODO: Implement grouping logic here
-        return new List<List<string>>();
-    }
+    
 
     static void Main(String[] args) {
         var events = new string[][] {
