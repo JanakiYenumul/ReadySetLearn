@@ -3824,6 +3824,663 @@ class Program
         Console.WriteLine(user + " => [" + string.Join(", ", movies) + "]");
     }
 }`
+},{
+    id: 315,
+    title: "Q : Find Scrambled Word Inside a Note",
+    description: `
+/*
+You are running a classroom and suspect that some of your students are passing around the answer to a multiple-choice question disguised as a random note.
+
+Your task is to write a function that, given a list of words and a note, finds and returns the word in the list that is scrambled inside the note, if any exists. If none exist, it returns the result "-" as a string. There will be at most one matching word. The letters don't need to be in order or next to each other. The letters cannot be reused.
+
+Example:  
+words = ["baby", "referee", "cat", "dada", "dog", "bird", "ax", "baz"]
+note1 = "ctay"
+find(words, note1) => "cat"   (the letters do not have to be in order)  
+  
+note2 = "bcanihjsrrrferet"
+find(words, note2) => "cat"   (the letters do not have to be together)  
+  
+note3 = "tbaykkjlga"
+find(words, note3) => "-"     (the letters cannot be reused)  
+  
+note4 = "bbbblkkjbaby"
+find(words, note4) => "baby"    
+  
+note5 = "dad"
+find(words, note5) => "-"    
+  
+note6 = "breadmaking"
+find(words, note6) => "bird"    
+
+note7 = "dadaa"
+find(words, note7) => "dada"    
+
+All Test Cases:
+find(words, note1) -> "cat"
+find(words, note2) -> "cat"
+find(words, note3) -> "-"
+find(words, note4) -> "baby"
+find(words, note5) -> "-"
+find(words, note6) -> "bird"
+find(words, note7) -> "dada"
+  
+Complexity analysis variables:  
+  
+W = number of words in \`words\`  
+S = maximal length of each word or of the note  
+*/
+`,
+    starterCode: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        string[] words = new string[]
+        {
+            "baby", "referee", "cat", "dada", "dog", "bird", "ax", "baz"
+        };
+
+        Run(words, "ctay");               // cat
+        Run(words, "bcanihjsrrrferet");   // cat
+        Run(words, "tbaykkjlga");         // -
+        Run(words, "bbbblkkjbaby");       // baby
+        Run(words, "dad");                // -
+        Run(words, "breadmaking");        // bird
+        Run(words, "dadaa");              // dada
+    }
+
+    static void Run(string[] words, string note)
+    {
+        Console.WriteLine("find(" + note + ") => " + Find(words, note));
+    }
+
+    static string Find(string[] words, string note)
+    {
+        // ❌ TODO – not implemented
+        return "-";
+    }
+}`,
+    hints: [
+        "Count how many times each character appears in the note.",
+        "For each word, check if all its characters can be taken from the note counts.",
+        "Characters cannot be reused.",
+        "Return the first matching word, otherwise return \"-\"."
+    ],
+    solution: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        string[] words = new string[]
+        {
+            "baby", "referee", "cat", "dada", "dog", "bird", "ax", "baz"
+        };
+
+        Run(words, "ctay");               // cat
+        Run(words, "bcanihjsrrrferet");   // cat
+        Run(words, "tbaykkjlga");         // -
+        Run(words, "bbbblkkjbaby");       // baby
+        Run(words, "dad");                // -
+        Run(words, "breadmaking");        // bird
+        Run(words, "dadaa");              // dada
+    }
+
+    static void Run(string[] words, string note)
+    {
+        Console.WriteLine("find(" + note + ") => " + Find(words, note));
+    }
+
+    static string Find(string[] words, string note)
+    {
+        int[] noteCount = BuildCount(note);
+
+        for (int i = 0; i < words.Length; i++)
+        {
+            string word = words[i];
+
+            if (CanForm(word, noteCount))
+                return word;
+        }
+
+        return "-";
+    }
+
+    static bool CanForm(string word, int[] noteCount)
+    {
+        int[] temp = new int[26];
+
+        for (int i = 0; i < noteCount.Length; i++)
+            temp[i] = noteCount[i];
+
+        for (int i = 0; i < word.Length; i++)
+        {
+            char c = word[i];
+
+            if (c < 'a' || c > 'z')
+                return false;
+
+            int idx = c - 'a';
+
+            if (temp[idx] == 0)
+                return false;
+
+            temp[idx]--;
+        }
+
+        return true;
+    }
+
+    static int[] BuildCount(string s)
+    {
+        int[] count = new int[26];
+
+        for (int i = 0; i < s.Length; i++)
+        {
+            char c = s[i];
+
+            if (c >= 'a' && c <= 'z')
+                count[c - 'a']++;
+        }
+
+        return count;
+    }
+}`
+},{
+    id: 316,
+    title: "Q : Fix Performance Issue in High-Frequency Order Processing",
+    description: `
+Given code snippet is slow when thousand order per second is the frequency. Analyze the code and fix the performance issue.
+`,
+    starterCode: `using System;
+
+namespace Orders
+{
+    public class Order
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+        private Order(int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
+
+        public static Order CreateOrder()
+        {
+            int id = 10;
+            string name = "ABC";
+            return new Order(id, name);
+        }
+    }
+
+    public interface IRepo
+    {
+        void UpsertOrder(Order order);
+    }
+
+    public interface ILogger
+    {
+        void Info(string message);
+    }
+
+    public interface IClassA
+    {
+        void Method1();
+    }
+
+    // Dummy implementations so the code can run
+    public class Repo : IRepo
+    {
+        public void UpsertOrder(Order order)
+        {
+            // simulate db call
+        }
+    }
+
+    public class Logger : ILogger
+    {
+        public void Info(string message)
+        {
+            Console.WriteLine(message);
+        }
+    }
+
+    public class ClassA : IClassA
+    {
+        private readonly IRepo _repo;
+        private readonly ILogger _logger;
+
+        public ClassA(IRepo repo, ILogger logger)
+        {
+            _repo = repo;
+            _logger = logger;
+        }
+
+        public void Method1()
+        {
+            Order orderA;
+
+            try
+            {
+                orderA = Order.CreateOrder();
+            }
+            catch (Exception ex)
+            {
+                _logger.Info("Error1");
+                throw ex; // ❌ bad rethrow
+            }
+
+            try
+            {
+                _repo.UpsertOrder(orderA);
+            }
+            catch (Exception ex)
+            {
+                _logger.Info("Error1");
+                throw ex; // ❌ bad rethrow
+            }
+        }
+    }
+
+    // ----------------- Main -----------------
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            IRepo repo = new Repo();
+            ILogger logger = new Logger();
+
+            IClassA service = new ClassA(repo, logger);
+
+            // simulate multiple calls
+            for (int i = 0; i < 5; i++)
+            {
+                service.Method1();
+            }
+
+            Console.WriteLine("Problem code executed.");
+        }
+    }
+}`,
+    hints: [
+        "Avoid rethrowing exceptions using 'throw ex'.",
+        "Preserve the original stack trace when rethrowing.",
+        "Reduce duplicate try-catch blocks.",
+        "Wrap both operations inside a single try block when possible."
+    ],
+    solution: `using System;
+
+namespace Orders
+{
+    public class Order
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+        private Order(int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
+
+        public static Order CreateOrder()
+        {
+            int id = 10;
+            string name = "ABC";
+            return new Order(id, name);
+        }
+    }
+
+    public interface IRepo
+    {
+        void UpsertOrder(Order order);
+    }
+
+    public interface ILogger
+    {
+        void Info(string message);
+    }
+
+    public interface IClassA
+    {
+        void Method1();
+    }
+
+    // Dummy implementations
+    public class Repo : IRepo
+    {
+        public void UpsertOrder(Order order)
+        {
+            // simulate db call
+        }
+    }
+
+    public class Logger : ILogger
+    {
+        public void Info(string message)
+        {
+            Console.WriteLine(message);
+        }
+    }
+
+    public class ClassA : IClassA
+    {
+        private readonly IRepo _repo;
+        private readonly ILogger _logger;
+
+        public ClassA(IRepo repo, ILogger logger)
+        {
+            _repo = repo;
+            _logger = logger;
+        }
+
+        public void Method1()
+        {
+            try
+            {
+                Order orderA = Order.CreateOrder();
+                _repo.UpsertOrder(orderA);
+            }
+            catch (Exception)
+            {
+                _logger.Info("Error1");
+
+                // ✅ correct rethrow
+                throw;
+            }
+        }
+    }
+
+    // ----------------- Main -----------------
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            IRepo repo = new Repo();
+            ILogger logger = new Logger();
+
+            IClassA service = new ClassA(repo, logger);
+
+            // simulate multiple calls
+            for (int i = 0; i < 5; i++)
+            {
+                service.Method1();
+            }
+
+            Console.WriteLine("Solution code executed.");
+        }
+    }
+}`
+},{
+    id: 317,
+    title: "Q : Fix Membership Statistics Bug in Gym Management System",
+    description: `
+/*
+
+We are building a program to manage a gym's membership. The gym has multiple members, each with a unique ID, name, and membership status. The program allows gym staff to add new members, update member status, and get membership statistics.
+Definitions:
+* A "member" is an object that represents a gym member. It has properties for the ID, name, and membership status.
+* A "membership" is a class which is used for managing members in the gym.
+
+To begin with, we present you with two tasks:
+1-1) Read through and understand the code below. Please take as much time as necessary, and feel free to run the code.
+1-2) The test for Membership is not passing due to a bug in the code. Make the necessary changes to Membership to fix the bug.
+
+*/
+`,
+    starterCode: `using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public enum MembershipStatus
+{
+    BRONZE = 1,
+    SILVER = 2,
+    GOLD = 3
+}
+
+public class Member
+{
+    public int MemberId { get; set; }
+    public string Name { get; set; }
+    public MembershipStatus MembershipStatus { get; set; }
+
+    public Member(int memberId, string name, MembershipStatus membershipStatus)
+    {
+        MemberId = memberId;
+        Name = name;
+        MembershipStatus = membershipStatus;
+    }
+}
+
+public class Membership
+{
+    private List<Member> members;
+
+    public Membership()
+    {
+        members = new List<Member>();
+    }
+
+    public void AddMember(Member member)
+    {
+        members.Add(member);
+    }
+
+    public void UpdateMemberShip(int memberId, MembershipStatus newStatus)
+    {
+        foreach (var member in members)
+        {
+            if (member.MemberId == memberId)
+            {
+                member.MembershipStatus = newStatus;
+                return;
+            }
+        }
+    }
+
+    // ❌ BUG: only GOLD is treated as paid
+    public Dictionary<string, double> GetMembershipStatistics()
+    {
+        int totalMembers = members.Count;
+
+        int totalPaidMembers =
+            members.Count(m => m.MembershipStatus == MembershipStatus.GOLD);
+
+        double conversionRate = 0;
+
+        if (totalMembers > 0)
+            conversionRate = (double)totalPaidMembers / totalMembers * 100;
+
+        return new Dictionary<string, double>
+        {
+            { "TotalMembers", totalMembers },
+            { "TotalPaidMembers", totalPaidMembers },
+            { "ConversionRate", conversionRate }
+        };
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        TestMembership();
+        Console.WriteLine("Finished (problem code).");
+    }
+
+    static void Check(string testName, bool condition)
+    {
+        if (condition)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName);
+    }
+
+    static void TestMembership()
+    {
+        Console.WriteLine("Running Test Membership");
+
+        Membership testmembership = new Membership();
+
+        testmembership.AddMember(
+            new Member(1, "John Doe", MembershipStatus.BRONZE));
+
+        Check("TotalMembers == 1",
+            testmembership.GetMembershipStatistics()["TotalMembers"] == 1);
+
+        testmembership.UpdateMemberShip(1, MembershipStatus.SILVER);
+
+        // ❌ THIS TEST FAILS
+        Check("After upgrade to SILVER, TotalPaidMembers == 1",
+            testmembership.GetMembershipStatistics()["TotalPaidMembers"] == 1);
+
+        testmembership.AddMember(new Member(2, "Alex C", MembershipStatus.BRONZE));
+        testmembership.AddMember(new Member(3, "Sam K", MembershipStatus.GOLD));
+        testmembership.AddMember(new Member(4, "Linda P", MembershipStatus.SILVER));
+        testmembership.AddMember(new Member(5, "Nina T", MembershipStatus.BRONZE));
+
+        var stats = testmembership.GetMembershipStatistics();
+
+        Check("TotalMembers == 5", stats["TotalMembers"] == 5);
+        Check("TotalPaidMembers == 3", stats["TotalPaidMembers"] == 3);
+        Check("ConversionRate == 60",
+            Math.Abs(stats["ConversionRate"] - 60.0) < 0.01);
+    }
+}`,
+    hints: [
+        "Identify which membership statuses should be treated as paid.",
+        "Look carefully at how TotalPaidMembers is calculated.",
+        "Update the LINQ condition to include all paid membership types.",
+        "Ensure the conversion rate calculation remains unchanged."
+    ],
+    solution: `using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public enum MembershipStatus
+{
+    BRONZE = 1,
+    SILVER = 2,
+    GOLD = 3
+}
+
+public class Member
+{
+    public int MemberId { get; set; }
+    public string Name { get; set; }
+    public MembershipStatus MembershipStatus { get; set; }
+
+    public Member(int memberId, string name, MembershipStatus membershipStatus)
+    {
+        MemberId = memberId;
+        Name = name;
+        MembershipStatus = membershipStatus;
+    }
+}
+
+public class Membership
+{
+    private List<Member> members;
+
+    public Membership()
+    {
+        members = new List<Member>();
+    }
+
+    public void AddMember(Member member)
+    {
+        members.Add(member);
+    }
+
+    public void UpdateMemberShip(int memberId, MembershipStatus newStatus)
+    {
+        foreach (var member in members)
+        {
+            if (member.MemberId == memberId)
+            {
+                member.MembershipStatus = newStatus;
+                return;
+            }
+        }
+    }
+
+    // ✅ FIX: SILVER and GOLD are paid members
+    public Dictionary<string, double> GetMembershipStatistics()
+    {
+        int totalMembers = members.Count;
+
+        int totalPaidMembers =
+            members.Count(m =>
+                m.MembershipStatus == MembershipStatus.SILVER ||
+                m.MembershipStatus == MembershipStatus.GOLD);
+
+        double conversionRate = 0;
+
+        if (totalMembers > 0)
+            conversionRate = (double)totalPaidMembers / totalMembers * 100;
+
+        return new Dictionary<string, double>
+        {
+            { "TotalMembers", totalMembers },
+            { "TotalPaidMembers", totalPaidMembers },
+            { "ConversionRate", conversionRate }
+        };
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        TestMembership();
+        Console.WriteLine("Finished (solution code).");
+    }
+
+    static void Check(string testName, bool condition)
+    {
+        if (condition)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName);
+    }
+
+    static void TestMembership()
+    {
+        Console.WriteLine("Running Test Membership");
+
+        Membership testmembership = new Membership();
+
+        testmembership.AddMember(
+            new Member(1, "John Doe", MembershipStatus.BRONZE));
+
+        Check("TotalMembers == 1",
+            testmembership.GetMembershipStatistics()["TotalMembers"] == 1);
+
+        testmembership.UpdateMemberShip(1, MembershipStatus.SILVER);
+
+        Check("After upgrade to SILVER, TotalPaidMembers == 1",
+            testmembership.GetMembershipStatistics()["TotalPaidMembers"] == 1);
+
+        testmembership.AddMember(new Member(2, "Alex C", MembershipStatus.BRONZE));
+        testmembership.AddMember(new Member(3, "Sam K", MembershipStatus.GOLD));
+        testmembership.AddMember(new Member(4, "Linda P", MembershipStatus.SILVER));
+        testmembership.AddMember(new Member(5, "Nina T", MembershipStatus.BRONZE));
+
+        var stats = testmembership.GetMembershipStatistics();
+
+        Check("TotalMembers == 5", stats["TotalMembers"] == 5);
+        Check("TotalPaidMembers == 3", stats["TotalPaidMembers"] == 3);
+        Check("ConversionRate == 60",
+            Math.Abs(stats["ConversionRate"] - 60.0) < 0.01);
+    }
+}`
 },
           {
             id: 21,
