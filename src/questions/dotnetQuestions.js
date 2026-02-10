@@ -444,9 +444,9 @@ public class Solution
 }`
         },
         {
-            id: 21,
-            title: " Q3 :Extract Full Domain and Second-Level Domain from URLs",
-            description: `
+    id: 21,
+    title: "Q3 : Extract Full Domain and Second-Level Domain from URLs",
+    description: `
 We have collected some HTTP/HTTPS referrer URLs from our web server. This data can be found at the address https://public.karat.io/content/referrals_4.txt, where each line contains a URL and nothing else.
 
 We want to learn more about the domains that refer traffic to our site.
@@ -465,76 +465,106 @@ Expected output for the file: ["world.news.yahoo.com", "yahoo.com"]
 
 Complexity Variable:
 L = length of the URL string
-      `,
-            hints: [
-                "Think about how to remove the protocol (http:// or https://) before parsing.",
-                "Identify where the domain ends by looking for '/', '#', or '?' in the string.",
-                "Split the remaining domain by '.' and reconstruct the last two parts."
-            ],
-            starterCode: `
-using System;
-using System.Net.Http;
-using System.Threading.Tasks;
+`,
+    starterCode: `using System;
 
 class Program
 {
-   static void Main(string[] args)
+    static void Main(string[] args)
     {
+        Console.WriteLine("---- Running test (Problem Code) ----");
+
+        string firstUrl = "http://world.news.yahoo.com/news/olympics/";
+
+        string[] result = ExtractDomains(firstUrl);
+
+        RunTest("world.news.yahoo.com", result[0], "Full domain");
+        RunTest("yahoo.com", result[1], "Last two domain parts");
+    }
+  
+    static void RunTest(string expected, string actual, string testName)
+    {
+        if (expected == actual)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName +
+                              " expected=" + expected +
+                              " actual=" + actual);
+    }
+}`,
+    hints: [
+        "Do not use URL parsing libraries.",
+        "Remove the protocol part (http:// or https://) manually.",
+        "The domain ends before '/', '?' or '#'.",
+        "Split the domain using '.' to compute the last two parts."
+    ],
+    solution: `using System;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.WriteLine("---- Running test (Solution Code) ----");
+
+        string firstUrl = "http://world.news.yahoo.com/news/olympics/";
+
+        string[] result = ExtractDomains(firstUrl);
+
+        RunTest("world.news.yahoo.com", result[0], "Full domain");
+        RunTest("yahoo.com", result[1], "Last two domain parts");
     }
 
     static string[] ExtractDomains(string url)
     {
-        // TODO: Implement logic to extract [fullDomain, secondLevelDomain]
-        return new string[] { "", "" };
-    }
-}
-      `,
-            solution: `
-using System;
- 
-class Solution
-{
-    static void Main(string[] args)
-    {
-        // Example input
-        string[] testUrls = {
-            "http://world.news.yahoo.com/news/olympics/",
-            "https://www.yahoo.co.uk/#finance",
-            "https://google.com/",
-            "https://google.com/search?query=groceries"
-        };
- 
-        foreach (var url in testUrls)
-        {
-            var result = ExtractDomains(url);
-            Console.WriteLine($"[\\"{result[0]}\\", \\"{result[1]}\\"]");
-        }
-    }
- 
-    static string[] ExtractDomains(string url)
-    {
-        // Remove protocol
+        int start = 0;
+
         if (url.StartsWith("http://"))
-            url = url.Substring(7);
+            start = "http://".Length;
         else if (url.StartsWith("https://"))
-            url = url.Substring(8);
- 
-        // Find first '/', '#', or '?'
-        int idx = url.IndexOfAny(new char[] { '/', '#', '?' });
-        if (idx != -1)
-            url = url.Substring(0, idx);
- 
-        string fullDomain = url;
-        var parts = fullDomain.Split('.');
-        string lastTwo = parts.Length >= 2
-            ? parts[parts.Length - 2] + "." + parts[parts.Length - 1]
-            : fullDomain;
- 
+            start = "https://".Length;
+
+        string remaining = url.Substring(start);
+
+        int end = remaining.Length;
+
+        int slashIndex = remaining.IndexOf('/');
+        if (slashIndex >= 0 && slashIndex < end)
+            end = slashIndex;
+
+        int questionIndex = remaining.IndexOf('?');
+        if (questionIndex >= 0 && questionIndex < end)
+            end = questionIndex;
+
+        int hashIndex = remaining.IndexOf('#');
+        if (hashIndex >= 0 && hashIndex < end)
+            end = hashIndex;
+
+        string fullDomain = remaining.Substring(0, end);
+
+        string[] parts = fullDomain.Split('.');
+
+        string lastTwo;
+
+        if (parts.Length >= 2)
+            lastTwo = parts[parts.Length - 2] + "." + parts[parts.Length - 1];
+        else
+            lastTwo = fullDomain;
+
         return new string[] { fullDomain, lastTwo };
     }
+
+    static void RunTest(string expected, string actual, string testName)
+    {
+        if (expected == actual)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName +
+                              " expected=" + expected +
+                              " actual=" + actual);
+    }
+}`
 }
-      `
-        },
+,
         {
             id: 8,
             title: "Q4 : Stock Trading Data Management",
@@ -1278,19 +1308,8 @@ public class Membership
     {
         members.Add(member);
     }
-
-    public void AddWorkout(int memberId, Workout workout)
-    {
-        // TODO: Implement this function
-    }
-
-    public Dictionary<int, double> GetAverageWorkoutDurations()
-    {
-        // TODO: Implement this function
-        return new Dictionary<int, double>();
-    }
-}
-      `,
+  
+},
             solution: `
 using System;
 using System.Collections.Generic;
@@ -1622,10 +1641,7 @@ using System.Linq;
 
 public class Solution
 {
-    public static List<string> filter_rooms(string[][] instructions, string[] treasureRooms)
-    {
-     //TODO
-    }
+   
 
     public static void Main()
     {
@@ -1848,11 +1864,7 @@ using System.Collections.Generic;
 using System.Linq;
 class Program 
 {
-  public List<string> wrapLines(string[] words, int length) 
-  {
-    // TODO: Implement the wrap logic here
-    return new List<string>();
-  }
+  
 
   static void Main(String[] args) 
   {
@@ -2009,10 +2021,7 @@ class Solution {
         Console.WriteLine(ReachExit(obstacles, instructions));
     }
 
-    static bool ReachExit(int[] obstacles, string instructions) {
-        // TODO: Implement logic
-        return false;
-    }
+    
 }
       `,
             solution: `
@@ -2184,10 +2193,7 @@ class Solution {
         Console.WriteLine(FindTreasure(instructions, money));
     }
 
-    static int? FindTreasure(int[] instructions, int money) {
-        // TODO: Implement logic
-        return null;
-    }
+    
 }
       `,
             solution: `
@@ -2636,10 +2642,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 class Solution {
-    static List<List<string>> grouping(string[][] events, int N) {
-        // TODO: Implement grouping logic here
-        return new List<List<string>>();
-    }
+    
 
     static void Main(String[] args) {
         var events = new string[][] {
@@ -2729,6 +2732,1756 @@ class Solution {
     }
 }`
         },
+        {
+    id: 307,
+    title: "Q : Badge Access Mismatch Detection",
+    description: `
+/*
+
+Given an ordered list of employees who used their badge to enter or exit the room, return two collections:
+1. Employees who entered without exiting
+2. Employees who exited without entering.
+
+*/
+`,
+    starterCode: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<string[]> records1 = new List<string[]>
+        {
+            new string[] { "Paul", "enter" },
+            new string[] { "Pauline", "exit" },
+            new string[] { "Paul", "enter" },
+            new string[] { "Paul", "exit" },
+            new string[] { "Martha", "exit" },
+            new string[] { "Joe", "enter" }
+        };
+
+        Tuple<List<string>, List<string>> result = Mismatches(records1);
+
+        Console.WriteLine("Entered without exiting  : " + string.Join(\", \", result.Item1));
+        Console.WriteLine("Exited without entering : " + string.Join(\", \", result.Item2));
+    }
+
+    static Tuple<List<string>, List<string>> Mismatches(List<string[]> records)
+    {
+        // ❌ TODO: logic not implemented yet
+        return new Tuple<List<string>, List<string>>(
+            new List<string>(),
+            new List<string>()
+        );
+    }
+}`,
+    hints: [
+        "Track whether each employee is currently inside the room.",
+        "Use a dictionary to store the current state for each employee.",
+        "Use two collections to store employees who enter twice and who exit without entering.",
+        "After processing all records, employees still inside should be treated as entered without exiting."
+    ],
+    solution: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<string[]> records1 = new List<string[]>
+        {
+            new string[] { "Paul", "enter" },
+            new string[] { "Pauline", "exit" },
+            new string[] { "Paul", "enter" },
+            new string[] { "Paul", "exit" },
+            new string[] { "Martha", "exit" },
+            new string[] { "Joe", "enter" }
+        };
+
+        Tuple<List<string>, List<string>> result = Mismatches(records1);
+
+        Console.WriteLine("Entered without exiting  : " + string.Join(\", \", result.Item1));
+        Console.WriteLine("Exited without entering : " + string.Join(\", \", result.Item2));
+    }
+
+    static Tuple<List<string>, List<string>> Mismatches(List<string[]> records)
+    {
+        // Track current room state per employee
+        Dictionary<string, bool> inside = new Dictionary<string, bool>();
+
+        HashSet<string> enteredWithoutExit = new HashSet<string>();
+        HashSet<string> exitedWithoutEnter = new HashSet<string>();
+
+        foreach (string[] record in records)
+        {
+            string name = record[0];
+            string action = record[1];
+
+            bool isInside;
+
+            if (!inside.TryGetValue(name, out isInside))
+            {
+                isInside = false;
+            }
+
+            if (action == "enter")
+            {
+                if (!isInside)
+                {
+                    inside[name] = true;
+                }
+                else
+                {
+                    // entered again without exit
+                    enteredWithoutExit.Add(name);
+                }
+            }
+            else if (action == "exit")
+            {
+                if (!isInside)
+                {
+                    // exited without entering
+                    exitedWithoutEnter.Add(name);
+                }
+                else
+                {
+                    inside[name] = false;
+                }
+            }
+        }
+
+        // Anyone still inside at the end also entered without exiting
+        foreach (KeyValuePair<string, bool> kv in inside)
+        {
+            if (kv.Value)
+                enteredWithoutExit.Add(kv.Key);
+        }
+
+        return new Tuple<List<string>, List<string>>(
+            new List<string>(enteredWithoutExit),
+            new List<string>(exitedWithoutEnter)
+        );
+    }
+}`
+},{
+    id: 308,
+    title: "Q : Flatten a Deeply Nested Array",
+    description: `
+/*
+
+Write a function that flattens a deeply nested array into a single-level array.
+
+Example:
+Input: [1, [2, [3, [4]], 5]]
+Output: [1,2,3,4,5]
+
+*/
+`,
+    starterCode: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<object> input = new List<object>
+        {
+            1,
+            new List<object>
+            {
+                2,
+                new List<object>
+                {
+                    3,
+                    new List<object> { 4 }
+                },
+                5
+            }
+        };
+
+        List<int> result = FlattenArray(input);
+
+        Console.WriteLine("Result : " + string.Join(", ", result));
+    }
+
+    static List<int> FlattenArray(List<object> arr)
+    {
+        // ❌ TODO : Not implemented yet
+        return new List<int>();
+    }
+}`,
+    hints: [
+        "This is a recursive problem.",
+        "If the current element is an integer, add it to the result list.",
+        "If the current element is a list, recursively flatten it.",
+        "Use a helper method to avoid creating multiple lists."
+    ],
+    solution: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<object> input = new List<object>
+        {
+            1,
+            new List<object>
+            {
+                2,
+                new List<object>
+                {
+                    3,
+                    new List<object> { 4 }
+                },
+                5
+            }
+        };
+
+        List<int> result = FlattenArray(input);
+
+        Console.WriteLine("Result : " + string.Join(", ", result));
+    }
+
+    static List<int> FlattenArray(List<object> arr)
+    {
+        List<int> result = new List<int>();
+
+        FlattenInternal(arr, result);
+
+        return result;
+    }
+
+    static void FlattenInternal(List<object> arr, List<int> result)
+    {
+        foreach (object item in arr)
+        {
+            if (item is int)
+            {
+                result.Add((int)item);
+            }
+            else if (item is List<object>)
+            {
+                FlattenInternal((List<object>)item, result);
+            }
+        }
+    }
+}`
+},{
+    id: 309,
+    title: "Q : Library Borrowing and Fine Calculation System",
+    description: `
+/*
+
+A public library maintains a record of books and borrowers.
+You need to design a system to track borrowed books and calculate overdue fines.
+      
+*/
+`,
+    starterCode: `using System;
+
+class Book
+{
+    public int id;
+    public string title;
+    public string author;
+
+    // ❌ Constructor missing
+}
+
+class Borrower
+{
+    public int id;
+    public string name;
+    public Book borrowedBook;
+
+    // ❌ Constructor missing
+
+    public int CalculateFine(int daysBorrowed)
+    {
+        // ❌ Not implemented yet
+        return 0;
+    }
+}
+
+class LibrarySystem
+{
+    static void Main(string[] args)
+    {
+        // ❌ Create book and borrower
+        Book book = new Book();
+        Borrower borrower = new Borrower();
+
+        borrower.borrowedBook = book;
+
+        int fine = borrower.CalculateFine(20);
+
+        Console.WriteLine("Fine for 20 days = " + fine);
+        // Expected: 12
+    }
+}`,
+    hints: [
+        "Add constructors to initialize Book and Borrower objects.",
+        "Borrower should store the borrowed Book.",
+        "Allow a fixed number of free days before applying a fine.",
+        "Calculate fine only for the days exceeding the free period."
+    ],
+    solution: `using System;
+
+class Book
+{
+    public int id;
+    public string title;
+    public string author;
+
+    public Book(int id, string title, string author)
+    {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+    }
+}
+
+class Borrower
+{
+    public int id;
+    public string name;
+    public Book borrowedBook;
+
+    public Borrower(int id, string name, Book borrowedBook)
+    {
+        this.id = id;
+        this.name = name;
+        this.borrowedBook = borrowedBook;
+    }
+
+    public int CalculateFine(int daysBorrowed)
+    {
+        int freeDays = 14;
+        int finePerDay = 2;
+
+        if (daysBorrowed <= freeDays)
+            return 0;
+
+        int extraDays = daysBorrowed - freeDays;
+        return extraDays * finePerDay;
+    }
+}
+
+class LibrarySystem
+{
+    static void Main(string[] args)
+    {
+        Book book = new Book(1, "Clean Code", "Robert C. Martin");
+
+        Borrower borrower = new Borrower(101, "Pankaj", book);
+
+        int fine = borrower.CalculateFine(20);
+
+        Console.WriteLine("Fine for 20 days = " + fine);
+        // Output: 12
+    }
+}`
+},{
+    id: 310,
+    title: "Q : Online Food Order Management and Billing",
+    description: `
+/*
+
+An online food app tracks restaurant orders.
+You must implement order management and calculate bills with delivery charges.
+      
+*/
+`,
+    starterCode: `using System;
+
+class FoodItem
+{
+    public string name;
+    public int price;
+
+    // ❌ Constructor missing
+}
+
+class Order
+{
+    public FoodItem[] items;
+
+    // ❌ Constructor missing
+
+    public int CalculateBill()
+    {
+        // ❌ Not implemented yet
+        return 0;
+    }
+}
+
+class FoodApp
+{
+    static void Main(string[] args)
+    {
+        // ❌ Create 3 food items
+        FoodItem f1 = new FoodItem();
+        FoodItem f2 = new FoodItem();
+        FoodItem f3 = new FoodItem();
+
+        Order order = new Order();
+
+        int bill = order.CalculateBill();
+
+        Console.WriteLine("Final Bill = " + bill);
+        // Expected output : 480
+    }
+}`,
+    hints: [
+        "Create constructors for FoodItem and Order classes.",
+        "Order should accept a list of FoodItem objects.",
+        "Calculate the total price of all food items in the order.",
+        "Add a fixed delivery charge to the final bill."
+    ],
+    solution: `using System;
+
+class FoodItem
+{
+    public string name;
+    public int price;
+
+    public FoodItem(string name, int price)
+    {
+        this.name = name;
+        this.price = price;
+    }
+}
+
+class Order
+{
+    public FoodItem[] items;
+
+    public Order(FoodItem[] items)
+    {
+        this.items = items;
+    }
+
+    public int CalculateBill()
+    {
+        int total = 0;
+
+        for (int i = 0; i < items.Length; i++)
+        {
+            total += items[i].price;
+        }
+
+        int deliveryCharge = 30;
+
+        return total + deliveryCharge;
+    }
+}
+
+class FoodApp
+{
+    static void Main(string[] args)
+    {
+        FoodItem f1 = new FoodItem("Burger", 100);
+        FoodItem f2 = new FoodItem("Pizza", 200);
+        FoodItem f3 = new FoodItem("Pasta", 150);
+
+        FoodItem[] items = new FoodItem[] { f1, f2, f3 };
+
+        Order order = new Order(items);
+
+        int bill = order.CalculateBill();
+
+        Console.WriteLine("Final Bill = " + bill);
+        // Output : 480
+    }
+}`
+},{
+    id: 311,
+    title: "Q : Cinema Hall Ticket Booking and Revenue Calculation",
+    description: `
+/*
+
+A cinema hall manages movie bookings.
+Implement a ticket booking system and calculate revenue.
+      
+*/
+`,
+    starterCode: `using System;
+
+class Movie
+{
+    public string name;
+    public int price;
+
+    // ❌ Constructor missing
+}
+
+class Customer
+{
+    public string name;
+    public int tickets;
+    public Movie movie;
+
+    // ❌ Constructor missing
+
+    public int TotalCost()
+    {
+        // ❌ Not implemented
+        return 0;
+    }
+}
+
+class CinemaHall
+{
+    static void Main(string[] args)
+    {
+        Movie movie = new Movie();
+
+        Customer c1 = new Customer();
+        Customer c2 = new Customer();
+        Customer c3 = new Customer();
+
+        int revenue =
+            c1.TotalCost() +
+            c2.TotalCost() +
+            c3.TotalCost();
+
+        Console.WriteLine("Total Revenue = " + revenue);
+        // Expected : 1200
+    }
+}`,
+    hints: [
+        "Create constructors for Movie and Customer classes.",
+        "Each customer should store the selected movie and number of tickets.",
+        "Total cost should be calculated using ticket count and movie price.",
+        "Revenue is the sum of total cost of all customers."
+    ],
+    solution: `using System;
+
+class Movie
+{
+    public string name;
+    public int price;
+
+    public Movie(string name, int price)
+    {
+        this.name = name;
+        this.price = price;
+    }
+}
+
+class Customer
+{
+    public string name;
+    public int tickets;
+    public Movie movie;
+
+    public Customer(string name, int tickets, Movie movie)
+    {
+        this.name = name;
+        this.tickets = tickets;
+        this.movie = movie;
+    }
+
+    public int TotalCost()
+    {
+        return tickets * movie.price;
+    }
+}
+
+class CinemaHall
+{
+    static void Main(string[] args)
+    {
+        Movie movie = new Movie("Avatar", 200);
+
+        Customer c1 = new Customer("Rahul", 2, movie);
+        Customer c2 = new Customer("Anita", 3, movie);
+        Customer c3 = new Customer("Rohit", 1, movie);
+
+        int revenue =
+            c1.TotalCost() +
+            c2.TotalCost() +
+            c3.TotalCost();
+
+        Console.WriteLine("Total Revenue = " + revenue);
+        // Output : 1200
+    }
+}`
+},{
+    id: 312,
+    title: "Q : E-commerce Cart Billing with Discount",
+    description: `
+/*
+
+An e-commerce platform tracks shopping carts.
+Build a system to calculate total bill with discounts.
+      
+*/
+`,
+    starterCode: `using System;
+
+class Product
+{
+    public string name;
+    public int price;
+
+    // ❌ Constructor missing
+}
+
+class Cart
+{
+    public Product[] items;
+
+    // ❌ Constructor missing
+
+    public double CalculateBill()
+    {
+        // ❌ Not implemented
+        return 0;
+    }
+}
+
+class ShoppingApp
+{
+    static void Main(string[] args)
+    {
+        Product p1 = new Product();
+        Product p2 = new Product();
+        Product p3 = new Product();
+        Product p4 = new Product();
+
+        Cart cart = new Cart();
+
+        double bill = cart.CalculateBill();
+
+        Console.WriteLine("Final Bill = " + bill);
+        // Expected : 720
+    }
+}`,
+    hints: [
+        "Create constructors for Product and Cart.",
+        "Add all product prices to calculate the total amount.",
+        "Apply a discount only if the total exceeds a threshold.",
+        "Return the discounted total as a double value."
+    ],
+    solution: `using System;
+
+class Product
+{
+    public string name;
+    public int price;
+
+    public Product(string name, int price)
+    {
+        this.name = name;
+        this.price = price;
+    }
+}
+
+class Cart
+{
+    public Product[] items;
+
+    public Cart(Product[] items)
+    {
+        this.items = items;
+    }
+
+    public double CalculateBill()
+    {
+        int total = 0;
+
+        for (int i = 0; i < items.Length; i++)
+        {
+            total += items[i].price;
+        }
+
+        if (total > 500)
+        {
+            return total - (total * 0.10);
+        }
+
+        return total;
+    }
+}
+
+class ShoppingApp
+{
+    static void Main(string[] args)
+    {
+        Product p1 = new Product("Shoes", 300);
+        Product p2 = new Product("Shirt", 200);
+        Product p3 = new Product("Jeans", 250);
+        Product p4 = new Product("Cap", 50);
+
+        Product[] products = new Product[] { p1, p2, p3, p4 };
+
+        Cart cart = new Cart(products);
+
+        double bill = cart.CalculateBill();
+
+        Console.WriteLine("Final Bill = " + bill);
+        // Output : 720
+    }
+}`
+},{
+    id: 313,
+    title: "Q : Frequent Badge Access Within One Hour",
+    description: `
+/*
+We are working on a security system for a badged-access room in our company's building.
+
+We want to find employees who badged into our secured room unusually often. We have an unordered list of names and entry times over a single day. Access times are given as numbers up to four digits in length using 24-hour time, such as "800" or "2250".
+
+Write a function that finds anyone who badged into the room three or more times in a one-hour period. Your function should return each of the employees who fit that criteria, plus the times that they badged in during the one-hour period. If there are multiple one-hour periods where this was true for an employee, just return the earliest one for that employee.
+
+badge_times = [ ["Paul", "1355"], ["Jennifer", "1910"], ["Jose", "835"], ["Jose", "830"], ["Paul", "1315"], ["Chloe", "0"], ["Chloe", "1910"], ["Jose", "1615"], ["Jose", "1640"], ["Paul", "1405"], ["Jose", "855"], ["Jose", "930"], ["Jose", "915"], ["Jose", "730"], ["Jose", "940"], ["Jennifer", "1335"], ["Jennifer", "730"], ["Jose", "1630"], ["Jennifer", "5"], ["Chloe", "1909"], ["Zhang", "1"], ["Zhang", "10"], ["Zhang", "109"], ["Zhang", "110"], ["Amos", "1"], ["Amos", "2"], ["Amos", "400"], ["Amos", "500"], ["Amos", "503"], ["Amos", "504"], ["Amos", "601"], ["Amos", "602"], ["Paul", "1416"], ];
+
+Expected output (in any order)
+Paul: 1315 1355 1405
+Jose: 830 835 855 915 930
+Zhang: 10 109 110
+Amos: 500 503 504
+
+n: length of the badge records array
+*/
+`,
+    starterCode: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<string[]> badgeTimes = new List<string[]>
+        {
+            new string[]{"Paul","1355"}, new string[]{"Jennifer","1910"},
+            new string[]{"Jose","835"}, new string[]{"Jose","830"},
+            new string[]{"Paul","1315"}, new string[]{"Chloe","0"},
+            new string[]{"Chloe","1910"}, new string[]{"Jose","1615"},
+            new string[]{"Jose","1640"}, new string[]{"Paul","1405"},
+            new string[]{"Jose","855"}, new string[]{"Jose","930"},
+            new string[]{"Jose","915"}, new string[]{"Jose","730"},
+            new string[]{"Jose","940"}, new string[]{"Jennifer","1335"},
+            new string[]{"Jennifer","730"}, new string[]{"Jose","1630"},
+            new string[]{"Jennifer","5"}, new string[]{"Chloe","1909"},
+            new string[]{"Zhang","1"}, new string[]{"Zhang","10"},
+            new string[]{"Zhang","109"}, new string[]{"Zhang","110"},
+            new string[]{"Amos","1"}, new string[]{"Amos","2"},
+            new string[]{"Amos","400"}, new string[]{"Amos","500"},
+            new string[]{"Amos","503"}, new string[]{"Amos","504"},
+            new string[]{"Amos","601"}, new string[]{"Amos","602"},
+            new string[]{"Paul","1416"}
+        };
+
+        Dictionary<string, List<string>> result =
+            FindFrequentBadgeAccess(badgeTimes);
+
+        foreach (var kv in result)
+        {
+            Console.WriteLine(kv.Key + ": " + string.Join(" ", kv.Value));
+        }
+    }
+
+    static Dictionary<string, List<string>> FindFrequentBadgeAccess(
+        List<string[]> records)
+    {
+        // ❌ TODO – logic not implemented
+        return new Dictionary<string, List<string>>();
+    }
+}`,
+    hints: [
+        "Group all badge times by employee name.",
+        "Convert time strings such as \"835\" or \"5\" into minutes for comparison.",
+        "Sort each employee's access times.",
+        "Use a sliding window to find three or more accesses within 60 minutes.",
+        "If multiple windows exist, return only the earliest one."
+    ],
+    solution: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<string[]> badgeTimes = new List<string[]>
+        {
+            new string[]{"Paul","1355"}, new string[]{"Jennifer","1910"},
+            new string[]{"Jose","835"}, new string[]{"Jose","830"},
+            new string[]{"Paul","1315"}, new string[]{"Chloe","0"},
+            new string[]{"Chloe","1910"}, new string[]{"Jose","1615"},
+            new string[]{"Jose","1640"}, new string[]{"Paul","1405"},
+            new string[]{"Jose","855"}, new string[]{"Jose","930"},
+            new string[]{"Jose","915"}, new string[]{"Jose","730"},
+            new string[]{"Jose","940"}, new string[]{"Jennifer","1335"},
+            new string[]{"Jennifer","730"}, new string[]{"Jose","1630"},
+            new string[]{"Jennifer","5"}, new string[]{"Chloe","1909"},
+            new string[]{"Zhang","1"}, new string[]{"Zhang","10"},
+            new string[]{"Zhang","109"}, new string[]{"Zhang","110"},
+            new string[]{"Amos","1"}, new string[]{"Amos","2"},
+            new string[]{"Amos","400"}, new string[]{"Amos","500"},
+            new string[]{"Amos","503"}, new string[]{"Amos","504"},
+            new string[]{"Amos","601"}, new string[]{"Amos","602"},
+            new string[]{"Paul","1416"}
+        };
+
+        Dictionary<string, List<string>> result =
+            FindFrequentBadgeAccess(badgeTimes);
+
+        foreach (var kv in result)
+        {
+            Console.WriteLine(kv.Key + ": " + string.Join(" ", kv.Value));
+        }
+    }
+
+    static Dictionary<string, List<string>> FindFrequentBadgeAccess(
+        List<string[]> records)
+    {
+        Dictionary<string, List<int>> map =
+            new Dictionary<string, List<int>>();
+
+        // Group by employee name
+        foreach (var r in records)
+        {
+            string name = r[0];
+            int time = ToMinutes(r[1]);
+
+            if (!map.ContainsKey(name))
+                map[name] = new List<int>();
+
+            map[name].Add(time);
+        }
+
+        Dictionary<string, List<string>> result =
+            new Dictionary<string, List<string>>();
+
+        foreach (var kv in map)
+        {
+            string name = kv.Key;
+            List<int> times = kv.Value;
+
+            times.Sort();
+            int n = times.Count;
+
+            for (int i = 0; i < n; i++)
+            {
+                List<int> window = new List<int>();
+
+                for (int j = i; j < n; j++)
+                {
+                    if (times[j] - times[i] <= 60)
+                        window.Add(times[j]);
+                    else
+                        break;
+                }
+
+                if (window.Count >= 3)
+                {
+                    List<string> formatted = new List<string>();
+
+                    for (int k = 0; k < window.Count; k++)
+                        formatted.Add(FromMinutes(window[k]));
+
+                    result[name] = formatted;
+                    break; // earliest window only
+                }
+            }
+        }
+
+        return result;
+    }
+
+    // Converts "835", "5", "1910" to minutes since 00:00
+    static int ToMinutes(string t)
+    {
+        int val = int.Parse(t);
+
+        int hours = val / 100;
+        int mins = val % 100;
+
+        return hours * 60 + mins;
+    }
+
+    // Converts minutes back to HHMM-like format
+    static string FromMinutes(int total)
+    {
+        int h = total / 60;
+        int m = total % 60;
+
+        int value = h * 100 + m;
+        return value.ToString();
+    }
+}`
+},{
+    id: 314,
+    title: "Q : Movie Recommendation Based on Similar User Ratings",
+    description: `
+/*
+/*
+One of the fun features of Aquaintly is that users can rate movies they have seen from 1 to 5. We want to use these ratings to make movie recommendations. Ratings will be provided in the following format: [Member Name, Movie Name, Rating]
+
+We consider two users to have similar taste in movies if they have both rated the same movie as 4 or 5.
+
+A movie should be recommended to a user if:
+- They haven't rated the movie
+- A user with similar taste has rated the movie as 4 or 5
+
+Example:
+
+ratings = [
+  ["Alice", "Frozen", "5"],
+  ["Bob", "Mad Max", "5"],
+  ["Charlie", "Lost In Translation", "4"],
+  ["Charlie", "Inception", "4"],
+  ["Bob", "All About Eve", "3"],
+  ["Bob", "Lost In Translation", "5"],
+  ["Dennis", "All About Eve", "5"],
+  ["Dennis", "Mad Max", "4"],
+  ["Charlie", "Topsy-Turvy", "2"],
+  ["Dennis", "Topsy-Turvy", "4"],
+  ["Alice", "Lost In Translation", "1"],
+  ["Franz", "Lost In Translation", "5"],
+  ["Franz", "Mad Max", "5"]
+]
+
+If we want to recommend a movie to Charlie, we would recommend "Mad Max" because:
+- Charlie has not rated "Mad Max"
+- Charlie and Bob have similar taste as they both rated "Lost in Translation" 4 or 5
+- Bob rated "Mad Max" a 5
+
+Write a function that takes the name of a user and a collection of ratings, and returns a collection of all movie recommendations that can be made for the given user.
+
+All test cases:
+recommendations("Charlie", ratings) => ["Mad Max"]
+recommendations("Bob", ratings) => ["Inception", "Topsy-Turvy"]
+recommendations("Dennis", ratings) => ["Lost In Translation"]
+recommendations("Alice", ratings) => []
+recommendations("Franz", ratings) => ["Inception", "All About Eve", "Topsy-Turvy"]
+
+Complexity Variable: R = number of ratings
+M = number of movies
+U = number of users
+*/
+*/
+`,
+    starterCode: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<string[]> ratings = new List<string[]>
+        {
+            new string[]{"Alice","Frozen","5"},
+            new string[]{"Bob","Mad Max","5"},
+            new string[]{"Charlie","Lost In Translation","4"},
+            new string[]{"Charlie","Inception","4"},
+            new string[]{"Bob","All About Eve","3"},
+            new string[]{"Bob","Lost In Translation","5"},
+            new string[]{"Dennis","All About Eve","5"},
+            new string[]{"Dennis","Mad Max","4"},
+            new string[]{"Charlie","Topsy-Turvy","2"},
+            new string[]{"Dennis","Topsy-Turvy","4"},
+            new string[]{"Alice","Lost In Translation","1"},
+            new string[]{"Franz","Lost In Translation","5"},
+            new string[]{"Franz","Mad Max","5"}
+        };
+
+        Print("Charlie", Recommendations("Charlie", ratings));
+        Print("Bob", Recommendations("Bob", ratings));
+        Print("Dennis", Recommendations("Dennis", ratings));
+        Print("Alice", Recommendations("Alice", ratings));
+        Print("Franz", Recommendations("Franz", ratings));
+    }
+
+    static List<string> Recommendations(string user, List<string[]> ratings)
+    {
+        // ❌ TODO – not implemented
+        return new List<string>();
+    }
+
+    static void Print(string user, List<string> movies)
+    {
+        Console.WriteLine(user + " => [" + string.Join(", ", movies) + "]");
+    }
+}`,
+    hints: [
+        "Group all ratings by user.",
+        "For the target user, find all movies rated 4 or 5.",
+        "Find other users who also rated any of those movies 4 or 5.",
+        "Recommend movies rated 4 or 5 by similar users that the target user has not rated."
+    ],
+    solution: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        List<string[]> ratings = new List<string[]>
+        {
+            new string[]{"Alice","Frozen","5"},
+            new string[]{"Bob","Mad Max","5"},
+            new string[]{"Charlie","Lost In Translation","4"},
+            new string[]{"Charlie","Inception","4"},
+            new string[]{"Bob","All About Eve","3"},
+            new string[]{"Bob","Lost In Translation","5"},
+            new string[]{"Dennis","All About Eve","5"},
+            new string[]{"Dennis","Mad Max","4"},
+            new string[]{"Charlie","Topsy-Turvy","2"},
+            new string[]{"Dennis","Topsy-Turvy","4"},
+            new string[]{"Alice","Lost In Translation","1"},
+            new string[]{"Franz","Lost In Translation","5"},
+            new string[]{"Franz","Mad Max","5"}
+        };
+
+        Print("Charlie", Recommendations("Charlie", ratings));
+        Print("Bob", Recommendations("Bob", ratings));
+        Print("Dennis", Recommendations("Dennis", ratings));
+        Print("Alice", Recommendations("Alice", ratings));
+        Print("Franz", Recommendations("Franz", ratings));
+    }
+
+    static List<string> Recommendations(string user, List<string[]> ratings)
+    {
+        Dictionary<string, Dictionary<string, int>> map =
+            new Dictionary<string, Dictionary<string, int>>();
+
+        foreach (var r in ratings)
+        {
+            string name = r[0];
+            string movie = r[1];
+            int rating = int.Parse(r[2]);
+
+            if (!map.ContainsKey(name))
+                map[name] = new Dictionary<string, int>();
+
+            map[name][movie] = rating;
+        }
+
+        Dictionary<string, int> userRatings;
+
+        if (!map.TryGetValue(user, out userRatings))
+            return new List<string>();
+
+        HashSet<string> likedByUser = new HashSet<string>();
+
+        foreach (var kv in userRatings)
+        {
+            if (kv.Value >= 4)
+                likedByUser.Add(kv.Key);
+        }
+
+        HashSet<string> similarUsers = new HashSet<string>();
+
+        foreach (var kv in map)
+        {
+            string otherUser = kv.Key;
+
+            if (otherUser == user)
+                continue;
+
+            Dictionary<string, int> otherRatings = kv.Value;
+
+            foreach (string movie in likedByUser)
+            {
+                int r;
+
+                if (otherRatings.TryGetValue(movie, out r) && r >= 4)
+                {
+                    similarUsers.Add(otherUser);
+                    break;
+                }
+            }
+        }
+
+        HashSet<string> recommendations = new HashSet<string>();
+
+        foreach (string similarUser in similarUsers)
+        {
+            Dictionary<string, int> otherRatings = map[similarUser];
+
+            foreach (var kv in otherRatings)
+            {
+                string movie = kv.Key;
+                int rating = kv.Value;
+
+                if (rating >= 4 && !userRatings.ContainsKey(movie))
+                {
+                    recommendations.Add(movie);
+                }
+            }
+        }
+
+        return new List<string>(recommendations);
+    }
+
+    static void Print(string user, List<string> movies)
+    {
+        Console.WriteLine(user + " => [" + string.Join(", ", movies) + "]");
+    }
+}`
+},{
+    id: 315,
+    title: "Q : Find Scrambled Word Inside a Note",
+    description: `
+/*
+You are running a classroom and suspect that some of your students are passing around the answer to a multiple-choice question disguised as a random note.
+
+Your task is to write a function that, given a list of words and a note, finds and returns the word in the list that is scrambled inside the note, if any exists. If none exist, it returns the result "-" as a string. There will be at most one matching word. The letters don't need to be in order or next to each other. The letters cannot be reused.
+
+Example:  
+words = ["baby", "referee", "cat", "dada", "dog", "bird", "ax", "baz"]
+note1 = "ctay"
+find(words, note1) => "cat"   (the letters do not have to be in order)  
+  
+note2 = "bcanihjsrrrferet"
+find(words, note2) => "cat"   (the letters do not have to be together)  
+  
+note3 = "tbaykkjlga"
+find(words, note3) => "-"     (the letters cannot be reused)  
+  
+note4 = "bbbblkkjbaby"
+find(words, note4) => "baby"    
+  
+note5 = "dad"
+find(words, note5) => "-"    
+  
+note6 = "breadmaking"
+find(words, note6) => "bird"    
+
+note7 = "dadaa"
+find(words, note7) => "dada"    
+
+All Test Cases:
+find(words, note1) -> "cat"
+find(words, note2) -> "cat"
+find(words, note3) -> "-"
+find(words, note4) -> "baby"
+find(words, note5) -> "-"
+find(words, note6) -> "bird"
+find(words, note7) -> "dada"
+  
+Complexity analysis variables:  
+  
+W = number of words in \`words\`  
+S = maximal length of each word or of the note  
+*/
+`,
+    starterCode: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        string[] words = new string[]
+        {
+            "baby", "referee", "cat", "dada", "dog", "bird", "ax", "baz"
+        };
+
+        Run(words, "ctay");               // cat
+        Run(words, "bcanihjsrrrferet");   // cat
+        Run(words, "tbaykkjlga");         // -
+        Run(words, "bbbblkkjbaby");       // baby
+        Run(words, "dad");                // -
+        Run(words, "breadmaking");        // bird
+        Run(words, "dadaa");              // dada
+    }
+
+    static void Run(string[] words, string note)
+    {
+        Console.WriteLine("find(" + note + ") => " + Find(words, note));
+    }
+
+    static string Find(string[] words, string note)
+    {
+        // ❌ TODO – not implemented
+        return "-";
+    }
+}`,
+    hints: [
+        "Count how many times each character appears in the note.",
+        "For each word, check if all its characters can be taken from the note counts.",
+        "Characters cannot be reused.",
+        "Return the first matching word, otherwise return \"-\"."
+    ],
+    solution: `using System;
+using System.Collections.Generic;
+
+class Program
+{
+    static void Main()
+    {
+        string[] words = new string[]
+        {
+            "baby", "referee", "cat", "dada", "dog", "bird", "ax", "baz"
+        };
+
+        Run(words, "ctay");               // cat
+        Run(words, "bcanihjsrrrferet");   // cat
+        Run(words, "tbaykkjlga");         // -
+        Run(words, "bbbblkkjbaby");       // baby
+        Run(words, "dad");                // -
+        Run(words, "breadmaking");        // bird
+        Run(words, "dadaa");              // dada
+    }
+
+    static void Run(string[] words, string note)
+    {
+        Console.WriteLine("find(" + note + ") => " + Find(words, note));
+    }
+
+    static string Find(string[] words, string note)
+    {
+        int[] noteCount = BuildCount(note);
+
+        for (int i = 0; i < words.Length; i++)
+        {
+            string word = words[i];
+
+            if (CanForm(word, noteCount))
+                return word;
+        }
+
+        return "-";
+    }
+
+    static bool CanForm(string word, int[] noteCount)
+    {
+        int[] temp = new int[26];
+
+        for (int i = 0; i < noteCount.Length; i++)
+            temp[i] = noteCount[i];
+
+        for (int i = 0; i < word.Length; i++)
+        {
+            char c = word[i];
+
+            if (c < 'a' || c > 'z')
+                return false;
+
+            int idx = c - 'a';
+
+            if (temp[idx] == 0)
+                return false;
+
+            temp[idx]--;
+        }
+
+        return true;
+    }
+
+    static int[] BuildCount(string s)
+    {
+        int[] count = new int[26];
+
+        for (int i = 0; i < s.Length; i++)
+        {
+            char c = s[i];
+
+            if (c >= 'a' && c <= 'z')
+                count[c - 'a']++;
+        }
+
+        return count;
+    }
+}`
+},{
+    id: 316,
+    title: "Q : Fix Performance Issue in High-Frequency Order Processing",
+    description: `
+Given code snippet is slow when thousand order per second is the frequency. Analyze the code and fix the performance issue.
+`,
+    starterCode: `using System;
+
+namespace Orders
+{
+    public class Order
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+        private Order(int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
+
+        public static Order CreateOrder()
+        {
+            int id = 10;
+            string name = "ABC";
+            return new Order(id, name);
+        }
+    }
+
+    public interface IRepo
+    {
+        void UpsertOrder(Order order);
+    }
+
+    public interface ILogger
+    {
+        void Info(string message);
+    }
+
+    public interface IClassA
+    {
+        void Method1();
+    }
+
+    // Dummy implementations so the code can run
+    public class Repo : IRepo
+    {
+        public void UpsertOrder(Order order)
+        {
+            // simulate db call
+        }
+    }
+
+    public class Logger : ILogger
+    {
+        public void Info(string message)
+        {
+            Console.WriteLine(message);
+        }
+    }
+
+    public class ClassA : IClassA
+    {
+        private readonly IRepo _repo;
+        private readonly ILogger _logger;
+
+        public ClassA(IRepo repo, ILogger logger)
+        {
+            _repo = repo;
+            _logger = logger;
+        }
+
+        public void Method1()
+        {
+            Order orderA;
+
+            try
+            {
+                orderA = Order.CreateOrder();
+            }
+            catch (Exception ex)
+            {
+                _logger.Info("Error1");
+                throw ex; // ❌ bad rethrow
+            }
+
+            try
+            {
+                _repo.UpsertOrder(orderA);
+            }
+            catch (Exception ex)
+            {
+                _logger.Info("Error1");
+                throw ex; // ❌ bad rethrow
+            }
+        }
+    }
+
+    // ----------------- Main -----------------
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            IRepo repo = new Repo();
+            ILogger logger = new Logger();
+
+            IClassA service = new ClassA(repo, logger);
+
+            // simulate multiple calls
+            for (int i = 0; i < 5; i++)
+            {
+                service.Method1();
+            }
+
+            Console.WriteLine("Problem code executed.");
+        }
+    }
+}`,
+    hints: [
+        "Avoid rethrowing exceptions using 'throw ex'.",
+        "Preserve the original stack trace when rethrowing.",
+        "Reduce duplicate try-catch blocks.",
+        "Wrap both operations inside a single try block when possible."
+    ],
+    solution: `using System;
+
+namespace Orders
+{
+    public class Order
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+
+        private Order(int id, string name)
+        {
+            Id = id;
+            Name = name;
+        }
+
+        public static Order CreateOrder()
+        {
+            int id = 10;
+            string name = "ABC";
+            return new Order(id, name);
+        }
+    }
+
+    public interface IRepo
+    {
+        void UpsertOrder(Order order);
+    }
+
+    public interface ILogger
+    {
+        void Info(string message);
+    }
+
+    public interface IClassA
+    {
+        void Method1();
+    }
+
+    // Dummy implementations
+    public class Repo : IRepo
+    {
+        public void UpsertOrder(Order order)
+        {
+            // simulate db call
+        }
+    }
+
+    public class Logger : ILogger
+    {
+        public void Info(string message)
+        {
+            Console.WriteLine(message);
+        }
+    }
+
+    public class ClassA : IClassA
+    {
+        private readonly IRepo _repo;
+        private readonly ILogger _logger;
+
+        public ClassA(IRepo repo, ILogger logger)
+        {
+            _repo = repo;
+            _logger = logger;
+        }
+
+        public void Method1()
+        {
+            try
+            {
+                Order orderA = Order.CreateOrder();
+                _repo.UpsertOrder(orderA);
+            }
+            catch (Exception)
+            {
+                _logger.Info("Error1");
+
+                // ✅ correct rethrow
+                throw;
+            }
+        }
+    }
+
+    // ----------------- Main -----------------
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            IRepo repo = new Repo();
+            ILogger logger = new Logger();
+
+            IClassA service = new ClassA(repo, logger);
+
+            // simulate multiple calls
+            for (int i = 0; i < 5; i++)
+            {
+                service.Method1();
+            }
+
+            Console.WriteLine("Solution code executed.");
+        }
+    }
+}`
+},{
+    id: 317,
+    title: "Q : Fix Membership Statistics Bug in Gym Management System",
+    description: `
+/*
+
+We are building a program to manage a gym's membership. The gym has multiple members, each with a unique ID, name, and membership status. The program allows gym staff to add new members, update member status, and get membership statistics.
+Definitions:
+* A "member" is an object that represents a gym member. It has properties for the ID, name, and membership status.
+* A "membership" is a class which is used for managing members in the gym.
+
+To begin with, we present you with two tasks:
+1-1) Read through and understand the code below. Please take as much time as necessary, and feel free to run the code.
+1-2) The test for Membership is not passing due to a bug in the code. Make the necessary changes to Membership to fix the bug.
+
+*/
+`,
+    starterCode: `using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public enum MembershipStatus
+{
+    BRONZE = 1,
+    SILVER = 2,
+    GOLD = 3
+}
+
+public class Member
+{
+    public int MemberId { get; set; }
+    public string Name { get; set; }
+    public MembershipStatus MembershipStatus { get; set; }
+
+    public Member(int memberId, string name, MembershipStatus membershipStatus)
+    {
+        MemberId = memberId;
+        Name = name;
+        MembershipStatus = membershipStatus;
+    }
+}
+
+public class Membership
+{
+    private List<Member> members;
+
+    public Membership()
+    {
+        members = new List<Member>();
+    }
+
+    public void AddMember(Member member)
+    {
+        members.Add(member);
+    }
+
+    public void UpdateMemberShip(int memberId, MembershipStatus newStatus)
+    {
+        foreach (var member in members)
+        {
+            if (member.MemberId == memberId)
+            {
+                member.MembershipStatus = newStatus;
+                return;
+            }
+        }
+    }
+
+    
+    public Dictionary<string, double> GetMembershipStatistics()
+    {
+        int totalMembers = members.Count;
+
+        int totalPaidMembers =
+            members.Count(m => m.MembershipStatus == MembershipStatus.GOLD);
+
+        double conversionRate = 0;
+
+        if (totalMembers > 0)
+            conversionRate = (double)totalPaidMembers / totalMembers * 100;
+
+        return new Dictionary<string, double>
+        {
+            { "TotalMembers", totalMembers },
+            { "TotalPaidMembers", totalPaidMembers },
+            { "ConversionRate", conversionRate }
+        };
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        TestMembership();
+        Console.WriteLine("Finished (problem code).");
+    }
+
+    static void Check(string testName, bool condition)
+    {
+        if (condition)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName);
+    }
+
+    static void TestMembership()
+    {
+        Console.WriteLine("Running Test Membership");
+
+        Membership testmembership = new Membership();
+
+        testmembership.AddMember(
+            new Member(1, "John Doe", MembershipStatus.BRONZE));
+
+        Check("TotalMembers == 1",
+            testmembership.GetMembershipStatistics()["TotalMembers"] == 1);
+
+        testmembership.UpdateMemberShip(1, MembershipStatus.SILVER);
+
+        
+        Check("After upgrade to SILVER, TotalPaidMembers == 1",
+            testmembership.GetMembershipStatistics()["TotalPaidMembers"] == 1);
+
+        testmembership.AddMember(new Member(2, "Alex C", MembershipStatus.BRONZE));
+        testmembership.AddMember(new Member(3, "Sam K", MembershipStatus.GOLD));
+        testmembership.AddMember(new Member(4, "Linda P", MembershipStatus.SILVER));
+        testmembership.AddMember(new Member(5, "Nina T", MembershipStatus.BRONZE));
+
+        var stats = testmembership.GetMembershipStatistics();
+
+        Check("TotalMembers == 5", stats["TotalMembers"] == 5);
+        Check("TotalPaidMembers == 3", stats["TotalPaidMembers"] == 3);
+        Check("ConversionRate == 60",
+            Math.Abs(stats["ConversionRate"] - 60.0) < 0.01);
+    }
+}`,
+    hints: [
+        "Identify which membership statuses should be treated as paid.",
+        "Look carefully at how TotalPaidMembers is calculated.",
+        "Update the LINQ condition to include all paid membership types.",
+        "Ensure the conversion rate calculation remains unchanged."
+    ],
+    solution: `using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public enum MembershipStatus
+{
+    BRONZE = 1,
+    SILVER = 2,
+    GOLD = 3
+}
+
+public class Member
+{
+    public int MemberId { get; set; }
+    public string Name { get; set; }
+    public MembershipStatus MembershipStatus { get; set; }
+
+    public Member(int memberId, string name, MembershipStatus membershipStatus)
+    {
+        MemberId = memberId;
+        Name = name;
+        MembershipStatus = membershipStatus;
+    }
+}
+
+public class Membership
+{
+    private List<Member> members;
+
+    public Membership()
+    {
+        members = new List<Member>();
+    }
+
+    public void AddMember(Member member)
+    {
+        members.Add(member);
+    }
+
+    public void UpdateMemberShip(int memberId, MembershipStatus newStatus)
+    {
+        foreach (var member in members)
+        {
+            if (member.MemberId == memberId)
+            {
+                member.MembershipStatus = newStatus;
+                return;
+            }
+        }
+    }
+
+    // ✅ FIX: SILVER and GOLD are paid members
+    public Dictionary<string, double> GetMembershipStatistics()
+    {
+        int totalMembers = members.Count;
+
+        int totalPaidMembers =
+            members.Count(m =>
+                m.MembershipStatus == MembershipStatus.SILVER ||
+                m.MembershipStatus == MembershipStatus.GOLD);
+
+        double conversionRate = 0;
+
+        if (totalMembers > 0)
+            conversionRate = (double)totalPaidMembers / totalMembers * 100;
+
+        return new Dictionary<string, double>
+        {
+            { "TotalMembers", totalMembers },
+            { "TotalPaidMembers", totalPaidMembers },
+            { "ConversionRate", conversionRate }
+        };
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        TestMembership();
+        Console.WriteLine("Finished (solution code).");
+    }
+
+    static void Check(string testName, bool condition)
+    {
+        if (condition)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName);
+    }
+
+    static void TestMembership()
+    {
+        Console.WriteLine("Running Test Membership");
+
+        Membership testmembership = new Membership();
+
+        testmembership.AddMember(
+            new Member(1, "John Doe", MembershipStatus.BRONZE));
+
+        Check("TotalMembers == 1",
+            testmembership.GetMembershipStatistics()["TotalMembers"] == 1);
+
+        testmembership.UpdateMemberShip(1, MembershipStatus.SILVER);
+
+        Check("After upgrade to SILVER, TotalPaidMembers == 1",
+            testmembership.GetMembershipStatistics()["TotalPaidMembers"] == 1);
+
+        testmembership.AddMember(new Member(2, "Alex C", MembershipStatus.BRONZE));
+        testmembership.AddMember(new Member(3, "Sam K", MembershipStatus.GOLD));
+        testmembership.AddMember(new Member(4, "Linda P", MembershipStatus.SILVER));
+        testmembership.AddMember(new Member(5, "Nina T", MembershipStatus.BRONZE));
+
+        var stats = testmembership.GetMembershipStatistics();
+
+        Check("TotalMembers == 5", stats["TotalMembers"] == 5);
+        Check("TotalPaidMembers == 3", stats["TotalPaidMembers"] == 3);
+        Check("ConversionRate == 60",
+            Math.Abs(stats["ConversionRate"] - 60.0) < 0.01);
+    }
+}`
+},
           {
             id: 21,
             title: "Q 15 : Local Radio Station Play",
@@ -3382,91 +5135,118 @@ public class Program
     }
 }`
 },
-        {
-            id: 203,
-            title: "Test Shopping Cart Total",
-            description: "Write tests to verify the GetTotal method of a ShoppingCart class, including empty cart, single item, and multiple items.",
-            starterCode: `using System;
+       {
+    id: 203,
+    title: "Test Shopping Cart Total",
+    description: "Write tests to verify the GetTotal method of a ShoppingCart class, including empty cart, single item, and multiple items. One test currently has an incorrect expected value and must be fixed.",
+    starterCode: `using System;
 using System.Collections.Generic;
 
-public class ShoppingCart {
+public class ShoppingCart
+{
     public List<double> Prices = new List<double>();
-    public double GetTotal() {
+
+    public double GetTotal()
+    {
         double total = 0;
-        foreach(var price in Prices) total += price;
+        foreach (var price in Prices)
+            total += price;
+
         return total;
     }
 }
 
-public class Program {
-    public static void Main() {
-        ShoppingCart cart = new ShoppingCart();
+public class Program
+{
+    public static void Main()
+    {
+        Console.WriteLine("---- Running tests (Problem Code) ----");
 
         // Empty cart
-        Console.WriteLine("Empty cart total: " + cart.GetTotal());
+        ShoppingCart cart1 = new ShoppingCart();
+        RunTest(0, cart1.GetTotal(), "Empty cart");
 
         // Single item
-        cart.Prices.Add(50);
-        Console.WriteLine("Single item total: " + cart.GetTotal());
+        ShoppingCart cart2 = new ShoppingCart();
+        cart2.Prices.Add(50);
+        RunTest(50, cart2.GetTotal(), "Single item (50)");
 
         // Multiple items
-        cart.Prices.AddRange(new double[]{10,20,30});
-        Console.WriteLine("Multiple items total: " + cart.GetTotal());
+        ShoppingCart cart3 = new ShoppingCart();
+        cart3.Prices.Add(50);
+        cart3.Prices.AddRange(new double[] { 10, 20, 30 });
+
+        // ❌ Intentionally wrong expected value to create a failing test
+        RunTest(100, cart3.GetTotal(), "Multiple items (50,10,20,30)");
+    }
+
+    private static void RunTest(double expected, double actual, string testName)
+    {
+        if (expected == actual)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName +
+                              " expected=" + expected +
+                              " actual=" + actual);
     }
 }`,
-            hints: [
-                "Print totals for empty, single, and multiple item carts.",
-                "Use a List<double> to store prices.",
-                "Verify totals using Console.WriteLine."
-            ],
-            solution: `using System;
+    hints: [
+        "Check the expected total for the multiple-items test carefully.",
+        "Verify the sum of all values added to the Prices list.",
+        "Only the test expectation is wrong, not the GetTotal method."
+    ],
+    solution: `using System;
 using System.Collections.Generic;
 
-public class ShoppingCart {
+public class ShoppingCart
+{
     public List<double> Prices = new List<double>();
-    public double GetTotal() {
+
+    public double GetTotal()
+    {
         double total = 0;
-        foreach(var price in Prices) total += price;
+        foreach (var price in Prices)
+            total += price;
+
         return total;
     }
 }
 
-public class Program {
-    public static void Main() {
-        ShoppingCart cart = new ShoppingCart();
-        Console.WriteLine(cart.GetTotal()); // 0
-        cart.Prices.Add(50);
-        Console.WriteLine(cart.GetTotal()); // 50
-        cart.Prices.AddRange(new double[]{10,20,30});
-        Console.WriteLine(cart.GetTotal()); // 110
+public class Program
+{
+    public static void Main()
+    {
+        Console.WriteLine("---- Running tests (Solution Code) ----");
+
+        // Empty cart
+        ShoppingCart cart1 = new ShoppingCart();
+        RunTest(0, cart1.GetTotal(), "Empty cart");
+
+        // Single item
+        ShoppingCart cart2 = new ShoppingCart();
+        cart2.Prices.Add(50);
+        RunTest(50, cart2.GetTotal(), "Single item (50)");
+
+        // Multiple items
+        ShoppingCart cart3 = new ShoppingCart();
+        cart3.Prices.Add(50);
+        cart3.Prices.AddRange(new double[] { 10, 20, 30 });
+
+        // ✅ Correct expected value
+        RunTest(110, cart3.GetTotal(), "Multiple items (50,10,20,30)");
+    }
+
+    private static void RunTest(double expected, double actual, string testName)
+    {
+        if (expected == actual)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName +
+                              " expected=" + expected +
+                              " actual=" + actual);
     }
 }`
-        }
-    ],
-    performance: [
-        {
-            id: 301,
-            title: "Performance Optimize Array Sum",
-            description: "Sum all even numbers in a large integer array. Current code uses LINQ but is slow for very large arrays. Optimize for performance.",
-            starterCode: `using System;
-using System.Linq;
-
-public class Program {
-    public static void Main() {
-        int[] arr = {1,2,3,4,5,6};
-        Console.WriteLine(SumEvenNumbers(arr)); // 12
-    }
-
-    public static int SumEvenNumbers(int[] arr) {
-        return arr.Where(x => x % 2 == 0).Sum();
-    }
-}`,
-            hints: [
-                "Avoid LINQ for tight loops in performance-critical code.",
-                "Use a single loop with a running total.",
-                "Check modulo operation for even numbers."
-            ]
-        },
+},
        {
 id: 302,
 title: "Performance Optimize Fibonacci",
