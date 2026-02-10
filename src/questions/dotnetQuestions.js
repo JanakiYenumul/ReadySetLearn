@@ -3382,91 +3382,118 @@ public class Program
     }
 }`
 },
-        {
-            id: 203,
-            title: "Test Shopping Cart Total",
-            description: "Write tests to verify the GetTotal method of a ShoppingCart class, including empty cart, single item, and multiple items.",
-            starterCode: `using System;
+       {
+    id: 203,
+    title: "Test Shopping Cart Total",
+    description: "Write tests to verify the GetTotal method of a ShoppingCart class, including empty cart, single item, and multiple items. One test currently has an incorrect expected value and must be fixed.",
+    starterCode: `using System;
 using System.Collections.Generic;
 
-public class ShoppingCart {
+public class ShoppingCart
+{
     public List<double> Prices = new List<double>();
-    public double GetTotal() {
+
+    public double GetTotal()
+    {
         double total = 0;
-        foreach(var price in Prices) total += price;
+        foreach (var price in Prices)
+            total += price;
+
         return total;
     }
 }
 
-public class Program {
-    public static void Main() {
-        ShoppingCart cart = new ShoppingCart();
+public class Program
+{
+    public static void Main()
+    {
+        Console.WriteLine("---- Running tests (Problem Code) ----");
 
         // Empty cart
-        Console.WriteLine("Empty cart total: " + cart.GetTotal());
+        ShoppingCart cart1 = new ShoppingCart();
+        RunTest(0, cart1.GetTotal(), "Empty cart");
 
         // Single item
-        cart.Prices.Add(50);
-        Console.WriteLine("Single item total: " + cart.GetTotal());
+        ShoppingCart cart2 = new ShoppingCart();
+        cart2.Prices.Add(50);
+        RunTest(50, cart2.GetTotal(), "Single item (50)");
 
         // Multiple items
-        cart.Prices.AddRange(new double[]{10,20,30});
-        Console.WriteLine("Multiple items total: " + cart.GetTotal());
+        ShoppingCart cart3 = new ShoppingCart();
+        cart3.Prices.Add(50);
+        cart3.Prices.AddRange(new double[] { 10, 20, 30 });
+
+        // ❌ Intentionally wrong expected value to create a failing test
+        RunTest(100, cart3.GetTotal(), "Multiple items (50,10,20,30)");
+    }
+
+    private static void RunTest(double expected, double actual, string testName)
+    {
+        if (expected == actual)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName +
+                              " expected=" + expected +
+                              " actual=" + actual);
     }
 }`,
-            hints: [
-                "Print totals for empty, single, and multiple item carts.",
-                "Use a List<double> to store prices.",
-                "Verify totals using Console.WriteLine."
-            ],
-            solution: `using System;
+    hints: [
+        "Check the expected total for the multiple-items test carefully.",
+        "Verify the sum of all values added to the Prices list.",
+        "Only the test expectation is wrong, not the GetTotal method."
+    ],
+    solution: `using System;
 using System.Collections.Generic;
 
-public class ShoppingCart {
+public class ShoppingCart
+{
     public List<double> Prices = new List<double>();
-    public double GetTotal() {
+
+    public double GetTotal()
+    {
         double total = 0;
-        foreach(var price in Prices) total += price;
+        foreach (var price in Prices)
+            total += price;
+
         return total;
     }
 }
 
-public class Program {
-    public static void Main() {
-        ShoppingCart cart = new ShoppingCart();
-        Console.WriteLine(cart.GetTotal()); // 0
-        cart.Prices.Add(50);
-        Console.WriteLine(cart.GetTotal()); // 50
-        cart.Prices.AddRange(new double[]{10,20,30});
-        Console.WriteLine(cart.GetTotal()); // 110
+public class Program
+{
+    public static void Main()
+    {
+        Console.WriteLine("---- Running tests (Solution Code) ----");
+
+        // Empty cart
+        ShoppingCart cart1 = new ShoppingCart();
+        RunTest(0, cart1.GetTotal(), "Empty cart");
+
+        // Single item
+        ShoppingCart cart2 = new ShoppingCart();
+        cart2.Prices.Add(50);
+        RunTest(50, cart2.GetTotal(), "Single item (50)");
+
+        // Multiple items
+        ShoppingCart cart3 = new ShoppingCart();
+        cart3.Prices.Add(50);
+        cart3.Prices.AddRange(new double[] { 10, 20, 30 });
+
+        // ✅ Correct expected value
+        RunTest(110, cart3.GetTotal(), "Multiple items (50,10,20,30)");
+    }
+
+    private static void RunTest(double expected, double actual, string testName)
+    {
+        if (expected == actual)
+            Console.WriteLine("PASS : " + testName);
+        else
+            Console.WriteLine("FAIL : " + testName +
+                              " expected=" + expected +
+                              " actual=" + actual);
     }
 }`
-        }
-    ],
-    performance: [
-        {
-            id: 301,
-            title: "Performance Optimize Array Sum",
-            description: "Sum all even numbers in a large integer array. Current code uses LINQ but is slow for very large arrays. Optimize for performance.",
-            starterCode: `using System;
-using System.Linq;
-
-public class Program {
-    public static void Main() {
-        int[] arr = {1,2,3,4,5,6};
-        Console.WriteLine(SumEvenNumbers(arr)); // 12
-    }
-
-    public static int SumEvenNumbers(int[] arr) {
-        return arr.Where(x => x % 2 == 0).Sum();
-    }
-}`,
-            hints: [
-                "Avoid LINQ for tight loops in performance-critical code.",
-                "Use a single loop with a running total.",
-                "Check modulo operation for even numbers."
-            ]
-        },
+},
        {
 id: 302,
 title: "Performance Optimize Fibonacci",
