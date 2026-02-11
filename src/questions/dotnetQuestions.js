@@ -444,9 +444,9 @@ public class Solution
 }`
         },
         {
-    id: 21,
-    title: "Q3 : Extract Full Domain and Second-Level Domain from URLs",
-    description: `
+            id: 21,
+            title: "Q3 : Extract Full Domain and Second-Level Domain from URLs",
+            description: `
 We have collected some HTTP/HTTPS referrer URLs from our web server. This data can be found at the address https://public.karat.io/content/referrals_4.txt, where each line contains a URL and nothing else.
 
 We want to learn more about the domains that refer traffic to our site.
@@ -466,7 +466,7 @@ Expected output for the file: ["world.news.yahoo.com", "yahoo.com"]
 Complexity Variable:
 L = length of the URL string
 `,
-    starterCode: `using System;
+            starterCode: `using System;
 
 class Program
 {
@@ -492,13 +492,13 @@ class Program
                               " actual=" + actual);
     }
 }`,
-    hints: [
-        "Do not use URL parsing libraries.",
-        "Remove the protocol part (http:// or https://) manually.",
-        "The domain ends before '/', '?' or '#'.",
-        "Split the domain using '.' to compute the last two parts."
-    ],
-    solution: `using System;
+            hints: [
+                "Do not use URL parsing libraries.",
+                "Remove the protocol part (http:// or https://) manually.",
+                "The domain ends before '/', '?' or '#'.",
+                "Split the domain using '.' to compute the last two parts."
+            ],
+            solution: `using System;
 
 class Program
 {
@@ -563,8 +563,8 @@ class Program
                               " actual=" + actual);
     }
 }`
-}
-,
+        }
+        ,
         {
             id: 8,
             title: "Q4 : Stock Trading Data Management",
@@ -1309,7 +1309,7 @@ public class Membership
         members.Add(member);
     }
   
-},
+}`,
             solution: `
 using System;
 using System.Collections.Generic;
@@ -2733,9 +2733,9 @@ class Solution {
 }`
         },
         {
-    id: 307,
-    title: "Q : Badge Access Mismatch Detection",
-    description: `
+            id: 307,
+            title: "Q : Badge Access Mismatch Detection",
+            description: `
 /*
 
 Given an ordered list of employees who used their badge to enter or exit the room, return two collections:
@@ -2744,7 +2744,7 @@ Given an ordered list of employees who used their badge to enter or exit the roo
 
 */
 `,
-    starterCode: `using System;
+            starterCode: `using System;
 using System.Collections.Generic;
 
 class Program
@@ -2776,13 +2776,13 @@ class Program
         );
     }
 }`,
-    hints: [
-        "Track whether each employee is currently inside the room.",
-        "Use a dictionary to store the current state for each employee.",
-        "Use two collections to store employees who enter twice and who exit without entering.",
-        "After processing all records, employees still inside should be treated as entered without exiting."
-    ],
-    solution: `using System;
+            hints: [
+                "Track whether each employee is currently inside the room.",
+                "Use a dictionary to store the current state for each employee.",
+                "Use two collections to store employees who enter twice and who exit without entering.",
+                "After processing all records, employees still inside should be treated as entered without exiting."
+            ],
+            solution: `using System;
 using System.Collections.Generic;
 
 class Program
@@ -2864,10 +2864,10 @@ class Program
         );
     }
 }`
-},{
-    id: 308,
-    title: "Q : Flatten a Deeply Nested Array",
-    description: `
+        }, {
+            id: 308,
+            title: "Q : Flatten a Deeply Nested Array",
+            description: `
 /*
 
 Write a function that flattens a deeply nested array into a single-level array.
@@ -2878,7 +2878,7 @@ Output: [1,2,3,4,5]
 
 */
 `,
-    starterCode: `using System;
+            starterCode: `using System;
 using System.Collections.Generic;
 
 class Program
@@ -2911,13 +2911,13 @@ class Program
         return new List<int>();
     }
 }`,
-    hints: [
-        "This is a recursive problem.",
-        "If the current element is an integer, add it to the result list.",
-        "If the current element is a list, recursively flatten it.",
-        "Use a helper method to avoid creating multiple lists."
-    ],
-    solution: `using System;
+            hints: [
+                "This is a recursive problem.",
+                "If the current element is an integer, add it to the result list.",
+                "If the current element is a list, recursively flatten it.",
+                "Use a helper method to avoid creating multiple lists."
+            ],
+            solution: `using System;
 using System.Collections.Generic;
 
 class Program
@@ -2968,10 +2968,10 @@ class Program
         }
     }
 }`
-},{
-    id: 309,
-    title: "Q : Library Borrowing and Fine Calculation System",
-    description: `
+        }, {
+            id: 309,
+            title: "Q : Library Borrowing and Fine Calculation System",
+            description: `
 /*
 
 A public library maintains a record of books and borrowers.
@@ -2979,7 +2979,7 @@ You need to design a system to track borrowed books and calculate overdue fines.
       
 */
 `,
-    starterCode: `using System;
+            starterCode: `using System;
 
 class Book
 {
@@ -3021,13 +3021,13 @@ class LibrarySystem
         // Expected: 12
     }
 }`,
-    hints: [
-        "Add constructors to initialize Book and Borrower objects.",
-        "Borrower should store the borrowed Book.",
-        "Allow a fixed number of free days before applying a fine.",
-        "Calculate fine only for the days exceeding the free period."
-    ],
-    solution: `using System;
+            hints: [
+                "Add constructors to initialize Book and Borrower objects.",
+                "Borrower should store the borrowed Book.",
+                "Allow a fixed number of free days before applying a fine.",
+                "Calculate fine only for the days exceeding the free period."
+            ],
+            solution: `using System;
 
 class Book
 {
@@ -3083,10 +3083,10 @@ class LibrarySystem
         // Output: 12
     }
 }`
-},{
-    id: 310,
-    title: "Q : Online Food Order Management and Billing",
-    description: `
+        }, {
+            id: 310,
+            title: "Q : Online Food Order Management and Billing",
+            description: `
 /*
 
 An online food app tracks restaurant orders.
@@ -3094,7 +3094,7 @@ You must implement order management and calculate bills with delivery charges.
       
 */
 `,
-    starterCode: `using System;
+            starterCode: `using System;
 
 class FoodItem
 {
@@ -3134,13 +3134,13 @@ class FoodApp
         // Expected output : 480
     }
 }`,
-    hints: [
-        "Create constructors for FoodItem and Order classes.",
-        "Order should accept a list of FoodItem objects.",
-        "Calculate the total price of all food items in the order.",
-        "Add a fixed delivery charge to the final bill."
-    ],
-    solution: `using System;
+            hints: [
+                "Create constructors for FoodItem and Order classes.",
+                "Order should accept a list of FoodItem objects.",
+                "Calculate the total price of all food items in the order.",
+                "Add a fixed delivery charge to the final bill."
+            ],
+            solution: `using System;
 
 class FoodItem
 {
@@ -3196,10 +3196,10 @@ class FoodApp
         // Output : 480
     }
 }`
-},{
-    id: 311,
-    title: "Q : Cinema Hall Ticket Booking and Revenue Calculation",
-    description: `
+        }, {
+            id: 311,
+            title: "Q : Cinema Hall Ticket Booking and Revenue Calculation",
+            description: `
 /*
 
 A cinema hall manages movie bookings.
@@ -3207,7 +3207,7 @@ Implement a ticket booking system and calculate revenue.
       
 */
 `,
-    starterCode: `using System;
+            starterCode: `using System;
 
 class Movie
 {
@@ -3251,13 +3251,13 @@ class CinemaHall
         // Expected : 1200
     }
 }`,
-    hints: [
-        "Create constructors for Movie and Customer classes.",
-        "Each customer should store the selected movie and number of tickets.",
-        "Total cost should be calculated using ticket count and movie price.",
-        "Revenue is the sum of total cost of all customers."
-    ],
-    solution: `using System;
+            hints: [
+                "Create constructors for Movie and Customer classes.",
+                "Each customer should store the selected movie and number of tickets.",
+                "Total cost should be calculated using ticket count and movie price.",
+                "Revenue is the sum of total cost of all customers."
+            ],
+            solution: `using System;
 
 class Movie
 {
@@ -3309,10 +3309,10 @@ class CinemaHall
         // Output : 1200
     }
 }`
-},{
-    id: 312,
-    title: "Q : E-commerce Cart Billing with Discount",
-    description: `
+        }, {
+            id: 312,
+            title: "Q : E-commerce Cart Billing with Discount",
+            description: `
 /*
 
 An e-commerce platform tracks shopping carts.
@@ -3320,7 +3320,7 @@ Build a system to calculate total bill with discounts.
       
 */
 `,
-    starterCode: `using System;
+            starterCode: `using System;
 
 class Product
 {
@@ -3360,13 +3360,13 @@ class ShoppingApp
         // Expected : 720
     }
 }`,
-    hints: [
-        "Create constructors for Product and Cart.",
-        "Add all product prices to calculate the total amount.",
-        "Apply a discount only if the total exceeds a threshold.",
-        "Return the discounted total as a double value."
-    ],
-    solution: `using System;
+            hints: [
+                "Create constructors for Product and Cart.",
+                "Add all product prices to calculate the total amount.",
+                "Apply a discount only if the total exceeds a threshold.",
+                "Return the discounted total as a double value."
+            ],
+            solution: `using System;
 
 class Product
 {
@@ -3426,10 +3426,10 @@ class ShoppingApp
         // Output : 720
     }
 }`
-},{
-    id: 313,
-    title: "Q : Frequent Badge Access Within One Hour",
-    description: `
+        }, {
+            id: 313,
+            title: "Q : Frequent Badge Access Within One Hour",
+            description: `
 /*
 We are working on a security system for a badged-access room in our company's building.
 
@@ -3448,7 +3448,7 @@ Amos: 500 503 504
 n: length of the badge records array
 */
 `,
-    starterCode: `using System;
+            starterCode: `using System;
 using System.Collections.Generic;
 
 class Program
@@ -3492,14 +3492,14 @@ class Program
         return new Dictionary<string, List<string>>();
     }
 }`,
-    hints: [
-        "Group all badge times by employee name.",
-        "Convert time strings such as \"835\" or \"5\" into minutes for comparison.",
-        "Sort each employee's access times.",
-        "Use a sliding window to find three or more accesses within 60 minutes.",
-        "If multiple windows exist, return only the earliest one."
-    ],
-    solution: `using System;
+            hints: [
+                "Group all badge times by employee name.",
+                "Convert time strings such as \"835\" or \"5\" into minutes for comparison.",
+                "Sort each employee's access times.",
+                "Use a sliding window to find three or more accesses within 60 minutes.",
+                "If multiple windows exist, return only the earliest one."
+            ],
+            solution: `using System;
 using System.Collections.Generic;
 
 class Program
@@ -3614,10 +3614,10 @@ class Program
         return value.ToString();
     }
 }`
-},{
-    id: 314,
-    title: "Q : Movie Recommendation Based on Similar User Ratings",
-    description: `
+        }, {
+            id: 314,
+            title: "Q : Movie Recommendation Based on Similar User Ratings",
+            description: `
 /*
 /*
 One of the fun features of Aquaintly is that users can rate movies they have seen from 1 to 5. We want to use these ratings to make movie recommendations. Ratings will be provided in the following format: [Member Name, Movie Name, Rating]
@@ -3666,7 +3666,7 @@ U = number of users
 */
 */
 `,
-    starterCode: `using System;
+            starterCode: `using System;
 using System.Collections.Generic;
 
 class Program
@@ -3708,13 +3708,13 @@ class Program
         Console.WriteLine(user + " => [" + string.Join(", ", movies) + "]");
     }
 }`,
-    hints: [
-        "Group all ratings by user.",
-        "For the target user, find all movies rated 4 or 5.",
-        "Find other users who also rated any of those movies 4 or 5.",
-        "Recommend movies rated 4 or 5 by similar users that the target user has not rated."
-    ],
-    solution: `using System;
+            hints: [
+                "Group all ratings by user.",
+                "For the target user, find all movies rated 4 or 5.",
+                "Find other users who also rated any of those movies 4 or 5.",
+                "Recommend movies rated 4 or 5 by similar users that the target user has not rated."
+            ],
+            solution: `using System;
 using System.Collections.Generic;
 
 class Program
@@ -3824,10 +3824,10 @@ class Program
         Console.WriteLine(user + " => [" + string.Join(", ", movies) + "]");
     }
 }`
-},{
-    id: 315,
-    title: "Q : Find Scrambled Word Inside a Note",
-    description: `
+        }, {
+            id: 315,
+            title: "Q : Find Scrambled Word Inside a Note",
+            description: `
 /*
 You are running a classroom and suspect that some of your students are passing around the answer to a multiple-choice question disguised as a random note.
 
@@ -3871,7 +3871,7 @@ W = number of words in \`words\`
 S = maximal length of each word or of the note  
 */
 `,
-    starterCode: `using System;
+            starterCode: `using System;
 using System.Collections.Generic;
 
 class Program
@@ -3903,13 +3903,13 @@ class Program
         return "-";
     }
 }`,
-    hints: [
-        "Count how many times each character appears in the note.",
-        "For each word, check if all its characters can be taken from the note counts.",
-        "Characters cannot be reused.",
-        "Return the first matching word, otherwise return \"-\"."
-    ],
-    solution: `using System;
+            hints: [
+                "Count how many times each character appears in the note.",
+                "For each word, check if all its characters can be taken from the note counts.",
+                "Characters cannot be reused.",
+                "Return the first matching word, otherwise return \"-\"."
+            ],
+            solution: `using System;
 using System.Collections.Generic;
 
 class Program
@@ -3990,13 +3990,13 @@ class Program
         return count;
     }
 }`
-},{
-    id: 316,
-    title: "Q : Fix Performance Issue in High-Frequency Order Processing",
-    description: `
+        }, {
+            id: 316,
+            title: "Q : Fix Performance Issue in High-Frequency Order Processing",
+            description: `
 Given code snippet is slow when thousand order per second is the frequency. Analyze the code and fix the performance issue.
 `,
-    starterCode: `using System;
+            starterCode: `using System;
 
 namespace Orders
 {
@@ -4108,13 +4108,13 @@ namespace Orders
         }
     }
 }`,
-    hints: [
-        "Avoid rethrowing exceptions using 'throw ex'.",
-        "Preserve the original stack trace when rethrowing.",
-        "Reduce duplicate try-catch blocks.",
-        "Wrap both operations inside a single try block when possible."
-    ],
-    solution: `using System;
+            hints: [
+                "Avoid rethrowing exceptions using 'throw ex'.",
+                "Preserve the original stack trace when rethrowing.",
+                "Reduce duplicate try-catch blocks.",
+                "Wrap both operations inside a single try block when possible."
+            ],
+            solution: `using System;
 
 namespace Orders
 {
@@ -4217,10 +4217,10 @@ namespace Orders
         }
     }
 }`
-},{
-    id: 317,
-    title: "Q : Fix Membership Statistics Bug in Gym Management System",
-    description: `
+        }, {
+            id: 317,
+            title: "Q : Fix Membership Statistics Bug in Gym Management System",
+            description: `
 /*
 
 We are building a program to manage a gym's membership. The gym has multiple members, each with a unique ID, name, and membership status. The program allows gym staff to add new members, update member status, and get membership statistics.
@@ -4234,7 +4234,7 @@ To begin with, we present you with two tasks:
 
 */
 `,
-    starterCode: `using System;
+            starterCode: `using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -4354,13 +4354,13 @@ class Program
             Math.Abs(stats["ConversionRate"] - 60.0) < 0.01);
     }
 }`,
-    hints: [
-        "Identify which membership statuses should be treated as paid.",
-        "Look carefully at how TotalPaidMembers is calculated.",
-        "Update the LINQ condition to include all paid membership types.",
-        "Ensure the conversion rate calculation remains unchanged."
-    ],
-    solution: `using System;
+            hints: [
+                "Identify which membership statuses should be treated as paid.",
+                "Look carefully at how TotalPaidMembers is calculated.",
+                "Update the LINQ condition to include all paid membership types.",
+                "Ensure the conversion rate calculation remains unchanged."
+            ],
+            solution: `using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -4481,8 +4481,8 @@ class Program
             Math.Abs(stats["ConversionRate"] - 60.0) < 0.01);
     }
 }`
-},
-          {
+        },
+        {
             id: 21,
             title: "Q 15 : Local Radio Station Play",
             description: `We have a catalog of song titles (and their lengths) that we play at a local radio station. We have been asked to play two of those songs in a row, and they must add up to exactly seven minutes long. 
@@ -4773,10 +4773,10 @@ public class Program {
             ]
         },
         {
-    id: 102,
-    title: "Refactor Conditional Logic for Discounts",
-    description: "The following code determines the discount for a customer. It is correct but hard to read. Refactor it to improve readability without changing behavior.",
-    starterCode: `using System;
+            id: 102,
+            title: "Refactor Conditional Logic for Discounts",
+            description: "The following code determines the discount for a customer. It is correct but hard to read. Refactor it to improve readability without changing behavior.",
+            starterCode: `using System;
 
 public class Program
 {
@@ -4795,12 +4795,12 @@ public class Program
         return isMember ? 0.15 : 0.0;
     }
 }`,
-    hints: [
-        "Introduce meaningful boolean variables to clarify the conditions.",
-        "Avoid nested or compact conditional expressions when readability suffers.",
-        "Ensure the refactoring does not change the original behavior."
-    ],
-    solution: `using System;
+            hints: [
+                "Introduce meaningful boolean variables to clarify the conditions.",
+                "Avoid nested or compact conditional expressions when readability suffers.",
+                "Ensure the refactoring does not change the original behavior."
+            ],
+            solution: `using System;
 
 public class Program
 {
@@ -4827,12 +4827,12 @@ public class Program
         return 0.0;
     }
 }`
-},
+        },
         {
-    id: 103,
-    title: "Refactor Repeated Code in Username Validation",
-    description: "The following function validates a list of usernames. The validation logic is embedded inside the loop. Refactor the code to reduce duplication and improve readability by extracting reusable validation logic.",
-    starterCode: `using System;
+            id: 103,
+            title: "Refactor Repeated Code in Username Validation",
+            description: "The following function validates a list of usernames. The validation logic is embedded inside the loop. Refactor the code to reduce duplication and improve readability by extracting reusable validation logic.",
+            starterCode: `using System;
 using System.Collections.Generic;
 
 public class Program
@@ -4860,12 +4860,12 @@ public class Program
         return valid;
     }
 }`,
-    hints: [
-        "Extract the validation logic into a separate method.",
-        "The refactoring should not change the behavior.",
-        "A small helper method can make the main loop easier to read."
-    ],
-    solution: `using System;
+            hints: [
+                "Extract the validation logic into a separate method.",
+                "The refactoring should not change the behavior.",
+                "A small helper method can make the main loop easier to read."
+            ],
+            solution: `using System;
 using System.Collections.Generic;
 
 public class Program
@@ -4900,7 +4900,7 @@ public class Program
                && !name.Contains(" ");
     }
 }`
-},
+        },
         {
             id: 104,
             title: "Optimize the Code",
@@ -4934,10 +4934,10 @@ public class Program
     ],
     unitTests: [
         {
-    id: 201,
-    title: "Test Calculator Methods",
-    description: "You have a simple Calculator class. The current test code incorrectly verifies the divide-by-zero scenario as a normal value. Update the tests so that the exception case is validated correctly.",
-    starterCode: `using System;
+            id: 201,
+            title: "Test Calculator Methods",
+            description: "You have a simple Calculator class. The current test code incorrectly verifies the divide-by-zero scenario as a normal value. Update the tests so that the exception case is validated correctly.",
+            starterCode: `using System;
 
 public class Calculator
 {
@@ -4972,12 +4972,12 @@ public class Program
                               " actual=" + actual);
     }
 }`,
-    hints: [
-        "Division by zero throws an exception, it should not be tested like a normal return value.",
-        "Create a separate assertion method for exception cases.",
-        "Use try-catch to validate that DivideByZeroException is thrown."
-    ],
-    solution: `using System;
+            hints: [
+                "Division by zero throws an exception, it should not be tested like a normal return value.",
+                "Create a separate assertion method for exception cases.",
+                "Use try-catch to validate that DivideByZeroException is thrown."
+            ],
+            solution: `using System;
 
 public class Calculator
 {
@@ -5023,12 +5023,12 @@ public class Program
         }
     }
 }`
-},
-       {
-    id: 202,
-    title: "Test Email Validation",
-    description: "The current email validation logic is too weak and allows some invalid email formats to pass. Run the given tests, identify the failing case, and fix the validation logic without changing the test code.",
-    starterCode: `using System;
+        },
+        {
+            id: 202,
+            title: "Test Email Validation",
+            description: "The current email validation logic is too weak and allows some invalid email formats to pass. Run the given tests, identify the failing case, and fix the validation logic without changing the test code.",
+            starterCode: `using System;
 
 public class EmailValidator
 {
@@ -5070,13 +5070,13 @@ public class Program
                               " actual=" + actual);
     }
 }`,
-    hints: [
-        "The current implementation only checks for the presence of '@' and '.'.",
-        "Ensure there is exactly one '@' character.",
-        "Ensure the dot appears after the '@' and is not the last character.",
-        "Do not change the test code—fix only the validation logic."
-    ],
-    solution: `using System;
+            hints: [
+                "The current implementation only checks for the presence of '@' and '.'.",
+                "Ensure there is exactly one '@' character.",
+                "Ensure the dot appears after the '@' and is not the last character.",
+                "Do not change the test code—fix only the validation logic."
+            ],
+            solution: `using System;
 
 public class EmailValidator
 {
@@ -5134,12 +5134,12 @@ public class Program
                               " actual=" + actual);
     }
 }`
-},
-       {
-    id: 203,
-    title: "Test Shopping Cart Total",
-    description: "Write tests to verify the GetTotal method of a ShoppingCart class, including empty cart, single item, and multiple items. One test currently has an incorrect expected value and must be fixed.",
-    starterCode: `using System;
+        },
+        {
+            id: 203,
+            title: "Test Shopping Cart Total",
+            description: "Write tests to verify the GetTotal method of a ShoppingCart class, including empty cart, single item, and multiple items. One test currently has an incorrect expected value and must be fixed.",
+            starterCode: `using System;
 using System.Collections.Generic;
 
 public class ShoppingCart
@@ -5190,12 +5190,12 @@ public class Program
                               " actual=" + actual);
     }
 }`,
-    hints: [
-        "Check the expected total for the multiple-items test carefully.",
-        "Verify the sum of all values added to the Prices list.",
-        "Only the test expectation is wrong, not the GetTotal method."
-    ],
-    solution: `using System;
+            hints: [
+                "Check the expected total for the multiple-items test carefully.",
+                "Verify the sum of all values added to the Prices list.",
+                "Only the test expectation is wrong, not the GetTotal method."
+            ],
+            solution: `using System;
 using System.Collections.Generic;
 
 public class ShoppingCart
@@ -5246,12 +5246,14 @@ public class Program
                               " actual=" + actual);
     }
 }`
-},
-       {
-id: 302,
-title: "Performance Optimize Fibonacci",
-description: "Compute the nth Fibonacci number. The naive recursive solution is very slow for n > 40. Optimize using memoization or iterative approach. Expected time complexity after optimization: O(n). Assume 0 <= n <= 45.",
-starterCode: `using System;
+        }
+    ],
+    performance: [
+        {
+            id: 302,
+            title: "Performance Optimize Fibonacci",
+            description: "Compute the nth Fibonacci number. The naive recursive solution is very slow for n > 40. Optimize using memoization or iterative approach. Expected time complexity after optimization: O(n). Assume 0 <= n <= 45.",
+            starterCode: `using System;
 
 
 public class Program
@@ -5275,12 +5277,12 @@ return n;
 return Fibonacci(n - 1) + Fibonacci(n - 2);
 }
 }`,
-hints: [
-"The recursive solution recomputes the same Fibonacci values many times.",
-"Use an iterative bottom-up approach to compute the result in O(n) time.",
-"You can also use memoization to cache already computed values."
-],
-solution: `using System;
+            hints: [
+                "The recursive solution recomputes the same Fibonacci values many times.",
+                "Use an iterative bottom-up approach to compute the result in O(n) time.",
+                "You can also use memoization to cache already computed values."
+            ],
+            solution: `using System;
 
 
 public class Program
@@ -5314,12 +5316,12 @@ b = temp;
 return b;
 }
 }`
-},
-    {
-id: 303,
-title: "Performance Optimize String Concatenation",
-description: "Concatenating many strings using '+' is slow. Optimize the code using a more efficient method for large n. Expected time complexity after optimization: O(n).",
-starterCode: `using System;
+        },
+        {
+            id: 303,
+            title: "Performance Optimize String Concatenation",
+            description: "Concatenating many strings using '+' is slow. Optimize the code using a more efficient method for large n. Expected time complexity after optimization: O(n).",
+            starterCode: `using System;
 
 
 public class Program
@@ -5345,12 +5347,12 @@ result = result + i.ToString(); // slow
 return result;
 }
 }`,
-hints: [
-"String concatenation using '+' inside a loop creates many temporary strings.",
-"Use StringBuilder to avoid repeated allocations.",
-"Append values to a buffer and convert to string at the end."
-],
-solution: `using System;
+            hints: [
+                "String concatenation using '+' inside a loop creates many temporary strings.",
+                "Use StringBuilder to avoid repeated allocations.",
+                "Append values to a buffer and convert to string at the end."
+            ],
+            solution: `using System;
 using System.Text;
 
 
@@ -5377,12 +5379,12 @@ sb.Append(i.ToString());
 return sb.ToString();
 }
 }`
-},
-  {
-    id: 304,
-    title: "Performance Singleton Pattern",
-    description: "The snippet shows that the performance and correctness of getting the Singleton instance is problematic in a multi-threaded environment. Identify the cause of the issue and fix it using a thread-safe and efficient approach.",
-    starterCode: `using System;
+        },
+        {
+            id: 304,
+            title: "Performance Singleton Pattern",
+            description: "The snippet shows that the performance and correctness of getting the Singleton instance is problematic in a multi-threaded environment. Identify the cause of the issue and fix it using a thread-safe and efficient approach.",
+            starterCode: `using System;
 using System.Threading.Tasks;
 
 public class Singleton
@@ -5421,13 +5423,13 @@ public class Program
         });
     }
 }`,
-    hints: [
-        "The current implementation is not thread-safe and may create multiple instances under concurrency.",
-        "Multiple threads can enter the null check at the same time.",
-        "Use locking carefully to avoid unnecessary performance overhead.",
-        "Double-checked locking is a common pattern to solve this problem."
-    ],
-    solution: `using System;
+            hints: [
+                "The current implementation is not thread-safe and may create multiple instances under concurrency.",
+                "Multiple threads can enter the null check at the same time.",
+                "Use locking carefully to avoid unnecessary performance overhead.",
+                "Double-checked locking is a common pattern to solve this problem."
+            ],
+            solution: `using System;
 using System.Threading.Tasks;
 
 public class Singleton
@@ -5474,12 +5476,12 @@ public class Program
         });
     }
 }`
-},
+        },
         {
-    id: 305,
-    title: "Performance Microservices",
-    description: "The following code uses a microservice to retrieve a list of companies' data. While profiling the code, we observed that the microservice is effectively used multiple times because the result is re-enumerated several times. Identify the performance issue and fix it so the microservice result is fetched and enumerated only once.",
-    starterCode: `using System;
+            id: 305,
+            title: "Performance Microservices",
+            description: "The following code uses a microservice to retrieve a list of companies' data. While profiling the code, we observed that the microservice is effectively used multiple times because the result is re-enumerated several times. Identify the performance issue and fix it so the microservice result is fetched and enumerated only once.",
+            starterCode: `using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -5581,12 +5583,12 @@ public class Program
         Console.WriteLine("Companies returned: " + result.Count);
     }
 }`,
-    hints: [
-        "The IEnumerable returned by GetCompanyInfoList is enumerated multiple times.",
-        "Each LINQ operation such as Any(), Count() and Where() can re-enumerate the source.",
-        "Materialize the result once using ToList() before applying multiple queries."
-    ],
-    solution: `using System;
+            hints: [
+                "The IEnumerable returned by GetCompanyInfoList is enumerated multiple times.",
+                "Each LINQ operation such as Any(), Count() and Where() can re-enumerate the source.",
+                "Materialize the result once using ToList() before applying multiple queries."
+            ],
+            solution: `using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -5687,12 +5689,12 @@ public class Program
         Console.WriteLine("Companies returned: " + result.Count);
     }
 }`
-},
-       {
-    id: 306,
-    title: "Implementing a thread-safe counter",
-    description: "You are implementing a thread-safe counter using Interlocked.Increment and Interlocked.Decrement. However, sometimes your code throws a NullReferenceException. Why does this happen, and how can you fix it?",
-    starterCode: `using System;
+        },
+        {
+            id: 306,
+            title: "Implementing a thread-safe counter",
+            description: "You are implementing a thread-safe counter using Interlocked.Increment and Interlocked.Decrement. However, sometimes your code throws a NullReferenceException. Why does this happen, and how can you fix it?",
+            starterCode: `using System;
 using System.Threading;
 
 public class Counter
@@ -5725,12 +5727,12 @@ public class Program
         Console.WriteLine(counter.Value);
     }
 }`,
-    hints: [
-        "Interlocked methods do not support nullable variables.",
-        "If the field becomes null, Interlocked.Increment cannot operate on it safely.",
-        "Use a non-nullable int field for counters that are updated with Interlocked."
-    ],
-    solution: `using System;
+            hints: [
+                "Interlocked methods do not support nullable variables.",
+                "If the field becomes null, Interlocked.Increment cannot operate on it safely.",
+                "Use a non-nullable int field for counters that are updated with Interlocked."
+            ],
+            solution: `using System;
 using System.Threading;
 
 public class Counter
@@ -5762,6 +5764,8 @@ public class Program
         Console.WriteLine(counter.Value);
     }
 }`
+        }
+    ]
 };
 
 export default dotnetQuestions;
