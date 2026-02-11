@@ -2734,7 +2734,7 @@ class Solution {
         },
         {
             id: 307,
-            title: "Q : Badge Access Mismatch Detection",
+            title: "Q 15: Badge Access Mismatch Detection",
             description: `
 /*
 
@@ -2866,7 +2866,7 @@ class Program
 }`
         }, {
             id: 308,
-            title: "Q : Flatten a Deeply Nested Array",
+            title: "Q 16: Flatten a Deeply Nested Array",
             description: `
 /*
 
@@ -2970,7 +2970,7 @@ class Program
 }`
         }, {
             id: 309,
-            title: "Q : Library Borrowing and Fine Calculation System",
+            title: "Q 17: Library Borrowing and Fine Calculation System",
             description: `
 /*
 
@@ -3085,7 +3085,7 @@ class LibrarySystem
 }`
         }, {
             id: 310,
-            title: "Q : Online Food Order Management and Billing",
+            title: "Q 18: Online Food Order Management and Billing",
             description: `
 /*
 
@@ -3198,7 +3198,7 @@ class FoodApp
 }`
         }, {
             id: 311,
-            title: "Q : Cinema Hall Ticket Booking and Revenue Calculation",
+            title: "Q 19: Cinema Hall Ticket Booking and Revenue Calculation",
             description: `
 /*
 
@@ -3311,7 +3311,7 @@ class CinemaHall
 }`
         }, {
             id: 312,
-            title: "Q : E-commerce Cart Billing with Discount",
+            title: "Q 20: E-commerce Cart Billing with Discount",
             description: `
 /*
 
@@ -3428,7 +3428,7 @@ class ShoppingApp
 }`
         }, {
             id: 313,
-            title: "Q : Frequent Badge Access Within One Hour",
+            title: "Q 21: Frequent Badge Access Within One Hour",
             description: `
 /*
 We are working on a security system for a badged-access room in our company's building.
@@ -3616,7 +3616,7 @@ class Program
 }`
         }, {
             id: 314,
-            title: "Q : Movie Recommendation Based on Similar User Ratings",
+            title: "Q 22: Movie Recommendation Based on Similar User Ratings",
             description: `
 /*
 /*
@@ -3826,7 +3826,7 @@ class Program
 }`
         }, {
             id: 315,
-            title: "Q : Find Scrambled Word Inside a Note",
+            title: "Q 23: Find Scrambled Word Inside a Note",
             description: `
 /*
 You are running a classroom and suspect that some of your students are passing around the answer to a multiple-choice question disguised as a random note.
@@ -3992,7 +3992,7 @@ class Program
 }`
         }, {
             id: 316,
-            title: "Q : Fix Performance Issue in High-Frequency Order Processing",
+            title: "Q 24: Fix Performance Issue in High-Frequency Order Processing",
             description: `
 Given code snippet is slow when thousand order per second is the frequency. Analyze the code and fix the performance issue.
 `,
@@ -4219,7 +4219,7 @@ namespace Orders
 }`
         }, {
             id: 317,
-            title: "Q : Fix Membership Statistics Bug in Gym Management System",
+            title: "Q 25: Fix Membership Statistics Bug in Gym Management System",
             description: `
 /*
 
@@ -4484,7 +4484,7 @@ class Program
         },
         {
             id: 21,
-            title: "Q 15 : Local Radio Station Play",
+            title: "Q 26: Local Radio Station Play",
             description: `We have a catalog of song titles (and their lengths) that we play at a local radio station. We have been asked to play two of those songs in a row, and they must add up to exactly seven minutes long. 
 
 Given a list of songs and their durations, write a function that returns the names of any two distinct songs that add up to exactly seven minutes. If there is no such pair, return an empty collection. 
