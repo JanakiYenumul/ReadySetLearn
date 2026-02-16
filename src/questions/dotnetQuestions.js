@@ -2766,15 +2766,6 @@ class Program
         Console.WriteLine("Entered without exiting  : " + string.Join(\", \", result.Item1));
         Console.WriteLine("Exited without entering : " + string.Join(\", \", result.Item2));
     }
-
-    static Tuple<List<string>, List<string>> Mismatches(List<string[]> records)
-    {
-        // ❌ TODO: logic not implemented yet
-        return new Tuple<List<string>, List<string>>(
-            new List<string>(),
-            new List<string>()
-        );
-    }
 }`,
             hints: [
                 "Track whether each employee is currently inside the room.",
@@ -3484,13 +3475,7 @@ class Program
             Console.WriteLine(kv.Key + ": " + string.Join(" ", kv.Value));
         }
     }
-
-    static Dictionary<string, List<string>> FindFrequentBadgeAccess(
-        List<string[]> records)
-    {
-        // ❌ TODO – logic not implemented
-        return new Dictionary<string, List<string>>();
-    }
+   
 }`,
             hints: [
                 "Group all badge times by employee name.",
@@ -3697,12 +3682,6 @@ class Program
         Print("Franz", Recommendations("Franz", ratings));
     }
 
-    static List<string> Recommendations(string user, List<string[]> ratings)
-    {
-        // ❌ TODO – not implemented
-        return new List<string>();
-    }
-
     static void Print(string user, List<string> movies)
     {
         Console.WriteLine(user + " => [" + string.Join(", ", movies) + "]");
@@ -3896,12 +3875,7 @@ class Program
     {
         Console.WriteLine("find(" + note + ") => " + Find(words, note));
     }
-
-    static string Find(string[] words, string note)
-    {
-        // ❌ TODO – not implemented
-        return "-";
-    }
+   
 }`,
             hints: [
                 "Count how many times each character appears in the note.",
@@ -4610,7 +4584,7 @@ new string[] {"If I lived here", "3:59"},
 new string[] {"Day and night", "5:03"},
 new string[] {"Tempo song", "1:57"}
 };
-}`,
+        }}`,
             solution: `using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -4728,7 +4702,408 @@ static void Main(string[] args)
     }
 }
 `
+        },
+        {
+            id: 24,
+            title: "QXX : Build Complete Robots from Available Parts",
+            description: `
+/*
+We have a bin of robot parts in a factory. Each part goes to a robot with a specific, unique name. 
+Each part is described by a string in the format:
+
+    "RobotName_partName"
+
+Example:
+    "Rosie_arm"
+    "Optimus_sensors"
+
+All robots are made of the same types of parts.
+
+You are given:
+1) A list of available robot parts (all_parts)
+2) A comma-separated string of required parts (requiredParts)
+
+Your task is to return the collection of robot names for which we can build 
+at least one complete robot using the available parts.
+
+A robot is considered complete only if it has ALL required parts.
+
+--------------------------------------------------
+
+Example:
+
+required_parts_1 = "sensors, case, speaker, wheels"
+required_parts_2 = "sensors, case, speaker, wheels, claw"
+required_parts_3 = "sensors, case, screws"
+
+Expected Output (order does not matter):
+
+GetRobots(all_parts, required_parts_1) => ["Optimus", "Rosie"]
+GetRobots(all_parts, required_parts_2) => ["Rosie"]
+GetRobots(all_parts, required_parts_3) => []
+
+--------------------------------------------------
+
+Constraints:
+N = number of elements in all_parts
+M = number of required parts
+
+Time Complexity Target: O(N)
+*/
+`,
+            starterCode: `
+using System;
+using System.Collections.Generic;
+
+class Solution
+{
+    static void Main(String[] args)
+    {
+        var required_parts_1 = "sensors, case, speaker, wheels";
+        var required_parts_2 = "sensors, case, speaker, wheels, claw";
+        var required_parts_3 = "sensors, case, screws";
+
+        var all_parts = new string[] {
+            "Rosie_claw",
+            "Rosie_sensors",
+            "Dustie_case",
+            "Optimus_sensors",
+            "Rust_sensors",
+            "Rosie_case",
+            "Rust_case",
+            "Optimus_speaker",
+            "Rosie_wheels",
+            "Rosie_speaker",
+            "Dustie_case",
+            "Dustie_arms",
+            "Rust_claw",
+            "Dustie_speaker",
+            "Optimus_case",
+            "Optimus_wheels",
+            "Rust_legs",
+            "Optimus_sensors"
+        };
+
+        Print("Test1", GetRobots(all_parts, required_parts_1));
+        Print("Test2", GetRobots(all_parts, required_parts_2));
+        Print("Test3", GetRobots(all_parts, required_parts_3));
+    }
+
+    static List<string> GetRobots(string[] allParts, string requiredParts)
+    {
+        // ❌ TODO – not implemented
+        return new List<string>();
+    }
+
+    static void Print(string testName, List<string> robots)
+    {
+        Console.WriteLine(testName + " => [" + string.Join(", ", robots) + "]");
+    }
+}
+`,
+            solution: `
+using System;
+using System.Collections.Generic;
+
+class Solution
+{
+    static void Main(String[] args)
+    {
+        var required_parts_1 = "sensors, case, speaker, wheels";
+        var required_parts_2 = "sensors, case, speaker, wheels, claw";
+        var required_parts_3 = "sensors, case, screws";
+
+        var all_parts = new string[] {
+            "Rosie_claw",
+            "Rosie_sensors",
+            "Dustie_case",
+            "Optimus_sensors",
+            "Rust_sensors",
+            "Rosie_case",
+            "Rust_case",
+            "Optimus_speaker",
+            "Rosie_wheels",
+            "Rosie_speaker",
+            "Dustie_case",
+            "Dustie_arms",
+            "Rust_claw",
+            "Dustie_speaker",
+            "Optimus_case",
+            "Optimus_wheels",
+            "Rust_legs",
+            "Optimus_sensors"
+        };
+
+        Print("Test1", GetRobots(all_parts, required_parts_1));
+        Print("Test2", GetRobots(all_parts, required_parts_2));
+        Print("Test3", GetRobots(all_parts, required_parts_3));
+    }
+
+    static List<string> GetRobots(string[] allParts, string requiredParts)
+    {
+        var required = new HashSet<string>();
+        foreach (var part in requiredParts.Split(','))
+            required.Add(part.Trim());
+
+        var robotParts = new Dictionary<string, HashSet<string>>();
+
+        foreach (var item in allParts)
+        {
+            var split = item.Split('_');
+            if (split.Length != 2)
+                continue;
+
+            var robot = split[0];
+            var part = split[1];
+
+            if (!robotParts.ContainsKey(robot))
+                robotParts[robot] = new HashSet<string>();
+
+            robotParts[robot].Add(part);
         }
+
+        var result = new List<string>();
+
+        foreach (var kv in robotParts)
+        {
+            bool canBuild = true;
+
+            foreach (var req in required)
+            {
+                if (!kv.Value.Contains(req))
+                {
+                    canBuild = false;
+                    break;
+                }
+            }
+
+            if (canBuild)
+                result.Add(kv.Key);
+        }
+
+        return result;
+    }
+
+    static void Print(string testName, List<string> robots)
+    {
+        Console.WriteLine(testName + " => [" + string.Join(", ", robots) + "]");
+    }
+}
+`,
+            hints: [
+                "Split requiredParts using comma and trim spaces.",
+                "Use Dictionary<string, HashSet<string>> to group robot parts.",
+                "A robot is valid only if it contains ALL required parts.",
+                "Ignore malformed entries that do not follow 'Robot_Part' format."
+            ]
+        },
+        {
+            id: 25,
+            title: "QXX : Maximum Passengers Collection (Grid Round Trip)",
+            description: `
+/*
+A taxi driver wants to maximize the number of passengers he can pick up 
+while travelling from his home to the railway station and back.
+
+You are given a grid of size n x m representing the city map.
+
+Each cell in the grid can have one of the following values:
+
+0  → Empty path cell
+1  → Cell containing a passenger
+-1 → Blocked cell (cannot be used)
+
+--------------------------------------------------
+
+Rules:
+
+• The driver starts at the top-left corner (0,0).
+• He must reach the bottom-right corner (n-1, m-1).
+• While going to the railway station, he can only move:
+      → Right
+      → Down
+• After reaching (n-1, m-1), he must return to (0,0).
+• While returning, he can only move:
+      → Left
+      → Up
+• He can only move through valid path cells (not -1).
+• When he passes through a passenger cell (1), the passenger is picked up
+  and that cell becomes 0.
+• If there is no valid path between (0,0) and (n-1,m-1),
+  then no passenger can be picked.
+
+--------------------------------------------------
+
+Goal:
+Return the maximum number of passengers that can be collected.
+
+--------------------------------------------------
+
+Example:
+
+Input Grid 1 (4x4):
+0 0 0 1
+1 0 0 0
+0 0 0 0
+0 0 0 0
+
+Output:
+2
+
+Input Grid 2 (3x3):
+0 1 -1
+1 0 -1
+1 1  1
+
+Output:
+5
+
+--------------------------------------------------
+
+Constraints:
+N = number of rows
+M = number of columns
+
+Time Complexity Target: O(N^3)
+(This is a variation of the "Cherry Pickup" dynamic programming problem.)
+*/
+`,
+            starterCode: `
+using System;
+
+class Solution
+{
+    static void Main()
+    {
+        int[,] grid1 =
+        {
+            {0,0,0,1},
+            {1,0,0,0},
+            {0,0,0,0},
+            {0,0,0,0}
+        };
+
+        int[,] grid2 =
+        {
+            {0,1,-1},
+            {1,0,-1},
+            {1,1,1}
+        };
+
+        Console.WriteLine("Output1: " + MaxPassengers(grid1)); // Expected 2
+        Console.WriteLine("Output2: " + MaxPassengers(grid2)); // Expected 5
+    }
+
+    static int MaxPassengers(int[,] grid)
+    {
+        // ❌ TODO – Not implemented
+        return 0;
+    }
+}
+`,
+            solution: `
+using System;
+
+class Solution
+{
+    static void Main()
+    {
+        int[,] grid1 =
+        {
+            {0,0,0,1},
+            {1,0,0,0},
+            {0,0,0,0},
+            {0,0,0,0}
+        };
+
+        int[,] grid2 =
+        {
+            {0,1,-1},
+            {1,0,-1},
+            {1,1,1}
+        };
+
+        Console.WriteLine("Output1: " + MaxPassengers(grid1)); // 2
+        Console.WriteLine("Output2: " + MaxPassengers(grid2)); // 5
+    }
+
+    static int MaxPassengers(int[,] grid)
+    {
+        int n = grid.GetLength(0);
+        int m = grid.GetLength(1);
+
+        int[,,] dp = new int[n, n, n];
+
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
+                for (int k = 0; k < n; k++)
+                    dp[i, j, k] = int.MinValue;
+
+        dp[0, 0, 0] = grid[0, 0];
+
+        for (int t = 1; t < 2 * n - 1; t++)
+        {
+            for (int x1 = Math.Max(0, t - (n - 1)); x1 <= Math.Min(n - 1, t); x1++)
+            {
+                for (int x2 = Math.Max(0, t - (n - 1)); x2 <= Math.Min(n - 1, t); x2++)
+                {
+                    int y1 = t - x1;
+                    int y2 = t - x2;
+
+                    if (y1 < 0 || y1 >= n || y2 < 0 || y2 >= n)
+                        continue;
+
+                    if (grid[x1, y1] == -1 || grid[x2, y2] == -1)
+                        continue;
+
+                    int best = int.MinValue;
+
+                    for (int dx1 = 0; dx1 <= 1; dx1++)
+                    {
+                        for (int dx2 = 0; dx2 <= 1; dx2++)
+                        {
+                            int px1 = x1 - dx1;
+                            int px2 = x2 - dx2;
+
+                            int py1 = (t - 1) - px1;
+                            int py2 = (t - 1) - px2;
+
+                            if (px1 >= 0 && px2 >= 0 &&
+                                py1 >= 0 && py2 >= 0 &&
+                                dp[px1, px2, t - 1 - px1] != int.MinValue)
+                            {
+                                best = Math.Max(best,
+                                    dp[px1, px2, t - 1 - px1]);
+                            }
+                        }
+                    }
+
+                    if (best == int.MinValue)
+                        continue;
+
+                    int value = best + grid[x1, y1];
+
+                    if (x1 != x2)
+                        value += grid[x2, y2];
+
+                    dp[x1, x2, y1] = value;
+                }
+            }
+        }
+
+        return Math.Max(0, dp[n - 1, n - 1, n - 1]);
+    }
+}
+`,
+            hints: [
+                "This is a variation of the Cherry Pickup problem.",
+                "Think of forward and backward paths as two people moving simultaneously.",
+                "Use 3D Dynamic Programming.",
+                "Avoid double-counting the same cell."
+            ]
+        }
+
+
     ],
     refactor: [
         {
