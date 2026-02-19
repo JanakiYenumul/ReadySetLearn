@@ -40,7 +40,7 @@ export default function InterviewApp() {
   const [loading, setLoading] = useState(false);
 
   // Timer
-  const [timeLeft, setTimeLeft] = useState(5);
+  const [timeLeft, setTimeLeft] = useState(1200);
   const timerRef = useRef(null);
 
   // Hint & solution state
@@ -104,7 +104,7 @@ export default function InterviewApp() {
       setHintCount(0);
       setSolutionUnlocked(false);
 
-      const duration = category === "problems" ? 5 : 5;
+      const duration = category === "problems" ? 1200 : 300;
       setTimeLeft(duration);
     }
   };
@@ -156,38 +156,6 @@ export default function InterviewApp() {
     setSolutionUnlocked(true);
   };
 
-  // const runCode = async () => {
-  //   if (!selectedQuestion) return setOutput("Select a question first.");
-  //   if (!code.trim()) return setOutput("Code editor is empty.");
-  //   //if (timeLeft <= 0) return setOutput("⏰ Time is up! Please select another question.");
-
-  //   setLoading(true);
-  //   setOutput("Running...");
-
-  //   try {
-  //     const res = await fetch(`${JUDGE0_API}/submissions?base64_encoded=false&wait=true`, {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({
-  //         source_code: code,
-  //         language_id: LANGUAGE_MAP[tech],
-  //         stdin: "",
-  //       }),
-  //     });
-
-  //     const data = await res.json();
-
-  //     if (data.stderr) setOutput(`Runtime Error:\n${data.stderr}`);
-  //     else if (data.compile_output) setOutput(`Compilation Error:\n${data.compile_output}`);
-  //     else if (data.stdout) setOutput(data.stdout.trim());
-  //     else setOutput("No output.");
-  //   } catch (err) {
-  //     console.error(err);
-  //     setOutput("Execution failed.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   const runCode = async () => {
   if (!selectedQuestion) return setOutput("Select a question first.");
@@ -204,11 +172,8 @@ export default function InterviewApp() {
     let sourceCode = code;
     let languageId = LANGUAGE_MAP[tech];
 
-    // ============================
-    // SQL EXECUTION FIX
-    // ============================
     if (tech === "sql") {
-      // Remove SQL comments
+      // Removin SQL comments
       const cleanedQuery = code
         .replace(/--.*$/gm, "")
         .replace(/\/\*[\s\S]*?\*\//g, "")
