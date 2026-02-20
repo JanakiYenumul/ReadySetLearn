@@ -5,7 +5,7 @@ import javaQuestions from "../questions/javaQuestions";
 import jsQuestions from "../questions/jsQuestions";
 import dotnetQuestions from "../questions/dotnetQuestions";
 import nodeQuestions from "../questions/nodeQuestions";
-// import sqlQuestions from "../questions/sqlQuestions";
+import sqlQuestions from "../questions/sqlQuestions";
 import pythonQuestions from "../questions/pythonQuestions";
 
 const JUDGE0_API = "https://ce.judge0.com";
@@ -15,7 +15,7 @@ const LANGUAGE_MAP = {
   java: 62,
   dotnet: 51,
   nodejs: 63,
-  // sql: 82, 
+  sql: 71, 
   python: 71,
 };
 
@@ -24,7 +24,7 @@ const QUESTIONS_BY_TECH = {
   javascript: jsQuestions,
   dotnet: dotnetQuestions,
   nodejs: nodeQuestions,
-  // sql: sqlQuestions,
+  sql: sqlQuestions,
   python: pythonQuestions, 
 };
 
@@ -52,16 +52,51 @@ export default function InterviewApp() {
   const handleQuestionChange = (e) => {
     const selected = e.target.value;
     setSelectedQuestion(selected);
-
     if (selected) {
       const q = questionsData[category].find((q) => q.title === selected);
 
-      // Comment style (generic)
-      const commentPrefix = "/*";
-      const commentSuffix = "*/";
-      const questionAsComment = `${commentPrefix}\n${q?.description}\n${commentSuffix}\n`;
+      // Choose comment style based on language/tech
+      const getCommentStyle = (lang) => {
+        switch (lang) {
+          case "python":
+            return { prefix: "# ", suffix: "", linePrefix: true };
+          case "sql":
+            return { prefix: "-- ", suffix: "", linePrefix: true };
+          case "javascript":
+          case "nodejs":
+          case "java":
+          case "dotnet":
+          default:
+            return { prefix: "/*", suffix: "*/", linePrefix: false };
+        }
+      };
 
-      setCode(questionAsComment + (q?.starterCode || "// No starter code available"));
+      const getDefaultStarter = (lang) => {
+        switch (lang) {
+          case "python":
+            return "# No starter code available";
+          case "sql":
+            return "-- No starter code available";
+          case "java":
+          case "dotnet":
+            return "/* No starter code available */";
+          default:
+            return "// No starter code available";
+        }
+      };
+
+      const style = getCommentStyle(tech);
+      let questionAsComment = "";
+
+      if (style.linePrefix) {
+        const desc = q?.description || "";
+        const lines = desc.split("\n").map((l) => (l.trim() ? `${style.prefix}${l.trim()}` : style.prefix.trim()));
+        questionAsComment = lines.join("\n") + "\n\n";
+      } else {
+        questionAsComment = `${style.prefix}\n${q?.description}\n${style.suffix}\n\n`;
+      }
+
+      setCode(questionAsComment + (q?.starterCode || getDefaultStarter(tech)));
       setHint("");
       setSolution(q?.solution || "");
       setShowSolution(false);
@@ -121,38 +156,99 @@ export default function InterviewApp() {
     setSolutionUnlocked(true);
   };
 
+
   const runCode = async () => {
-    if (!selectedQuestion) return setOutput("Select a question first.");
-    if (!code.trim()) return setOutput("Code editor is empty.");
-    //if (timeLeft <= 0) return setOutput("⏰ Time is up! Please select another question.");
+  if (!selectedQuestion) return setOutput("Select a question first.");
+  if (!code.trim()) return setOutput("Code editor is empty.");
 
-    setLoading(true);
-    setOutput("Running...");
+  setLoading(true);
+  setOutput("Running...");
 
-    try {
-      const res = await fetch(`${JUDGE0_API}/submissions?base64_encoded=false&wait=true`, {
+  try {
+    const q = questionsData[category].find(
+      (q) => q.title === selectedQuestion
+    );
+
+    let sourceCode = code;
+    let languageId = LANGUAGE_MAP[tech];
+
+    if (tech === "sql") {
+      // Removin SQL comments
+      const cleanedQuery = code
+        .replace(/--.*$/gm, "")
+        .replace(/\/\*[\s\S]*?\*\//g, "")
+        .trim();
+
+      // Optional: allow only SELECT
+      if (!/^select/i.test(cleanedQuery)) {
+        setOutput("Only SELECT queries are allowed.");
+        setLoading(false);
+        return;
+      }
+
+      // Wrap inside Python SQLite driver
+      sourceCode = `
+import sqlite3, csv, sys
+
+schema_sql = """
+${q.schemaSql}
+"""
+
+user_query = """
+${cleanedQuery}
+"""
+
+try:
+    conn = sqlite3.connect(":memory:")
+    cur = conn.cursor()
+    cur.executescript(schema_sql)
+    cur.execute(user_query)
+    rows = cur.fetchall()
+    w = csv.writer(sys.stdout, lineterminator="\\n")
+    for r in rows:
+        w.writerow(r)
+except Exception as e:
+    print("___ERROR___")
+    print(str(e))
+`;
+
+      languageId = 71; // Python 3
+    }
+
+    const res = await fetch(
+      `${JUDGE0_API}/submissions?base64_encoded=false&wait=true`,
+      {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          source_code: code,
-          language_id: LANGUAGE_MAP[tech],
-          stdin: "",
+          source_code: sourceCode,
+          language_id: languageId,
+          stdin: ""
         }),
-      });
+      }
+    );
 
-      const data = await res.json();
+    const data = await res.json();
 
-      if (data.stderr) setOutput(`Runtime Error:\n${data.stderr}`);
-      else if (data.compile_output) setOutput(`Compilation Error:\n${data.compile_output}`);
-      else if (data.stdout) setOutput(data.stdout.trim());
-      else setOutput("No output.");
-    } catch (err) {
-      console.error(err);
-      setOutput("Execution failed.");
-    } finally {
-      setLoading(false);
+    if (data.stdout?.startsWith("___ERROR___")) {
+      setOutput("SQL Error:\n" + data.stdout);
+    } else if (data.stderr) {
+      setOutput(`Runtime Error:\n${data.stderr}`);
+    } else if (data.compile_output) {
+      setOutput(`Compilation Error:\n${data.compile_output}`);
+    } else if (data.stdout) {
+      setOutput(data.stdout.trim());
+    } else {
+      setOutput("No output.");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    setOutput("Execution failed.");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div style={{ fontFamily: "sans-serif", height: "100vh", display: "flex", flexDirection: "column" }}>
@@ -163,9 +259,15 @@ export default function InterviewApp() {
           <select
             value={tech}
             onChange={(e) => {
-              setTech(e.target.value);
+              const newTech = e.target.value;
+              setTech(newTech);
               setSelectedQuestion("");
-              setCode("// Select a question to start coding");
+              // Use appropriate comment style for the new language
+              const commentMap = {
+                python: "# Select a question to start coding",
+                sql: "-- Select a question to start coding",
+              };
+              setCode(commentMap[newTech] || "// Select a question to start coding");
             }}
           >
             <option value="javascript">JavaScript</option>
@@ -226,7 +328,7 @@ export default function InterviewApp() {
             theme="vs-dark"
             options={{
               automaticLayout: true,
-              renderValidationDecorations: tech === "java" || tech === "dotnet" ? "off" : "on",
+              renderValidationDecorations: tech === "java" || tech === "sql" || tech === "dotnet" ? "off" : "on",
             }}
           />
         </div>
