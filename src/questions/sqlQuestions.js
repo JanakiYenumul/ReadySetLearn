@@ -1,8 +1,5 @@
 const sqlQuestions = {
   problems: [
-    // =========================
-    // PROBLEM 1 (EASY)
-    // =========================
     {
       title: "Find employees earning more than 50000",
       description: `
@@ -44,12 +41,7 @@ INSERT INTO Employees VALUES
 (4,'David',35,'IT',70000),
 (5,'Eve',29,'HR',50000);
       `,
-      starterCode: `
-SELECT id, name, salary
-FROM Employees
-WHERE salary > 50000
-ORDER BY id;
-      `,
+      starterCode: ``,
       solution: `
 SELECT id, name, salary
 FROM Employees
@@ -63,9 +55,6 @@ ORDER BY id;
       ]
     },
 
-    // =========================
-    // PROBLEM 2 (MEDIUM)
-    // =========================
     {
       title: "Find average salary per department",
       description: `
@@ -100,13 +89,7 @@ INSERT INTO Employees VALUES
 (4,'David',35,'IT',70000),
 (5,'Eve',29,'HR',50000);
       `,
-      starterCode: `
-SELECT department,
-       ROUND(AVG(salary), 2) AS avg_salary
-FROM Employees
-GROUP BY department
-ORDER BY department;
-      `,
+      starterCode: ``,
       solution: `
 SELECT department,
        ROUND(AVG(salary), 2) AS avg_salary
