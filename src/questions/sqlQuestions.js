@@ -41,7 +41,7 @@ INSERT INTO Employees VALUES
 (4,'David',35,'IT',70000),
 (5,'Eve',29,'HR',50000);
       `,
-      starterCode: ``,
+      starterCode: `--Write your query here`,
       solution: `
 SELECT id, name, salary
 FROM Employees
@@ -89,7 +89,7 @@ INSERT INTO Employees VALUES
 (4,'David',35,'IT',70000),
 (5,'Eve',29,'HR',50000);
       `,
-      starterCode: ``,
+      starterCode: `--Write your query here`,
       solution: `
 SELECT department,
        ROUND(AVG(salary), 2) AS avg_salary
@@ -105,26 +105,97 @@ ORDER BY department;
     },
 
     {
-      title: "Find employees earning more than 50000",
+      title: "Identify top-performing students based on average grades",
       description: `
-    Let's say you're administering a SQL database system for a school. The 
-    existing database is already in place when you arrive, and has a large
-    amount of existing data. The schema is provided below.
+You are working with a school database that stores teachers, students,
+assignments, and grades.
 
-    1.Gets each student’s average grade across all assignments
-2.Keeps only those students in the top half of performers. Ranks them by score (descending)
+Your goal is to identify the TOP HALF of students based on their
+average grades across all assignments.
 
-Expected Output –
+--------------------------------------------------
+TABLE: Teachers
+--------------------------------------------------
+| id | name        | classroom |
+|----|-------------|-----------|
+| 4  | Mr. Feeny   | 301 |
+| 8  | Mr. Cooper  | 260 |
+| 30 | Ms. Finster | 301 |
 
-+------------+-----------+
-| student_id | avggrade  |
-+------------+-----------+
-|          2 | 100.00000 |
-|          6 |  90.00000 |
-|         10 |  85.00000 |
-|          4 |  80.50000 |
-+------------+-----------+
-      `,
+--------------------------------------------------
+TABLE: Students
+--------------------------------------------------
+| id | name    | primary_teacher_id |
+|----|---------|--------------------|
+| 1  | Bobby   | 4 |
+| 2  | Susie   | 8 |
+| 3  | Deborah | 8 |
+| 4  | Anand   | 4 |
+| 5  | Robert  | 4 |
+| 6  | Claire  | 4 |
+| 8  | Petra   | 4 |
+| 9  | Bruce   | NULL |
+|10  | Andrew  | 4 |
+|11  | Kim     | 4 |
+
+--------------------------------------------------
+TABLE: Assignments
+--------------------------------------------------
+| id | teacher_id |
+|----|------------|
+| 1  | 4 |
+| 2  | 8 |
+
+--------------------------------------------------
+TABLE: Grades
+--------------------------------------------------
+| student_id | assignment_id | grade |
+|------------|---------------|-------|
+| 1 | 1 | 100 |
+| 1 | 2 | 50 |
+| 2 | 1 | 100 |
+| 2 | 2 | 100 |
+| 3 | 1 | 40 |
+| 3 | 2 | 8 |
+| 4 | 1 | 80 |
+| 4 | 2 | 81 |
+| 5 | 1 | 30 |
+| 5 | 2 | 60 |
+| 6 | 2 | 90 |
+| 9 | 1 | 65 |
+| 9 | 2 | 65 |
+|10 | 1 | 85 |
+
+--------------------------------------------------
+TASK
+--------------------------------------------------
+Write a SQL query that:
+
+1. Calculates each student's average grade across all assignments  
+2. Ranks students by average grade (highest first)  
+3. Returns ONLY the TOP HALF of students based on that ranking  
+
+--------------------------------------------------
+REQUIREMENTS
+--------------------------------------------------
+- Use the Grades table to calculate averages.
+- Average grade should be shown with 5 decimal places.
+- Rank students by average grade in descending order.
+- Keep only the top 50% performers.
+- Final result must be ordered by avggrade (descending).
+
+--------------------------------------------------
+EXPECTED OUTPUT
+--------------------------------------------------
+
+student_id | avggrade
+----------------------
+2          | 100.00000
+6          |  90.00000
+10         |  85.00000
+4          |  80.50000
+`,
+
       schemaSql: `
 Create table Teachers (
   id int primary key,
@@ -174,7 +245,7 @@ insert into Grades values
   (10, 1, 85);
 
       `,
-      starterCode: ``,
+      starterCode: `--Write your query here`,
       solution: `
       WITH StudentAverages AS (
     SELECT 
@@ -207,19 +278,72 @@ ORDER BY avggrade DESC;
 
     {
       title: "The management team is now interested in analyzing the efficiency and volume of their shipments over the recent months. They want a detailed report that identifies, for each product, the month with the highest quantity shipped in the year 2023. Additionally, for products with shipments, they want to see the total quantity shipped in that peak month, alongside the product name and the month.IMPORTANT: The month should be represented by its **full name** in **text format** (e.g., August) rather than its numeric value.Products that have not been shipped at all in 2023 should not appear in the report. The report should be ordered by the product name."
-     /* "Expected output:"
- "Desktop      August     30                             "
- "Laptop       April      60                             "
- "Smartphone   May        35                             "
- "Tablet       June       75"*/
-,
-      description: `List all products with order details including products with NO orders
-      `,
+      ,
+      description: `
+The management team is now interested in analyzing the efficiency and volume of their shipments over the recent months. 
+They want a detailed report that identifies, for each product, the month with the highest quantity shipped in the year 2023.
+ Additionally, for products with shipments, they want to see the total quantity shipped in that peak month, alongside the product name and the month.
+ IMPORTANT: The month should be represented by its **full name** in **text format** (e.g., August) rather than its numeric value.Products that have not been shipped at all in 2023 should not appear in the report. The report should be ordered by the product name.
+
+The management team wants to analyze shipment efficiency for the year 2023.
+
+You are given the following database tables and sample data.
+
+--------------------------------------------------
+TABLE: Products
+--------------------------------------------------
+| ProductID | ProductName |
+|-----------|-------------|
+| 1         | Laptop      |
+| 2         | Smartphone  |
+| 3         | Tablet      |
+| 4         | Desktop     |
+
+--------------------------------------------------
+TABLE: Shipments
+--------------------------------------------------
+| ShipmentID | ProductID | ShipmentDate | Quantity |
+|------------|-----------|--------------|----------|
+| 1          | 1         | 2022-12-25   | 20 |
+| 2          | 2         | 2022-12-26   | 30 |
+| 3          | 3         | 2022-12-27   | 15 |
+| 4          | 1         | 2023-01-25   | 20 |
+| 5          | 4         | 2023-01-30   | 25 |
+| 6          | 1         | 2023-04-01   | 40 |
+| 7          | 1         | 2023-04-15   | 20 |
+| 8          | 2         | 2023-05-01   | 35 |
+| 9          | 3         | 2023-06-01   | 60 |
+|10          | 3         | 2023-06-15   | 15 |
+|11          | 4         | 2023-07-01   | 25 |
+|12          | 4         | 2023-08-01   | 30 |
+
+--------------------------------------------------
+TASK
+--------------------------------------------------
+Write a SQL query that returns, for EACH product:
+
+1. The month in 2023 where the product had the HIGHEST total quantity shipped.
+2. The total quantity shipped in that month.
+3. The product name and month name.
+
+Rules:
+- Consider ONLY shipments made in the year 2023.
+- If multiple shipments happen in the same month, their quantities must be summed.
+- Month must be shown as FULL TEXT (example: August).
+- Products without any shipment in 2023 should NOT appear.
+- Order the result by ProductName.
+
+Expected Output Example:
+
+ProductName | MonthName | TotalQuantity
+----------------------------------------
+Desktop     | August    | 30
+Laptop      | April     | 60
+Smartphone  | May       | 35
+Tablet      | June      | 75
+`,
+
       schemaSql: `
-      DROP TABLE IF EXISTS Orders CASCADE;
-DROP TABLE IF EXISTS Shipments CASCADE;
-DROP TABLE IF EXISTS Products CASCADE;
-DROP TABLE IF EXISTS Customers CASCADE;
 CREATE TABLE Customers (
     CustomerID INT PRIMARY KEY,
     CustomerName VARCHAR(255)
@@ -286,7 +410,7 @@ INSERT INTO Shipments (ShipmentID, ProductID, ShipmentDate, Quantity) VALUES
 (12, 4, '2023-08-01', 30);
 
  `,
-      starterCode: ``,
+      starterCode: `--Write your query here`,
       solution: `
       WITH MonthlyTotals AS (
     SELECT 

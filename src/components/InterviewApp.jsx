@@ -156,6 +156,42 @@ export default function InterviewApp() {
     setSolutionUnlocked(true);
   };
 
+const adaptPostgresToSQLite = (query) => {
+  let q = query;
+
+  // EXTRACT(YEAR FROM date)
+  q = q.replace(
+    /EXTRACT\s*\(\s*YEAR\s+FROM\s+([^)]+)\)/gi,
+    "CAST(strftime('%Y', $1) AS INTEGER)"
+  );
+
+  // EXTRACT(MONTH FROM date)
+  q = q.replace(
+    /EXTRACT\s*\(\s*MONTH\s+FROM\s+([^)]+)\)/gi,
+    "strftime('%m', $1)"
+  );
+
+  // TO_CHAR(date, 'Month')
+  q = q.replace(
+    /TO_CHAR\s*\(\s*([^,]+)\s*,\s*'Month'\s*\)/gi,
+`CASE strftime('%m', $1)
+ WHEN '01' THEN 'January'
+ WHEN '02' THEN 'February'
+ WHEN '03' THEN 'March'
+ WHEN '04' THEN 'April'
+ WHEN '05' THEN 'May'
+ WHEN '06' THEN 'June'
+ WHEN '07' THEN 'July'
+ WHEN '08' THEN 'August'
+ WHEN '09' THEN 'September'
+ WHEN '10' THEN 'October'
+ WHEN '11' THEN 'November'
+ WHEN '12' THEN 'December'
+END`
+  );
+
+  return q;
+};
 
   const runCode = async () => {
   if (!selectedQuestion) return setOutput("Select a question first.");
@@ -179,12 +215,7 @@ export default function InterviewApp() {
         .replace(/\/\*[\s\S]*?\*\//g, "")
         .trim();
 
-      // Optional: allow only SELECT
-      if (!/^select/i.test(cleanedQuery)) {
-        setOutput("Only SELECT queries are allowed.");
-        setLoading(false);
-        return;
-      }
+      const sqliteCompatibleQuery = adaptPostgresToSQLite(cleanedQuery);
 
       // Wrap inside Python SQLite driver
       sourceCode = `
@@ -195,7 +226,7 @@ ${q.schemaSql}
 """
 
 user_query = """
-${cleanedQuery}
+${sqliteCompatibleQuery}
 """
 
 try:
@@ -237,7 +268,7 @@ except Exception as e:
     } else if (data.compile_output) {
       setOutput(`Compilation Error:\n${data.compile_output}`);
     } else if (data.stdout) {
-      setOutput(data.stdout.trim());
+      setOutput(data.stdout);
     } else {
       setOutput("No output.");
     }
