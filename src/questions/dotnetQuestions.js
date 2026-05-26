@@ -2855,7 +2855,8 @@ class Program
         );
     }
 }`
-        }, {
+        },
+        {
             id: 308,
             title: "Q 16: Flatten a Deeply Nested Array",
             description: `
@@ -2959,7 +2960,8 @@ class Program
         }
     }
 }`
-        }, {
+        },
+        {
             id: 309,
             title: "Q 17: Library Borrowing and Fine Calculation System",
             description: `
@@ -3074,7 +3076,8 @@ class LibrarySystem
         // Output: 12
     }
 }`
-        }, {
+        },
+        {
             id: 310,
             title: "Q 18: Online Food Order Management and Billing",
             description: `
@@ -3187,7 +3190,8 @@ class FoodApp
         // Output : 480
     }
 }`
-        }, {
+        },
+        {
             id: 311,
             title: "Q 19: Cinema Hall Ticket Booking and Revenue Calculation",
             description: `
@@ -3300,7 +3304,8 @@ class CinemaHall
         // Output : 1200
     }
 }`
-        }, {
+        },
+        {
             id: 312,
             title: "Q 20: E-commerce Cart Billing with Discount",
             description: `
@@ -3417,7 +3422,8 @@ class ShoppingApp
         // Output : 720
     }
 }`
-        }, {
+        },
+        {
             id: 313,
             title: "Q 21: Frequent Badge Access Within One Hour",
             description: `
@@ -3599,7 +3605,8 @@ class Program
         return value.ToString();
     }
 }`
-        }, {
+        },
+        {
             id: 314,
             title: "Q 22: Movie Recommendation Based on Similar User Ratings",
             description: `
@@ -3803,7 +3810,8 @@ class Program
         Console.WriteLine(user + " => [" + string.Join(", ", movies) + "]");
     }
 }`
-        }, {
+        },
+        {
             id: 315,
             title: "Q 23: Find Scrambled Word Inside a Note",
             description: `
@@ -3964,7 +3972,8 @@ class Program
         return count;
     }
 }`
-        }, {
+        },
+        {
             id: 316,
             title: "Q 24: Fix Performance Issue in High-Frequency Order Processing",
             description: `
@@ -4191,7 +4200,8 @@ namespace Orders
         }
     }
 }`
-        }, {
+        },
+        {
             id: 317,
             title: "Q 25: Fix Membership Statistics Bug in Gym Management System",
             description: `
@@ -5101,6 +5111,660 @@ class Solution
                 "Use 3D Dynamic Programming.",
                 "Avoid double-counting the same cell."
             ]
+        },
+        {
+            id: 318,
+            title: "Q8 : Food Delivery Order Management and Average Delivery Time",
+            description: `
+/*
+We are building a program to manage a food delivery platform. The platform has multiple restaurants,
+customers place orders, and those orders move through statuses:
+PLACED → PREPARING → OUT_FOR_DELIVERY → DELIVERED, or CANCELED.
+
+Definitions:
+* An "order" has: orderId, restaurantId, customerId, orderValue, distanceKm, status.
+* "OrderManager" manages orders and provides order statistics.
+
+To begin with, we present you with two tasks:
+1-1) Read through and understand the code below. Feel free to run it.
+1-2) The test for OrderManager is not passing due to a bug in the code.
+     Make the necessary changes to OrderManager to fix the bug.
+*/
+
+/*
+We are updating our system to include delivery session information for orders.
+
+We introduce a Delivery class:
+- Each Delivery has a unique deliveryId
+- startMinute and endMinute represent minutes from the start of the day (same day)
+- duration = endMinute - startMinute
+
+Add two functions to OrderManager:
+
+2.1) AddDelivery(orderId, delivery):
+     Associate a delivery with an order. If the order does not exist, ignore.
+
+2.2) GetAverageDeliveryTimeByRestaurant():
+     Compute the average delivery duration (minutes) per restaurantId.
+     Count ALL deliveries for that restaurant (across orders).
+     Return: Dictionary<int, double> restaurantId -> averageDuration.
+
+Tests are provided to validate the implementation.
+*/
+`,
+            starterCode: `
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+
+enum OrderStatus {
+    PLACED,
+    PREPARING,
+    OUT_FOR_DELIVERY,
+    DELIVERED,
+    CANCELED
+}
+
+class Delivery {
+    public int DeliveryId;
+    public int StartMinute;
+    public int EndMinute;
+
+    public Delivery(int deliveryId, int startMinute, int endMinute) {
+        DeliveryId = deliveryId;
+        StartMinute = startMinute;
+        EndMinute = endMinute;
+    }
+
+    public int GetDurationMinutes() {
+        return EndMinute - StartMinute;
+    }
+}
+
+class Order {
+    public int OrderId;
+    public int RestaurantId;
+    public int CustomerId;
+    public double OrderValue;
+    public double DistanceKm;
+    public OrderStatus Status;
+
+    public Order(int orderId, int restaurantId, int customerId,
+                 double orderValue, double distanceKm, OrderStatus status) {
+        OrderId = orderId;
+        RestaurantId = restaurantId;
+        CustomerId = customerId;
+        OrderValue = orderValue;
+        DistanceKm = distanceKm;
+        Status = status;
+    }
+}
+
+class OrderStats {
+    public int TotalOrders;
+    public int ActiveOrders;
+    public int ClosedOrders;
+
+    public OrderStats(int totalOrders, int activeOrders, int closedOrders) {
+        TotalOrders = totalOrders;
+        ActiveOrders = activeOrders;
+        ClosedOrders = closedOrders;
+    }
+}
+
+class OrderManager {
+    public List<Order> Orders = new List<Order>();
+    public Dictionary<int, List<Delivery>> DeliveryRegister = new Dictionary<int,List<Delivery>>();
+
+    public void AddOrder(Order order) {
+        Orders.Add(order);
+    }
+
+    public void UpdateOrderStatus(int orderId, OrderStatus newStatus) {
+        foreach (var order in Orders) {
+            if (order.OrderId == orderId) {
+                order.Status = newStatus;
+                return;
+            }
+        }
+    }
+
+    public OrderStats GetOrderStatistics() {
+        int total = Orders.Count;
+
+        int active = 0;
+        foreach (var order in Orders) {
+            if (order.Status == OrderStatus.PLACED ||
+                order.Status == OrderStatus.OUT_FOR_DELIVERY ||
+                order.Status == OrderStatus.PREPARING) {
+                active++;
+            }
+        }
+
+        int closed = 0;
+        foreach (var order in Orders) {
+            if (order.Status == OrderStatus.DELIVERED ||
+                order.Status == OrderStatus.CANCELED) {
+                closed++;
+            }
+        }
+
+        return new OrderStats(total, active, closed);
+    }
+
+    public void AddDelivery(int orderId, Delivery delivery)
+    {
+        // TODO
+    }
+
+    public Dictionary<int, double> GetAverageDeliveryTimeByRestaurant()
+    {
+        // TODO
+        return new Dictionary<int, double>();
+    }
+}
+`,
+            hints: [
+                "Check whether the order exists before adding delivery.",
+                "Use Dictionary<int, List<Delivery>> to store deliveries.",
+                "Average = total duration / number of deliveries."
+            ],
+            solution: `
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+
+enum OrderStatus {
+    PLACED,
+    PREPARING,
+    OUT_FOR_DELIVERY,
+    DELIVERED,
+    CANCELED
+}
+
+class Delivery {
+    public int DeliveryId;
+    public int StartMinute;
+    public int EndMinute;
+
+    public Delivery(int deliveryId, int startMinute, int endMinute) {
+        DeliveryId = deliveryId;
+        StartMinute = startMinute;
+        EndMinute = endMinute;
+    }
+
+    public int GetDurationMinutes() {
+        return EndMinute - StartMinute;
+    }
+}
+
+class Order {
+    public int OrderId;
+    public int RestaurantId;
+    public int CustomerId;
+    public double OrderValue;
+    public double DistanceKm;
+    public OrderStatus Status;
+
+    public Order(int orderId, int restaurantId, int customerId,
+                 double orderValue, double distanceKm, OrderStatus status) {
+        OrderId = orderId;
+        RestaurantId = restaurantId;
+        CustomerId = customerId;
+        OrderValue = orderValue;
+        DistanceKm = distanceKm;
+        Status = status;
+    }
+}
+
+class OrderStats {
+    public int TotalOrders;
+    public int ActiveOrders;
+    public int ClosedOrders;
+
+    public OrderStats(int totalOrders, int activeOrders, int closedOrders) {
+        TotalOrders = totalOrders;
+        ActiveOrders = activeOrders;
+        ClosedOrders = closedOrders;
+    }
+}
+
+class OrderManager {
+    public List<Order> Orders = new List<Order>();
+    public Dictionary<int, List<Delivery>> DeliveryRegister =
+        new Dictionary<int, List<Delivery>>();
+
+    public void AddOrder(Order order) {
+        Orders.Add(order);
+    }
+
+    public void UpdateOrderStatus(int orderId, OrderStatus newStatus) {
+        foreach (var order in Orders) {
+            if (order.OrderId == orderId) {
+                order.Status = newStatus;
+                return;
+            }
+        }
+    }
+
+    public OrderStats GetOrderStatistics() {
+        int total = Orders.Count;
+
+        int active = 0;
+        foreach (var order in Orders) {
+            if (order.Status == OrderStatus.PLACED ||
+                order.Status == OrderStatus.OUT_FOR_DELIVERY ||
+                order.Status == OrderStatus.PREPARING) {
+                active++;
+            }
+        }
+
+        int closed = 0;
+        foreach (var order in Orders) {
+            if (order.Status == OrderStatus.DELIVERED ||
+                order.Status == OrderStatus.CANCELED) {
+                closed++;
+            }
+        }
+
+        return new OrderStats(total, active, closed);
+    }
+
+    public void AddDelivery(int orderId, Delivery delivery)
+    {
+        Order order = Orders.Find(o => o.OrderId == orderId);
+
+        if (order == null)
+            return;
+
+        if (!DeliveryRegister.ContainsKey(orderId))
+            DeliveryRegister[orderId] = new List<Delivery>();
+
+        DeliveryRegister[orderId].Add(delivery);
+    }
+
+    public Dictionary<int, double> GetAverageDeliveryTimeByRestaurant()
+    {
+        Dictionary<int, List<int>> restaurantDurations =
+            new Dictionary<int, List<int>>();
+
+        foreach (var order in Orders)
+        {
+            if (DeliveryRegister.ContainsKey(order.OrderId))
+            {
+                if (!restaurantDurations.ContainsKey(order.RestaurantId))
+                    restaurantDurations[order.RestaurantId] = new List<int>();
+
+                foreach (var delivery in DeliveryRegister[order.OrderId])
+                {
+                    restaurantDurations[order.RestaurantId]
+                        .Add(delivery.GetDurationMinutes());
+                }
+            }
+        }
+
+        Dictionary<int, double> result =
+            new Dictionary<int, double>();
+
+        foreach (var item in restaurantDurations)
+        {
+            result[item.Key] = item.Value.Average();
+        }
+
+        return result;
+    }
+}
+`
+        },
+        {
+            id: 320,
+            title: "Q10 : Distributed AI Training Scheduler",
+            description: `
+/*
+
+We are building a distributed AI training scheduler.
+
+Each job belongs to a "model type" and must be processed on machines.
+However, machines have memory states that affect scheduling.
+
+--------------------------------------------------
+
+Each job has:
+- modelType (int)
+- memoryRequirement (int)
+
+We have M machines.
+
+Each machine maintains a "memory state":
+- Initially = 0
+- When a job runs, machine memory becomes that job’s memoryRequirement
+
+--------------------------------------------------
+
+Rules:
+
+1. At each time unit:
+   • Each machine can run at most ONE job
+   • So at most M jobs run in parallel
+
+2. MEMORY CONSTRAINT:
+   • A machine can run a job ONLY IF:
+     abs(machineMemory - jobMemory) <= D
+
+3. TYPE COOLDOWN:
+   • A machine cannot run the SAME modelType again until K time units pass
+
+4. MEMORY DECAY:
+   • If a machine is idle in a time unit:
+     its memory decreases by 1 (minimum 0)
+
+5. Jobs can be executed in ANY order
+
+6. You can leave machines idle
+
+--------------------------------------------------
+
+GOAL:
+
+Return the MINIMUM time required to complete ALL jobs.
+
+If it is IMPOSSIBLE, return -1.
+
+--------------------------------------------------
+
+Example:
+
+jobs = [
+  (type=1, mem=5),
+  (type=2, mem=3),
+  (type=1, mem=6)
+]
+
+M = 2
+K = 2
+D = 2
+
+Explanation:
+
+Time 1:
+Machine1 → (1,5)
+Machine2 → (2,3)
+
+Time 2:
+Machine1 memory=5 → can run (1,6)
+Machine2 memory=3 → idle → memory=2
+
+Time 3:
+Machine1 blocked (cooldown)
+Machine2 memory=2 → cannot run remaining job
+
+Time 4:
+Machine1 cooldown ends → runs job
+
+Answer = 4
+
+--------------------------------------------------
+
+Edge Case:
+
+jobs = [(1,10), (1,1)]
+M = 1
+K = 0
+D = 2
+
+Impossible because:
+machine memory = 10 → cannot run job with memory=1
+
+Output = -1
+
+--------------------------------------------------
+
+All Test Cases:
+
+schedule(jobs1, 2, 2, 2) => 4
+schedule(jobs2, 1, 0, 2) => -1
+
+--------------------------------------------------
+
+Constraints:
+
+N = number of jobs (≤ 100000)
+M ≤ 100000
+K ≤ 100000
+D ≤ 100000
+
+--------------------------------------------------
+
+Complexity Target:
+
+O(N log N) or optimized simulation
+
+--------------------------------------------------
+
+*/
+`,
+            starterCode: `
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Solution
+{
+    class Machine
+    {
+        public int Memory = 0;
+        public Dictionary<int, int> LastRun = new Dictionary<int, int>();
+    }
+
+    public static int Schedule(List<(int type, int mem)> jobs, int m, int k, int d)
+    {
+        if (jobs.Count == 0) return 0;
+
+        var remaining = new List<(int type, int mem)>(jobs);
+
+        var machines = new List<Machine>();
+        for (int i = 0; i < m; i++)
+            machines.Add(new Machine());
+
+        int time = 0;
+
+        while (remaining.Count > 0)
+        {
+            time++;
+            bool progress = false;
+
+            for (int i = 0; i < m; i++)
+            {
+                var machine = machines[i];
+
+                int bestIndex = -1;
+                int bestDiff = int.MaxValue;
+
+                for (int j = 0; j < remaining.Count; j++)
+                {
+                    var job = remaining[j];
+
+                    int diff = Math.Abs(machine.Memory - job.mem);
+                    if (diff > d) continue;
+
+                    if (machine.LastRun.ContainsKey(job.type))
+                    {
+                        if (time - machine.LastRun[job.type] <= k)
+                            continue;
+                    }
+
+                    if (diff < bestDiff)
+                    {
+                        bestDiff = diff;
+                        bestIndex = j;
+                    }
+                }
+
+                if (bestIndex != -1)
+                {
+                    var job = remaining[bestIndex];
+
+                    machine.Memory = job.mem;
+                    machine.LastRun[job.type] = time;
+
+                    remaining.RemoveAt(bestIndex);
+                    progress = true;
+                }
+                else
+                {
+                    machine.Memory = Math.Max(0, machine.Memory - 1);
+                }
+            }
+
+            if (!progress)
+                return -1;
+        }
+
+        return time;
+    }
+
+    static void Main()
+    {
+        var jobs1 = new List<(int, int)>
+        {
+            (1,5), (2,3), (1,6)
+        };
+
+        var jobs2 = new List<(int, int)>
+        {
+            (1,10), (1,1)
+        };
+
+        Console.WriteLine(Schedule(jobs1, 2, 2, 2)); // 4
+        Console.WriteLine(Schedule(jobs2, 1, 0, 2)); // -1
+    }
+}
+`,
+            hints: [
+                "Track machine memory state after each execution.",
+                "Cooldown should be validated per machine and model type.",
+                "Idle machines reduce memory by 1 each time unit.",
+                "Choose the best matching job using minimum memory difference."
+            ],
+            solution: `
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+class Solution
+{
+    class Machine
+    {
+        public int Memory = 0;
+        public Dictionary<int, int> LastRun =
+            new Dictionary<int, int>();
+    }
+
+    public static int Schedule(
+        List<(int type, int mem)> jobs,
+        int m,
+        int k,
+        int d)
+    {
+        if (jobs.Count == 0)
+            return 0;
+
+        var remaining = new List<(int type, int mem)>(jobs);
+
+        var machines = new List<Machine>();
+
+        for (int i = 0; i < m; i++)
+            machines.Add(new Machine());
+
+        int time = 0;
+
+        while (remaining.Count > 0)
+        {
+            time++;
+
+            bool progress = false;
+
+            for (int i = 0; i < m; i++)
+            {
+                var machine = machines[i];
+
+                int bestIndex = -1;
+                int bestDiff = int.MaxValue;
+
+                for (int j = 0; j < remaining.Count; j++)
+                {
+                    var job = remaining[j];
+
+                    int diff =
+                        Math.Abs(machine.Memory - job.mem);
+
+                    if (diff > d)
+                        continue;
+
+                    if (machine.LastRun.ContainsKey(job.type))
+                    {
+                        if (time - machine.LastRun[job.type] <= k)
+                            continue;
+                    }
+
+                    if (diff < bestDiff)
+                    {
+                        bestDiff = diff;
+                        bestIndex = j;
+                    }
+                }
+
+                if (bestIndex != -1)
+                {
+                    var job = remaining[bestIndex];
+
+                    machine.Memory = job.mem;
+
+                    machine.LastRun[job.type] = time;
+
+                    remaining.RemoveAt(bestIndex);
+
+                    progress = true;
+                }
+                else
+                {
+                    machine.Memory =
+                        Math.Max(0, machine.Memory - 1);
+                }
+            }
+
+            if (!progress)
+                return -1;
+        }
+
+        return time;
+    }
+
+    static void Main()
+    {
+        var jobs1 = new List<(int, int)>
+        {
+            (1,5),
+            (2,3),
+            (1,6)
+        };
+
+        var jobs2 = new List<(int, int)>
+        {
+            (1,10),
+            (1,1)
+        };
+
+        Console.WriteLine(
+            Schedule(jobs1, 2, 2, 2)); // 4
+
+        Console.WriteLine(
+            Schedule(jobs2, 1, 0, 2)); // -1
+    }
+}
+`
         }
 
 
